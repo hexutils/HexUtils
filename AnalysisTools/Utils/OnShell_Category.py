@@ -3,7 +3,48 @@ import ROOT
 from Discriminants import *
 import gConstants
 
+def Protect_Category_Against_NAN(pConst_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,
+				 pConst_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,
+				 pConst_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,
+				 pConst_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,
+				 pConst_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,
+				 pConst_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,
+				 pConst_JJVBF_BKG_MCFM_JECNominal,
+				 pConst_HadZH_BKG_MCFM_JECNominal,
+				 pConst_HadWH_BKG_MCFM_JECNominal,
+				 pConst_JJQCD_BKG_MCFM_JECNominal,
+				 pConst_JJVBF_BKG_MCFM_JECNominal,
+				 pConst_HadZH_BKG_MCFM_JECNominal,
+				 pConst_HadWH_BKG_MCFM_JECNominal,
+				 pConst_JJQCD_BKG_MCFM_JECNominal,
+				 p_HadZH_mavjj_true_JECNominal,
+				 p_HadWH_mavjj_true_JECNominal,
+				 p_JVBF_SIG_ghv1_1_JHUGen_JECNominal,
+				 pAux_JVBF_SIG_ghv1_1_JHUGen_JECNominal,
+				 p_HadWH_mavjj_JECNominal,
+				 p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,
+				 p_HadZH_mavjj_JECNominal,
+				 p_HadZH_SIG_ghz1_1_JHUGen_JECNominal)
 
+  # This function returns true if one of the variables to be passed to the tagging funcion would cause it to return NaN and error out #
+
+  # Signal VBF variables that will fail
+  if pConst_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal * pConst_HadZH_S_SIG_ghz1_1_MCFM_JECNominal * pConst_HadWH_S_SIG_ghw1_1_MCFM_JECNominal * pConst_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal * pConst_HadZH_S_SIG_ghz1_1_MCFM_JECNominal * pConst_HadWH_S_SIG_ghw1_1_MCFM_JECNominal == 0:
+    return True 
+  # Bkg VBF variables that will fail
+  elif pConst_JJVBF_BKG_MCFM_JECNominal * pConst_HadZH_BKG_MCFM_JECNominal * pConst_HadWH_BKG_MCFM_JECNominal * pConst_JJQCD_BKG_MCFM_JECNominal * pConst_JJVBF_BKG_MCFM_JECNominal * pConst_HadZH_BKG_MCFM_JECNominal * pConst_HadWH_BKG_MCFM_JECNominal * pConst_JJQCD_BKG_MCFM_JECNominal == 0:
+    return True
+  # QCD Scale variables that will fail #
+  elif p_HadZH_mavjj_true_JECNominal * p_HadWH_mavjj_true_JECNominal == 0:
+    return True
+  # VBF 1 Jet and VBF 2 jet variables that will fail #
+  elif p_JVBF_SIG_ghv1_1_JHUGen_JECNominal * pAux_JVBF_SIG_ghv1_1_JHUGen_JECNominal == 0:
+    return True
+  # WH and Vh variables that will fail #
+  elif p_HadWH_mavjj_JECNominal * p_HadWH_SIG_ghw1_1_JHUGen_JECNominal * p_HadZH_mavjj_JECNominal * p_HadZH_SIG_ghz1_1_JHUGen_JECNominal == 0:
+    return True
+  else:
+    return False
 # Here we add the tagging functions #
 
 def Tag_MOR18( nExtraLep,  nExtraZ,  nCleanedJetsPt30,  nCleanedJetsPt30BTagged_bTagSF,  jetQGLikelihood, p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal,  p_JQCD_SIG_ghg2_1_JHUGen_JECNominal,  p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal,  p_JVBF_SIG_ghv1_1_JHUGen_JECNominal,  pAux_JVBF_SIG_ghv1_1_JHUGen_JECNominal,  p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,  p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,  p_HadWH_mavjj_JECNominal,  p_HadWH_mavjj_true_JECNominal,  p_HadZH_mavjj_JECNominal,  p_HadZH_mavjj_true_JECNominal,  jetPhi,  ZZMass,  ZZPt,  PFMET,  useVHMETTagged,  useQGTagging , spline_list):
