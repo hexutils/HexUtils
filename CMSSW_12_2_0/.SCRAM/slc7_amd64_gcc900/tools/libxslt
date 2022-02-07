@@ -1,0 +1,19 @@
+{
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/libxslt/1.1.28-llifpc/include/libxslt"
+  ],
+  "LIB": [
+    "xslt"
+  ],
+  "LIBDIR": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/libxslt/1.1.28-llifpc/lib"
+  ],
+  "LIBXSLT_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/libxslt/1.1.28-llifpc",
+  "TOOLNAME": "libxslt",
+  "TOOLVERSION": "1.1.28-llifpc",
+  "VARIABLES": [
+    "LIBXSLT_BASE",
+    "LIBDIR",
+    "INCLUDE"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "PY3_LUIGI_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/py3-luigi/3.0.3-236d2596d9d05d7a543a747ab3dbc082",
+  "RUNTIME": {
+    "PATH:PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/py3-luigi/3.0.3-236d2596d9d05d7a543a747ab3dbc082/bin"
+    ]
+  },
+  "TOOLNAME": "py3-luigi",
+  "TOOLVERSION": "3.0.3-236d2596d9d05d7a543a747ab3dbc082",
+  "VARIABLES": [
+    "PY3_LUIGI_BASE"
+  ]
+}

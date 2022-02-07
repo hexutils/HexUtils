@@ -1,0 +1,27 @@
+{
+  "GOSAMCONTRIB_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/gosamcontrib/2.0-20150803-c423d4096a3c8f68be99f2699d9a31e3",
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/gosamcontrib/2.0-20150803-c423d4096a3c8f68be99f2699d9a31e3/include"
+  ],
+  "LIBDIR": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/gosamcontrib/2.0-20150803-c423d4096a3c8f68be99f2699d9a31e3/lib"
+  ],
+  "RUNTIME": {
+    "PATH:GOSAMCONTRIB_PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/gosamcontrib/2.0-20150803-c423d4096a3c8f68be99f2699d9a31e3"
+    ],
+    "PATH:ROOT_INCLUDE_PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/gosamcontrib/2.0-20150803-c423d4096a3c8f68be99f2699d9a31e3/include"
+    ],
+    "PATH:ROOT_PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/gosamcontrib/2.0-20150803-c423d4096a3c8f68be99f2699d9a31e3"
+    ]
+  },
+  "TOOLNAME": "gosamcontrib",
+  "TOOLVERSION": "2.0-20150803-c423d4096a3c8f68be99f2699d9a31e3",
+  "VARIABLES": [
+    "GOSAMCONTRIB_BASE",
+    "LIBDIR",
+    "INCLUDE"
+  ]
+}

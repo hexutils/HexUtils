@@ -1,0 +1,22 @@
+{
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/yaml-cpp/0.6.2-02ad743e657b55fed8899725977e8574/include"
+  ],
+  "LIB": [
+    "yaml-cpp"
+  ],
+  "LIBDIR": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/yaml-cpp/0.6.2-02ad743e657b55fed8899725977e8574/lib"
+  ],
+  "TOOLNAME": "yaml-cpp",
+  "TOOLVERSION": "0.6.2-02ad743e657b55fed8899725977e8574",
+  "USE": [
+    "boost"
+  ],
+  "VARIABLES": [
+    "YAML_CPP_BASE",
+    "LIBDIR",
+    "INCLUDE"
+  ],
+  "YAML_CPP_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/yaml-cpp/0.6.2-02ad743e657b55fed8899725977e8574"
+}

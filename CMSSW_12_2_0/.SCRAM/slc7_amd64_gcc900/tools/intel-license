@@ -1,0 +1,9 @@
+{
+  "RUNTIME": {
+    "PATH:INTEL_LICENSE_FILE": [
+      "28518@lxlicen01.cern.ch,28518@lxlicen02.cern.ch,28518@lxlicen03.cern.ch"
+    ]
+  },
+  "TOOLNAME": "intel-license",
+  "TOOLVERSION": "2017.2.174"
+}

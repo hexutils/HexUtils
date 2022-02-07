@@ -1,0 +1,7 @@
+<tool name="alpaka" version="0.7.0-5a96dd826734f6146f2213e558100afe">
+  <use name="boost"/>
+  <client>
+    <environment name="ALPAKA_BASE" default="/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/alpaka/0.7.0-5a96dd826734f6146f2213e558100afe"/>
+    <environment name="INCLUDE"     default="$ALPAKA_BASE/include"/>
+  </client>
+</tool>

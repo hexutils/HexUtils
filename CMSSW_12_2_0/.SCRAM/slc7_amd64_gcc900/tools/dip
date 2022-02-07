@@ -1,0 +1,11 @@
+{
+  "LIB": [
+    "dip"
+  ],
+  "TOOLNAME": "dip",
+  "TOOLVERSION": "8693f00cc422b4a15858fcd84249acaeb07b6316-c71e30e6d3c63c4e7cd4399d9e3177b7",
+  "USE": [
+    "dip-platform-dependent",
+    "log4cplus"
+  ]
+}

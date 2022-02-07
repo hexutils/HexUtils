@@ -1,0 +1,15 @@
+{
+  "LIB": [
+    "tcmalloc_minimal"
+  ],
+  "LIBDIR": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/gperftools/2.9.1-97e5154de8c3a62bdf1c4d305719c2f3/lib"
+  ],
+  "TCMALLOC_MINIMAL_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/gperftools/2.9.1-97e5154de8c3a62bdf1c4d305719c2f3",
+  "TOOLNAME": "tcmalloc_minimal",
+  "TOOLVERSION": "2.9.1-97e5154de8c3a62bdf1c4d305719c2f3",
+  "VARIABLES": [
+    "TCMALLOC_MINIMAL_BASE",
+    "LIBDIR"
+  ]
+}

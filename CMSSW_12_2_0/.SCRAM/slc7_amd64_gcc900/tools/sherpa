@@ -1,0 +1,53 @@
+{
+  "BINDIR": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/sherpa/2.2.11-cd3e5d45a8c827d60f14d6e03aed81cc/bin"
+  ],
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/sherpa/2.2.11-cd3e5d45a8c827d60f14d6e03aed81cc/include/SHERPA-MC"
+  ],
+  "LIB": [
+    "SherpaMain",
+    "ToolsMath",
+    "ToolsOrg"
+  ],
+  "LIBDIR": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/sherpa/2.2.11-cd3e5d45a8c827d60f14d6e03aed81cc/lib/SHERPA-MC"
+  ],
+  "RUNTIME": {
+    "PATH:CMSSW_FWLITE_INCLUDE_PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/sherpa/2.2.11-cd3e5d45a8c827d60f14d6e03aed81cc/include"
+    ],
+    "PATH:ROOT_INCLUDE_PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/sherpa/2.2.11-cd3e5d45a8c827d60f14d6e03aed81cc/include/SHERPA-MC"
+    ],
+    "PATH:SHERPA_INCLUDE_PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/sherpa/2.2.11-cd3e5d45a8c827d60f14d6e03aed81cc/include/SHERPA-MC"
+    ],
+    "PATH:SHERPA_LIBRARY_PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/sherpa/2.2.11-cd3e5d45a8c827d60f14d6e03aed81cc/lib/SHERPA-MC"
+    ],
+    "PATH:SHERPA_SHARE_PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/sherpa/2.2.11-cd3e5d45a8c827d60f14d6e03aed81cc/share/SHERPA-MC"
+    ]
+  },
+  "SHERPA_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/sherpa/2.2.11-cd3e5d45a8c827d60f14d6e03aed81cc",
+  "TOOLNAME": "sherpa",
+  "TOOLVERSION": "2.2.11-cd3e5d45a8c827d60f14d6e03aed81cc",
+  "USE": [
+    "root_cxxdefaults",
+    "hepmc",
+    "lhapdf",
+    "qd",
+    "blackhat",
+    "fastjet",
+    "sqlite",
+    "openmpi",
+    "openloops"
+  ],
+  "VARIABLES": [
+    "SHERPA_BASE",
+    "BINDIR",
+    "LIBDIR",
+    "INCLUDE"
+  ]
+}

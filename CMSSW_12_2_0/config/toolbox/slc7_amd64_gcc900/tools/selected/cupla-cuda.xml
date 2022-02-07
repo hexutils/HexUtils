@@ -1,0 +1,6 @@
+<tool name="cupla-cuda" version="0.3.0-0c71cb07373fc443d7f410dce21eed7a">
+  <use name="cupla"/>
+  <use name="cuda"/>
+  <lib name="cupla-cuda"/>
+  <flags CXXFLAGS="-DALPAKA_ACC_GPU_CUDA_ENABLED -DCUPLA_STREAM_ASYNC_ENABLED=1"/>
+</tool>

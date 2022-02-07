@@ -1,0 +1,17 @@
+{
+  "FLAGS": {
+    "CXXFLAGS": [
+      "-DALPAKA_ACC_GPU_CUDA_ENABLED",
+      "-DCUPLA_STREAM_ASYNC_ENABLED=1"
+    ]
+  },
+  "LIB": [
+    "cupla-cuda"
+  ],
+  "TOOLNAME": "cupla-cuda",
+  "TOOLVERSION": "0.3.0-0c71cb07373fc443d7f410dce21eed7a",
+  "USE": [
+    "cupla",
+    "cuda"
+  ]
+}

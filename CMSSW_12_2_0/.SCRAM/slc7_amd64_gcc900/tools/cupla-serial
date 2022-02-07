@@ -1,0 +1,16 @@
+{
+  "FLAGS": {
+    "CXXFLAGS": [
+      "-DALPAKA_ACC_CPU_B_SEQ_T_SEQ_ENABLED",
+      "-DCUPLA_STREAM_ASYNC_ENABLED=0"
+    ]
+  },
+  "LIB": [
+    "cupla-serial"
+  ],
+  "TOOLNAME": "cupla-serial",
+  "TOOLVERSION": "0.3.0-0c71cb07373fc443d7f410dce21eed7a",
+  "USE": [
+    "cupla"
+  ]
+}

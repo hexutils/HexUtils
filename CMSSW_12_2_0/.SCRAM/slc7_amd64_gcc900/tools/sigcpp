@@ -1,0 +1,27 @@
+{
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/sigcpp/2.6.2-cms/include/sigc++-2.0"
+  ],
+  "LIB": [
+    "sigc-2.0"
+  ],
+  "LIBDIR": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/sigcpp/2.6.2-cms/lib"
+  ],
+  "RUNTIME": {
+    "PATH:ROOT_INCLUDE_PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/sigcpp/2.6.2-cms/include/sigc++-2.0"
+    ]
+  },
+  "SIGCPP_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/sigcpp/2.6.2-cms",
+  "TOOLNAME": "sigcpp",
+  "TOOLVERSION": "2.6.2-cms",
+  "USE": [
+    "root_cxxdefaults"
+  ],
+  "VARIABLES": [
+    "SIGCPP_BASE",
+    "LIBDIR",
+    "INCLUDE"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "GIFLIB_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/giflib/5.2.0-cms",
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/giflib/5.2.0-cms/include"
+  ],
+  "LIB": [
+    "gif"
+  ],
+  "LIBDIR": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/giflib/5.2.0-cms/lib"
+  ],
+  "RUNTIME": {
+    "PATH:PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/giflib/5.2.0-cms/bin"
+    ],
+    "PATH:ROOT_INCLUDE_PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/giflib/5.2.0-cms/include"
+    ]
+  },
+  "TOOLNAME": "giflib",
+  "TOOLVERSION": "5.2.0-cms",
+  "USE": [
+    "root_cxxdefaults"
+  ],
+  "VARIABLES": [
+    "GIFLIB_BASE",
+    "LIBDIR",
+    "INCLUDE"
+  ]
+}

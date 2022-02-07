@@ -1,0 +1,19 @@
+{
+  "CUPLA_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/cupla/0.3.0-0c71cb07373fc443d7f410dce21eed7a",
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/cupla/0.3.0-0c71cb07373fc443d7f410dce21eed7a/include"
+  ],
+  "LIBDIR": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/cupla/0.3.0-0c71cb07373fc443d7f410dce21eed7a/lib"
+  ],
+  "TOOLNAME": "cupla",
+  "TOOLVERSION": "0.3.0-0c71cb07373fc443d7f410dce21eed7a",
+  "USE": [
+    "boost"
+  ],
+  "VARIABLES": [
+    "CUPLA_BASE",
+    "INCLUDE",
+    "LIBDIR"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "PY3_PYCODESTYLE_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/py3-pycodestyle/2.7.0-2972d1552c3219dd0fc4c15c115085c8",
+  "RUNTIME": {
+    "PATH:PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/py3-pycodestyle/2.7.0-2972d1552c3219dd0fc4c15c115085c8/bin"
+    ]
+  },
+  "TOOLNAME": "py3-pycodestyle",
+  "TOOLVERSION": "2.7.0-2972d1552c3219dd0fc4c15c115085c8",
+  "VARIABLES": [
+    "PY3_PYCODESTYLE_BASE"
+  ]
+}

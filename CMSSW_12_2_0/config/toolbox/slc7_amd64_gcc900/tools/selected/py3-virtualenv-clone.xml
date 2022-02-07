@@ -1,0 +1,6 @@
+<tool name="py3-virtualenv-clone" version="0.5.6-2dabad3b92264c76feb1659d2d1dfcf4">
+  <client>
+    <environment name="PY3_VIRTUALENV_CLONE_BASE" default="/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/py3-virtualenv-clone/0.5.6-2dabad3b92264c76feb1659d2d1dfcf4"/>
+  </client>
+  <runtime name="PATH" value="$PY3_VIRTUALENV_CLONE_BASE/bin" type="path"/>
+</tool>

@@ -1,0 +1,13 @@
+{
+  "LCOV_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/lcov/1.9-bcolbf",
+  "RUNTIME": {
+    "PATH:PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/lcov/1.9-bcolbf/bin"
+    ]
+  },
+  "TOOLNAME": "lcov",
+  "TOOLVERSION": "1.9-bcolbf",
+  "VARIABLES": [
+    "LCOV_BASE"
+  ]
+}

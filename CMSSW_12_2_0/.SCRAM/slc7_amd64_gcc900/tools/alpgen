@@ -1,0 +1,13 @@
+{
+  "ALPGEN_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/alpgen/214-bcolbf",
+  "RUNTIME": {
+    "PATH:PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/alpgen/214-bcolbf/bin"
+    ]
+  },
+  "TOOLNAME": "alpgen",
+  "TOOLVERSION": "214-bcolbf",
+  "VARIABLES": [
+    "ALPGEN_BASE"
+  ]
+}

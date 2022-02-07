@@ -1,0 +1,33 @@
+{
+  "FRONTIER_CLIENT_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/frontier_client/2.9.1-llifpc2",
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/frontier_client/2.9.1-llifpc2/include"
+  ],
+  "LIB": [
+    "frontier_client"
+  ],
+  "LIBDIR": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/frontier_client/2.9.1-llifpc2/lib"
+  ],
+  "RUNTIME": {
+    "FRONTIER_CLIENT": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/frontier_client/2.9.1-llifpc2/"
+    ],
+    "PATH:ROOT_INCLUDE_PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/frontier_client/2.9.1-llifpc2/include"
+    ]
+  },
+  "TOOLNAME": "frontier_client",
+  "TOOLVERSION": "2.9.1-llifpc2",
+  "USE": [
+    "root_cxxdefaults",
+    "zlib",
+    "expat",
+    "python"
+  ],
+  "VARIABLES": [
+    "FRONTIER_CLIENT_BASE",
+    "INCLUDE",
+    "LIBDIR"
+  ]
+}

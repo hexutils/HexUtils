@@ -1,0 +1,20 @@
+{
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/vdt/0.4.0-llifpc/include"
+  ],
+  "RUNTIME": {
+    "PATH:ROOT_INCLUDE_PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/vdt/0.4.0-llifpc/include"
+    ]
+  },
+  "TOOLNAME": "vdt_headers",
+  "TOOLVERSION": "0.4.0-llifpc",
+  "USE": [
+    "root_cxxdefaults"
+  ],
+  "VARIABLES": [
+    "VDT_HEADERS_BASE",
+    "INCLUDE"
+  ],
+  "VDT_HEADERS_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/vdt/0.4.0-llifpc"
+}

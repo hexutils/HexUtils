@@ -1,0 +1,13 @@
+{
+  "GLIMPSE_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/glimpse/4.18.5-cms",
+  "RUNTIME": {
+    "PATH:PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/glimpse/4.18.5-cms/bin"
+    ]
+  },
+  "TOOLNAME": "glimpse",
+  "TOOLVERSION": "4.18.5-cms",
+  "VARIABLES": [
+    "GLIMPSE_BASE"
+  ]
+}

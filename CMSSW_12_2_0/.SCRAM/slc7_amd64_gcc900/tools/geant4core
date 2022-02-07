@@ -1,0 +1,63 @@
+{
+  "FLAGS": {
+    "CPPDEFINES": [
+      "GNU_GCC",
+      "G4V9"
+    ],
+    "CXXFLAGS": [
+      "-ftls-model=global-dynamic",
+      "-pthread"
+    ]
+  },
+  "G4LIB": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/geant4/10.7.2-d2c77a0c386403c01dfa8ec6a8872536/lib",
+  "GEANT4CORE_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/geant4/10.7.2-d2c77a0c386403c01dfa8ec6a8872536",
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/geant4/10.7.2-d2c77a0c386403c01dfa8ec6a8872536/include/Geant4",
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/geant4/10.7.2-d2c77a0c386403c01dfa8ec6a8872536/include"
+  ],
+  "LIB": [
+    "G4digits_hits",
+    "G4error_propagation",
+    "G4event",
+    "G4geometry",
+    "G4global",
+    "G4graphics_reps",
+    "G4intercoms",
+    "G4interfaces",
+    "G4materials",
+    "G4parmodels",
+    "G4particles",
+    "G4persistency",
+    "G4physicslists",
+    "G4processes",
+    "G4readout",
+    "G4run",
+    "G4tracking",
+    "G4track",
+    "G4analysis"
+  ],
+  "LIBDIR": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/geant4/10.7.2-d2c77a0c386403c01dfa8ec6a8872536/lib"
+  ],
+  "RUNTIME": {
+    "PATH:ROOT_INCLUDE_PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/geant4/10.7.2-d2c77a0c386403c01dfa8ec6a8872536/include"
+    ]
+  },
+  "TOOLNAME": "geant4core",
+  "TOOLVERSION": "10.7.2-d2c77a0c386403c01dfa8ec6a8872536",
+  "USE": [
+    "clhep",
+    "vecgeom",
+    "zlib",
+    "expat",
+    "xerces-c",
+    "root_cxxdefaults"
+  ],
+  "VARIABLES": [
+    "GEANT4CORE_BASE",
+    "LIBDIR",
+    "G4LIB",
+    "INCLUDE"
+  ]
+}

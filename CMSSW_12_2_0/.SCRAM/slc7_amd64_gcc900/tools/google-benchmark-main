@@ -1,0 +1,10 @@
+{
+  "LIB": [
+    "benchmark_main"
+  ],
+  "TOOLNAME": "google-benchmark-main",
+  "TOOLVERSION": "1.4.x-llifpc2",
+  "USE": [
+    "google-benchmark"
+  ]
+}

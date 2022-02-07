@@ -1,0 +1,19 @@
+{
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/md5/1.0.0-bcolbf2/include"
+  ],
+  "LIB": [
+    "cms-md5"
+  ],
+  "LIBDIR": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/md5/1.0.0-bcolbf2/lib"
+  ],
+  "MD5_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/md5/1.0.0-bcolbf2",
+  "TOOLNAME": "md5",
+  "TOOLVERSION": "1.0.0-bcolbf2",
+  "VARIABLES": [
+    "MD5_BASE",
+    "LIBDIR",
+    "INCLUDE"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "CASCADE_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/cascade/2.2.04-a71604e78bc430b5ebe9fb6498d28059",
+  "LIB": [
+    "cascade_merged"
+  ],
+  "LIBDIR": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/cascade/2.2.04-a71604e78bc430b5ebe9fb6498d28059/lib"
+  ],
+  "RUNTIME": {
+    "CASCADE_PDFPATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/cascade/2.2.04-a71604e78bc430b5ebe9fb6498d28059/share"
+    ]
+  },
+  "TOOLNAME": "cascade",
+  "TOOLVERSION": "2.2.04-a71604e78bc430b5ebe9fb6498d28059",
+  "USE": [
+    "f77compiler",
+    "cascade_headers"
+  ],
+  "VARIABLES": [
+    "CASCADE_BASE",
+    "LIBDIR"
+  ]
+}
