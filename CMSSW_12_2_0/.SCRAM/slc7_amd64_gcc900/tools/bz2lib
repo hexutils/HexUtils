@@ -1,0 +1,27 @@
+{
+  "BZ2LIB_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/bz2lib/1.0.6-bcolbf2",
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/bz2lib/1.0.6-bcolbf2/include"
+  ],
+  "LIB": [
+    "bz2"
+  ],
+  "LIBDIR": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/bz2lib/1.0.6-bcolbf2/lib"
+  ],
+  "RUNTIME": {
+    "PATH:ROOT_INCLUDE_PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/bz2lib/1.0.6-bcolbf2/include"
+    ]
+  },
+  "TOOLNAME": "bz2lib",
+  "TOOLVERSION": "1.0.6-bcolbf2",
+  "USE": [
+    "root_cxxdefaults"
+  ],
+  "VARIABLES": [
+    "BZ2LIB_BASE",
+    "LIBDIR",
+    "INCLUDE"
+  ]
+}

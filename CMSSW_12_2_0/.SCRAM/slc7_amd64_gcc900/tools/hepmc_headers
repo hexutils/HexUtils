@@ -1,0 +1,20 @@
+{
+  "HEPMC_HEADERS_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/hepmc/2.06.10-llifpc",
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/hepmc/2.06.10-llifpc/include"
+  ],
+  "RUNTIME": {
+    "PATH:ROOT_INCLUDE_PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/hepmc/2.06.10-llifpc/include"
+    ]
+  },
+  "TOOLNAME": "hepmc_headers",
+  "TOOLVERSION": "2.06.10-llifpc",
+  "USE": [
+    "root_cxxdefaults"
+  ],
+  "VARIABLES": [
+    "HEPMC_HEADERS_BASE",
+    "INCLUDE"
+  ]
+}

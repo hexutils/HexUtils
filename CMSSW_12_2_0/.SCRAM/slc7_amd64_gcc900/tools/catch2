@@ -1,0 +1,12 @@
+{
+  "CATCH2_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/catch2/2.13.6",
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/catch2/2.13.6/include"
+  ],
+  "TOOLNAME": "catch2",
+  "TOOLVERSION": "2.13.6",
+  "VARIABLES": [
+    "CATCH2_BASE",
+    "INCLUDE"
+  ]
+}

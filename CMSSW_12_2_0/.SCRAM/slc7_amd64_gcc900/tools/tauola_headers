@@ -1,0 +1,20 @@
+{
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/tauola/27.121.5-ghbfee/include"
+  ],
+  "RUNTIME": {
+    "PATH:ROOT_INCLUDE_PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/tauola/27.121.5-ghbfee/include"
+    ]
+  },
+  "TAUOLA_HEADERS_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/tauola/27.121.5-ghbfee",
+  "TOOLNAME": "tauola_headers",
+  "TOOLVERSION": "27.121.5-ghbfee",
+  "USE": [
+    "root_cxxdefaults"
+  ],
+  "VARIABLES": [
+    "TAUOLA_HEADERS_BASE",
+    "INCLUDE"
+  ]
+}

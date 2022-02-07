@@ -1,0 +1,19 @@
+{
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/libffi/3.2.1-bcolbf/include"
+  ],
+  "LIB": [
+    "ffi"
+  ],
+  "LIBDIR": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/libffi/3.2.1-bcolbf/lib64"
+  ],
+  "LIBFFI_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/libffi/3.2.1-bcolbf",
+  "TOOLNAME": "libffi",
+  "TOOLVERSION": "3.2.1-bcolbf",
+  "VARIABLES": [
+    "LIBFFI_BASE",
+    "LIBDIR",
+    "INCLUDE"
+  ]
+}

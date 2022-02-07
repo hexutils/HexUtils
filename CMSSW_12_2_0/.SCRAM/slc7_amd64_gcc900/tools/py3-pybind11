@@ -1,0 +1,12 @@
+{
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/py3-pybind11/2.7.1-c04b45f9db1ce4f0c15fbe1890ab1e4f/lib/python3.9/site-packages/pybind11/include"
+  ],
+  "PY3_PYBIND11_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/py3-pybind11/2.7.1-c04b45f9db1ce4f0c15fbe1890ab1e4f",
+  "TOOLNAME": "py3-pybind11",
+  "TOOLVERSION": "2.7.1-c04b45f9db1ce4f0c15fbe1890ab1e4f",
+  "VARIABLES": [
+    "PY3_PYBIND11_BASE",
+    "INCLUDE"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "LIB": [
+    "curand"
+  ],
+  "TOOLNAME": "cuda-curand",
+  "TOOLVERSION": "11.4.2-0939a3504c82d9c20346029080003d72",
+  "USE": [
+    "cuda"
+  ]
+}

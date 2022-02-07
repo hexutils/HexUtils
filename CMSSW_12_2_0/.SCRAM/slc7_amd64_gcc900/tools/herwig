@@ -1,0 +1,31 @@
+{
+  "HERWIG_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/herwig/6.521-d831fed8b4b45d5272db6f86e6511d5a",
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/herwig/6.521-d831fed8b4b45d5272db6f86e6511d5a/include"
+  ],
+  "LIB": [
+    "herwig",
+    "herwig_dummy"
+  ],
+  "LIBDIR": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/herwig/6.521-d831fed8b4b45d5272db6f86e6511d5a/lib"
+  ],
+  "RUNTIME": {
+    "PATH:ROOT_INCLUDE_PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/herwig/6.521-d831fed8b4b45d5272db6f86e6511d5a/include"
+    ]
+  },
+  "TOOLNAME": "herwig",
+  "TOOLVERSION": "6.521-d831fed8b4b45d5272db6f86e6511d5a",
+  "USE": [
+    "root_cxxdefaults",
+    "f77compiler",
+    "lhapdf",
+    "photos"
+  ],
+  "VARIABLES": [
+    "HERWIG_BASE",
+    "LIBDIR",
+    "INCLUDE"
+  ]
+}

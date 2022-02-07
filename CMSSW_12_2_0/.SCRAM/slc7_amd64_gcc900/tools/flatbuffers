@@ -1,0 +1,24 @@
+{
+  "FLATBUFFERS_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/flatbuffers/1.12.0-llifpc",
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/flatbuffers/1.12.0-llifpc/include"
+  ],
+  "LIB": [
+    "flatbuffers"
+  ],
+  "LIBDIR": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/flatbuffers/1.12.0-llifpc/lib64"
+  ],
+  "RUNTIME": {
+    "PATH:PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/flatbuffers/1.12.0-llifpc/bin"
+    ]
+  },
+  "TOOLNAME": "flatbuffers",
+  "TOOLVERSION": "1.12.0-llifpc",
+  "VARIABLES": [
+    "FLATBUFFERS_BASE",
+    "INCLUDE",
+    "LIBDIR"
+  ]
+}

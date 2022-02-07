@@ -1,0 +1,13 @@
+{
+  "PY3_NOTEBOOK_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/py3-notebook/6.4.3-fb0da82c80e3a9b6e934e289ff8fdb97",
+  "RUNTIME": {
+    "PATH:PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/py3-notebook/6.4.3-fb0da82c80e3a9b6e934e289ff8fdb97/bin"
+    ]
+  },
+  "TOOLNAME": "py3-notebook",
+  "TOOLVERSION": "6.4.3-fb0da82c80e3a9b6e934e289ff8fdb97",
+  "VARIABLES": [
+    "PY3_NOTEBOOK_BASE"
+  ]
+}

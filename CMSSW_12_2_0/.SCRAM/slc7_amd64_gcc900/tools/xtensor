@@ -1,0 +1,15 @@
+{
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/xtensor/0.20.1-llifpc/include"
+  ],
+  "TOOLNAME": "xtensor",
+  "TOOLVERSION": "0.20.1-llifpc",
+  "USE": [
+    "xtl"
+  ],
+  "VARIABLES": [
+    "XTENSOR_BASE",
+    "INCLUDE"
+  ],
+  "XTENSOR_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/xtensor/0.20.1-llifpc"
+}

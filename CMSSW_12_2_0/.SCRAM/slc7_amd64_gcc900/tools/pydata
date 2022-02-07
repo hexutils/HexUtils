@@ -1,0 +1,16 @@
+{
+  "FLAGS": {
+    "LDFLAGS": [
+      "$(PYDATA_BASE)/lib/pydata.o"
+    ],
+    "NO_RECURSIVE_EXPORT": [
+      "1"
+    ]
+  },
+  "PYDATA_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/pythia6/426-ghbfee",
+  "TOOLNAME": "pydata",
+  "TOOLVERSION": "426-ghbfee",
+  "VARIABLES": [
+    "PYDATA_BASE"
+  ]
+}

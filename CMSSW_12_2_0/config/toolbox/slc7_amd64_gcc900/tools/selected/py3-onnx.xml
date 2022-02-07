@@ -1,0 +1,6 @@
+<tool name="py3-onnx" version="1.10.1-c6a70b7f9e7deb51ba24030cb86539eb">
+  <client>
+    <environment name="PY3_ONNX_BASE" default="/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/py3-onnx/1.10.1-c6a70b7f9e7deb51ba24030cb86539eb"/>
+  </client>
+  <runtime name="PATH" value="$PY3_ONNX_BASE/bin" type="path"/>
+</tool>

@@ -1,0 +1,8 @@
+<tool name="gdrcopy" version="2.2-62433233582bc64f3954ee10990888d8">
+  <lib name="gdrapi"/>
+  <client>
+    <environment name="GDRCOPY_BASE" default="/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/gdrcopy/2.2-62433233582bc64f3954ee10990888d8"/>
+    <environment name="INCLUDE"      default="$GDRCOPY_BASE/include"/>
+    <environment name="LIBDIR"       default="$GDRCOPY_BASE/lib64"/>
+  </client>
+</tool>

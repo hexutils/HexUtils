@@ -1,0 +1,24 @@
+{
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/tinyxml2/6.2.0-llifpc/include"
+  ],
+  "LIB": [
+    "tinyxml2"
+  ],
+  "LIBDIR": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/tinyxml2/6.2.0-llifpc/lib64"
+  ],
+  "RUNTIME": {
+    "PATH:ROOT_INCLUDE_PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/tinyxml2/6.2.0-llifpc/include"
+    ]
+  },
+  "TINYXML2_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/tinyxml2/6.2.0-llifpc",
+  "TOOLNAME": "tinyxml2",
+  "TOOLVERSION": "6.2.0-llifpc",
+  "VARIABLES": [
+    "TINYXML2_BASE",
+    "LIBDIR",
+    "INCLUDE"
+  ]
+}

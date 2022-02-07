@@ -1,0 +1,16 @@
+{
+  "DAS_CLIENT_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/das_client/v03.01.00-llifpc",
+  "RUNTIME": {
+    "PATH:PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/das_client/v03.01.00-llifpc/bin"
+    ]
+  },
+  "TOOLNAME": "das_client",
+  "TOOLVERSION": "v03.01.00-llifpc",
+  "USE": [
+    "python"
+  ],
+  "VARIABLES": [
+    "DAS_CLIENT_BASE"
+  ]
+}

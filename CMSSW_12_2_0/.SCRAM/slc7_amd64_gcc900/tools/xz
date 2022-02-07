@@ -1,0 +1,30 @@
+{
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/xz/5.2.4-cms/include"
+  ],
+  "LIB": [
+    "lzma"
+  ],
+  "LIBDIR": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/xz/5.2.4-cms/lib"
+  ],
+  "RUNTIME": {
+    "PATH:PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/xz/5.2.4-cms/bin"
+    ],
+    "PATH:ROOT_INCLUDE_PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/xz/5.2.4-cms/include"
+    ]
+  },
+  "TOOLNAME": "xz",
+  "TOOLVERSION": "5.2.4-cms",
+  "USE": [
+    "root_cxxdefaults"
+  ],
+  "VARIABLES": [
+    "XZ_BASE",
+    "LIBDIR",
+    "INCLUDE"
+  ],
+  "XZ_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/xz/5.2.4-cms"
+}

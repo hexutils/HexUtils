@@ -1,0 +1,31 @@
+{
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/starlight/r193-29dd7cf9190526ae45a07c59b16727f9/include"
+  ],
+  "LIB": [
+    "Starlib"
+  ],
+  "LIBDIR": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/starlight/r193-29dd7cf9190526ae45a07c59b16727f9/lib"
+  ],
+  "RUNTIME": {
+    "PATH:PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/starlight/r193-29dd7cf9190526ae45a07c59b16727f9/bin"
+    ],
+    "PATH:ROOT_INCLUDE_PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/starlight/r193-29dd7cf9190526ae45a07c59b16727f9/include"
+    ]
+  },
+  "STARLIGHT_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/starlight/r193-29dd7cf9190526ae45a07c59b16727f9",
+  "TOOLNAME": "starlight",
+  "TOOLVERSION": "r193-29dd7cf9190526ae45a07c59b16727f9",
+  "USE": [
+    "root_cxxdefaults",
+    "clhep"
+  ],
+  "VARIABLES": [
+    "STARLIGHT_BASE",
+    "LIBDIR",
+    "INCLUDE"
+  ]
+}

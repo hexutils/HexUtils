@@ -1,0 +1,24 @@
+{
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/ittnotify/16.06.18-llifpc/include"
+  ],
+  "ITTNOTIFY_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/ittnotify/16.06.18-llifpc",
+  "LIB": [
+    "ittnotify"
+  ],
+  "LIBDIR": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/ittnotify/16.06.18-llifpc/lib"
+  ],
+  "RUNTIME": {
+    "PATH:ROOT_INCLUDE_PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/ittnotify/16.06.18-llifpc/include"
+    ]
+  },
+  "TOOLNAME": "ittnotify",
+  "TOOLVERSION": "16.06.18-llifpc",
+  "VARIABLES": [
+    "ITTNOTIFY_BASE",
+    "INCLUDE",
+    "LIBDIR"
+  ]
+}

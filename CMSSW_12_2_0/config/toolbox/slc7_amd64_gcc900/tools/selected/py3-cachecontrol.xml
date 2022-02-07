@@ -1,0 +1,6 @@
+<tool name="py3-cachecontrol" version="0.12.6-927bbed1d4d01c93262c8cebe828d27e">
+  <client>
+    <environment name="PY3_CACHECONTROL_BASE" default="/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/py3-cachecontrol/0.12.6-927bbed1d4d01c93262c8cebe828d27e"/>
+  </client>
+  <runtime name="PATH" value="$PY3_CACHECONTROL_BASE/bin" type="path"/>
+</tool>

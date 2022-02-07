@@ -1,0 +1,13 @@
+{
+  "PY3_SETUPTOOLS_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/py3-setuptools/51.3.3-llifpc",
+  "RUNTIME": {
+    "PATH:PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/py3-setuptools/51.3.3-llifpc/bin"
+    ]
+  },
+  "TOOLNAME": "py3-setuptools",
+  "TOOLVERSION": "51.3.3-llifpc",
+  "VARIABLES": [
+    "PY3_SETUPTOOLS_BASE"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/qd/2.3.13-bcolbf2/include"
+  ],
+  "LIB": [
+    "qdmod",
+    "qd"
+  ],
+  "LIBDIR": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/qd/2.3.13-bcolbf2/lib"
+  ],
+  "QD_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/qd/2.3.13-bcolbf2",
+  "TOOLNAME": "qd",
+  "TOOLVERSION": "2.3.13-bcolbf2",
+  "VARIABLES": [
+    "QD_BASE",
+    "LIBDIR",
+    "INCLUDE"
+  ]
+}

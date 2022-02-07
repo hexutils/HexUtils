@@ -1,0 +1,25 @@
+{
+  "FLAGS": {
+    "SYSTEM_INCLUDE": [
+      "1"
+    ]
+  },
+  "HLS_BASE": "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/hls/2019.08-bcolbf",
+  "INCLUDE": [
+    "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/hls/2019.08-bcolbf/include"
+  ],
+  "RUNTIME": {
+    "PATH:ROOT_INCLUDE_PATH": [
+      "/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/hls/2019.08-bcolbf/include"
+    ]
+  },
+  "TOOLNAME": "hls",
+  "TOOLVERSION": "2019.08-bcolbf",
+  "USE": [
+    "root_cxxdefaults"
+  ],
+  "VARIABLES": [
+    "HLS_BASE",
+    "INCLUDE"
+  ]
+}

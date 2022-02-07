@@ -1,0 +1,10 @@
+{
+  "LIB": [
+    "ibumad"
+  ],
+  "TOOLNAME": "libibumad",
+  "TOOLVERSION": "36.0",
+  "USE": [
+    "rdma-core"
+  ]
+}
