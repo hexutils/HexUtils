@@ -1,25 +1,29 @@
 import ROOT
-
+import os
 def init_gConstants():
-  gConstant_HZZ2e2mu_g2 = ROOT.TFile("/gConstants/gConstant_HZZ2e2mu_g2.root").Get("sp_tgfinal_HZZ2e2mu_SM_over_tgfinal_HZZ2e2mu_g2")
-  gConstant_HZZ2e2mu_g4 = ROOT.TFile("/gConstants/gConstant_HZZ2e2mu_g4.root").Get("sp_tgfinal_HZZ2e2mu_SM_over_tgfinal_HZZ2e2mu_g4")
-  gConstant_HZZ2e2mu_L1 = ROOT.TFile("/gConstants/gConstant_HZZ2e2mu_L1.root").Get("sp_tgfinal_HZZ2e2mu_SM_over_tgfinal_HZZ2e2mu_L1")
-  gConstant_HZZ2e2mu_L1Zgs = ROOT.TFile("/gConstants/gConstant_HZZ2e2mu_L1Zgs.root").Get("sp_tgfinal_HZZ2e2mu_SM_photoncut_over_tgfinal_HZZ2e2mu_L1Zgs")
-  gConstant_VBF_g2 = ROOT.TFile("/gConstants/gConstant_VBF_g2.root").Get("sp_tgfinal_VBF_SM_over_tgfinal_VBF_g2")
-  gConstant_VBF_g4 = ROOT.TFile("/gConstants/gConstant_VBF_g4.root").Get("sp_tgfinal_VBF_SM_over_tgfinal_VBF_g4")
-  gConstant_VBF_L1 = ROOT.TFile("/gConstants/gConstant_VBF_L1.root").Get("sp_tgfinal_VBF_SM_over_tgfinal_VBF_L1")
-  gConstant_VBF_L1Zgs = ROOT.TFile("/gConstants/gConstant_VBF_L1Zgs.root").Get("sp_tgfinal_VBF_SM_photoncut_over_tgfinal_VBF_L1Zgs")
-  gConstant_ZH_g2 = ROOT.TFile("/gConstants/gConstant_ZH_g2.root").Get("sp_tgfinal_ZH_SM_over_tgfinal_ZH_g2")
-  gConstant_ZH_g4 = ROOT.TFile("/gConstants/gConstant_ZH_g4.root").Get("sp_tgfinal_ZH_SM_over_tgfinal_ZH_g4")
-  gConstant_ZH_L1 = ROOT.TFile("/gConstants/gConstant_ZH_L1.root").Get("sp_tgfinal_ZH_SM_over_tgfinal_ZH_L1")
-  gConstant_ZH_L1Zgs = ROOT.TFile("/gConstants/gConstant_ZH_L1Zgs.root").Get("sp_tgfinal_ZH_SM_photoncut_over_tgfinal_ZH_L1Zgs")
-  gConstant_VH_g2 = ROOT.TFile("/gConstants/gConstant_VH_g2.root").Get("sp_tgfinal_ZH_SM_plus_tgfinal_WH_SM_over_tgfinal_ZH_g2_plus_tgfinal_WH_g2")
-  gConstant_VH_g4 = ROOT.TFile("/gConstants/gConstant_VH_g4.root").Get("sp_tgfinal_ZH_SM_plus_tgfinal_WH_SM_over_tgfinal_ZH_g4_plus_tgfinal_WH_g4")
-  gConstant_VH_L1 = ROOT.TFile("/gConstants/gConstant_VH_L1.root").Get("sp_tgfinal_ZH_SM_plus_tgfinal_WH_SM_over_tgfinal_ZH_L1_plus_tgfinal_WH_L1")
-  gConstant_VH_L1Zgs = ROOT.TFile("/gConstants/gConstant_VH_L1Zgs.root").Get("sp_tgfinal_ZH_SM_photoncut_plus_tgfinal_WH_SM_over_tgfinal_ZH_L1Zgs")
-  gConstant_WH_g2 = ROOT.TFile("/gConstants/gConstant_WH_g2.root").Get("sp_tgfinal_WH_SM_over_tgfinal_WH_g2")
-  gConstant_WH_g4 = ROOT.TFile("/gConstants/gConstant_WH_g4.root").Get("sp_tgfinal_WH_SM_over_tgfinal_WH_g4")
-  gConstant_WH_L1 = ROOT.TFile("/gConstants/gConstant_WH_L1.root").Get("sp_tgfinal_WH_SM_over_tgfinal_WH_L1")
+  Path_To_This_File = os.path.abspath(__file__)
+  Path_To_This_Directory = os.path.split(Path_To_This_File)[0]
+  Relative_Path_To_Splines ="gconstants/"
+  PathToSpline = os.path.join(Path_To_This_Directory, Relative_Path_To_Splines)
+  gConstant_HZZ2e2mu_g2 = ROOT.TFile(PathToSpline+"/gConstant_HZZ2e2mu_g2.root").Get("sp_tgfinal_HZZ2e2mu_SM_over_tgfinal_HZZ2e2mu_g2")
+  gConstant_HZZ2e2mu_g4 = ROOT.TFile(PathToSpline+"/gConstant_HZZ2e2mu_g4.root").Get("sp_tgfinal_HZZ2e2mu_SM_over_tgfinal_HZZ2e2mu_g4")
+  gConstant_HZZ2e2mu_L1 = ROOT.TFile(PathToSpline+"/gConstant_HZZ2e2mu_L1.root").Get("sp_tgfinal_HZZ2e2mu_SM_over_tgfinal_HZZ2e2mu_L1")
+  gConstant_HZZ2e2mu_L1Zgs = ROOT.TFile(PathToSpline+"/gConstant_HZZ2e2mu_L1Zgs.root").Get("sp_tgfinal_HZZ2e2mu_SM_photoncut_over_tgfinal_HZZ2e2mu_L1Zgs")
+  gConstant_VBF_g2 = ROOT.TFile(PathToSpline+"/gConstant_VBF_g2.root").Get("sp_tgfinal_VBF_SM_over_tgfinal_VBF_g2")
+  gConstant_VBF_g4 = ROOT.TFile(PathToSpline+"/gConstant_VBF_g4.root").Get("sp_tgfinal_VBF_SM_over_tgfinal_VBF_g4")
+  gConstant_VBF_L1 = ROOT.TFile(PathToSpline+"/gConstant_VBF_L1.root").Get("sp_tgfinal_VBF_SM_over_tgfinal_VBF_L1")
+  gConstant_VBF_L1Zgs = ROOT.TFile(PathToSpline+"/gConstant_VBF_L1Zgs.root").Get("sp_tgfinal_VBF_SM_photoncut_over_tgfinal_VBF_L1Zgs")
+  gConstant_ZH_g2 = ROOT.TFile(PathToSpline+"/gConstant_ZH_g2.root").Get("sp_tgfinal_ZH_SM_over_tgfinal_ZH_g2")
+  gConstant_ZH_g4 = ROOT.TFile(PathToSpline+"/gConstant_ZH_g4.root").Get("sp_tgfinal_ZH_SM_over_tgfinal_ZH_g4")
+  gConstant_ZH_L1 = ROOT.TFile(PathToSpline+"/gConstant_ZH_L1.root").Get("sp_tgfinal_ZH_SM_over_tgfinal_ZH_L1")
+  gConstant_ZH_L1Zgs = ROOT.TFile(PathToSpline+"/gConstant_ZH_L1Zgs.root").Get("sp_tgfinal_ZH_SM_photoncut_over_tgfinal_ZH_L1Zgs")
+  gConstant_VH_g2 = ROOT.TFile(PathToSpline+"/gConstant_VH_g2.root").Get("sp_tgfinal_ZH_SM_plus_tgfinal_WH_SM_over_tgfinal_ZH_g2_plus_tgfinal_WH_g2")
+  gConstant_VH_g4 = ROOT.TFile(PathToSpline+"/gConstant_VH_g4.root").Get("sp_tgfinal_ZH_SM_plus_tgfinal_WH_SM_over_tgfinal_ZH_g4_plus_tgfinal_WH_g4")
+  gConstant_VH_L1 = ROOT.TFile(PathToSpline+"/gConstant_VH_L1.root").Get("sp_tgfinal_ZH_SM_plus_tgfinal_WH_SM_over_tgfinal_ZH_L1_plus_tgfinal_WH_L1")
+  gConstant_VH_L1Zgs = ROOT.TFile(PathToSpline+"/gConstant_VH_L1Zgs.root").Get("sp_tgfinal_ZH_SM_photoncut_plus_tgfinal_WH_SM_over_tgfinal_ZH_L1Zgs")
+  gConstant_WH_g2 = ROOT.TFile(PathToSpline+"/gConstant_WH_g2.root").Get("sp_tgfinal_WH_SM_over_tgfinal_WH_g2")
+  gConstant_WH_g4 = ROOT.TFile(PathToSpline+"/gConstant_WH_g4.root").Get("sp_tgfinal_WH_SM_over_tgfinal_WH_g4")
+  gConstant_WH_L1 = ROOT.TFile(PathToSpline+"/gConstant_WH_L1.root").Get("sp_tgfinal_WH_SM_over_tgfinal_WH_L1")
   
   gConstant_Dictionary = {
   	"HZZ2e2mu_g2": gConstant_HZZ2e2mu_g2,
