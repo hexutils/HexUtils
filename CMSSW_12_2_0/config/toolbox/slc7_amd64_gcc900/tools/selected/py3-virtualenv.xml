@@ -1,6 +1,0 @@
-<tool name="py3-virtualenv" version="20.7.2-c2fb54f3d11b2df041cb7d751b85a9d9">
-  <client>
-    <environment name="PY3_VIRTUALENV_BASE" default="/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/py3-virtualenv/20.7.2-c2fb54f3d11b2df041cb7d751b85a9d9"/>
-  </client>
-  <runtime name="PATH" value="$PY3_VIRTUALENV_BASE/bin" type="path"/>
-</tool>

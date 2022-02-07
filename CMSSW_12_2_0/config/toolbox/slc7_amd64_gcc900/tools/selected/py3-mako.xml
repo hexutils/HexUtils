@@ -1,6 +1,0 @@
-<tool name="py3-mako" version="1.1.5-c1fb78824e23473eedc03c832cd4f30d">
-  <client>
-    <environment name="PY3_MAKO_BASE" default="/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/py3-Mako/1.1.5-c1fb78824e23473eedc03c832cd4f30d"/>
-  </client>
-  <runtime name="PATH" value="$PY3_MAKO_BASE/bin" type="path"/>
-</tool>

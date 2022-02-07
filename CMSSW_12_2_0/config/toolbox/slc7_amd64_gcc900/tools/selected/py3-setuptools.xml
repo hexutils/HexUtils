@@ -1,6 +1,0 @@
-<tool name="py3-setuptools" version="51.3.3-llifpc">
-  <client>
-    <environment name="PY3_SETUPTOOLS_BASE" default="/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/py3-setuptools/51.3.3-llifpc"/>
-  </client>
-  <runtime name="PATH" value="$PY3_SETUPTOOLS_BASE/bin" type="path"/>
-</tool>
