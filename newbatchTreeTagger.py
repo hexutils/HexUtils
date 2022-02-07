@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import importlib
+import importlib.util
 
 if importlib.util.find_spec("numpy") is None: 
     print("\nERROR: Please make sure that numpy is installed via 'pip3 install --user numpy' before running this tool.\n")
