@@ -1,15 +1,15 @@
 import os
-from ..Eval_cConstants import *
+from .Eval_cConstants import *
 
-def D_bkg_kin(p_GG_SIG_ghg2_1_ghz1_1_JHUGen,p_QQB_BKG_MCFM,ZZFlav,ZZMass):
-  return p_GG_SIG_ghg2_1_ghz1_1_JHUGen/(p_GG_SIG_ghg2_1_ghz1_1_JHUGen + p_QQB_BKG_MCFM*getDbkgkinConstant(ZZFlav,ZZMass)) 
+def D_bkg_kin(p_GG_SIG_ghg2_1_ghz1_1_JHUGen,p_QQB_BKG_MCFM,cConstants,ZZFlav,ZZMass):
+  return p_GG_SIG_ghg2_1_ghz1_1_JHUGen/(p_GG_SIG_ghg2_1_ghz1_1_JHUGen + p_QQB_BKG_MCFM*getDbkgkinConstant(cConstants,ZZFlav,ZZMass)) 
 
-def D_bkg(p_GG_SIG_ghg2_1_ghz1_1_JHUGen,p_m4l_SIG,p_QQB_BKG_MCFM,p_m4l_BKG,ZZFlav,ZZMass):
-  return p_GG_SIG_ghg2_1_ghz1_1_JHUGen*p_m4l_SIG/(p_GG_SIG_ghg2_1_ghz1_1_JHUGen*p_m4l_SIG + p_QQB_BKG_MCFM*p_m4l_BKG*getDbkgConstant(ZZFlav,ZZMass))
+def D_bkg(p_GG_SIG_ghg2_1_ghz1_1_JHUGen,p_m4l_SIG,p_QQB_BKG_MCFM,p_m4l_BKG,cConstants,ZZFlav,ZZMass):
+  return p_GG_SIG_ghg2_1_ghz1_1_JHUGen*p_m4l_SIG/(p_GG_SIG_ghg2_1_ghz1_1_JHUGen*p_m4l_SIG + p_QQB_BKG_MCFM*p_m4l_BKG*getDbkgConstant(cConstants,ZZFlav,ZZMass))
 
-def D_bkg_VBFdec(p_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,p_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,p_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,p_JJVBF_BKG_MCFM_JECNominal,p_HadZH_BKG_MCFM_JECNominal,p_HadWH_BKG_MCFM_JECNominal,p_JJQCD_BKG_MCFM_JECNominal,p_HadZH_mavjj_JECNominal,p_HadZH_mavjj_true_JECNominal,p_HadWH_mavjj_JECNominal,p_HadWH_mavjj_true_JECNominal,pConst_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,pConst_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,pConst_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,pConst_JJVBF_BKG_MCFM_JECNominal,pConst_HadZH_BKG_MCFM_JECNominal,pConst_HadWH_BKG_MCFM_JECNominal,pConst_JJQCD_BKG_MCFM_JECNominal,ZZFlav,ZZMass):
+def D_bkg_VBFdec(p_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,p_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,p_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,p_JJVBF_BKG_MCFM_JECNominal,p_HadZH_BKG_MCFM_JECNominal,p_HadWH_BKG_MCFM_JECNominal,p_JJQCD_BKG_MCFM_JECNominal,p_HadZH_mavjj_JECNominal,p_HadZH_mavjj_true_JECNominal,p_HadWH_mavjj_JECNominal,p_HadWH_mavjj_true_JECNominal,pConst_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,pConst_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,pConst_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,pConst_JJVBF_BKG_MCFM_JECNominal,pConst_HadZH_BKG_MCFM_JECNominal,pConst_HadWH_BKG_MCFM_JECNominal,pConst_JJQCD_BKG_MCFM_JECNominal,cConstants,ZZFlav,ZZMass):
 
-   constant = getDbkgVBFdecConstant(ZZFlav,ZZMass)
+   constant = getDbkgVBFdecConstant(cConstants,ZZFlav,ZZMass)
 
    vbf = p_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal/pConst_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal
    zh = p_HadZH_S_SIG_ghz1_1_MCFM_JECNominal/pConst_HadZH_S_SIG_ghz1_1_MCFM_JECNominal
@@ -42,9 +42,9 @@ def D_bkg_VBFdec(p_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,p_HadZH_S_SIG_ghz1_1_MCFM_
    return PA/(PA+constant*PB)
 
 
-def D_bkg_VHdec(p_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,p_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,p_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,p_JJVBF_BKG_MCFM_JECNominal,p_HadZH_BKG_MCFM_JECNominal,p_HadWH_BKG_MCFM_JECNominal,p_JJQCD_BKG_MCFM_JECNominal,p_HadZH_mavjj_JECNominal,p_HadZH_mavjj_true_JECNominal,p_HadWH_mavjj_JECNominal,p_HadWH_mavjj_true_JECNominal,pConst_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,pConst_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,pConst_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,pConst_JJVBF_BKG_MCFM_JECNominal,pConst_HadZH_BKG_MCFM_JECNominal,pConst_HadWH_BKG_MCFM_JECNominal,pConst_JJQCD_BKG_MCFM_JECNominal,ZZFlav,ZZMass):
+def D_bkg_VHdec(p_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,p_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,p_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,p_JJVBF_BKG_MCFM_JECNominal,p_HadZH_BKG_MCFM_JECNominal,p_HadWH_BKG_MCFM_JECNominal,p_JJQCD_BKG_MCFM_JECNominal,p_HadZH_mavjj_JECNominal,p_HadZH_mavjj_true_JECNominal,p_HadWH_mavjj_JECNominal,p_HadWH_mavjj_true_JECNominal,pConst_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,pConst_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,pConst_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,pConst_JJVBF_BKG_MCFM_JECNominal,pConst_HadZH_BKG_MCFM_JECNominal,pConst_HadWH_BKG_MCFM_JECNominal,pConst_JJQCD_BKG_MCFM_JECNominal,cConstants,ZZFlav,ZZMass):
 
-   constant = getDbkgVHdecConstant(ZZFlav,ZZMass)
+   constant = getDbkgVHdecConstant(cConstants,ZZFlav,ZZMass)
 
    vbf = p_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal/pConst_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal
    zh = p_HadZH_S_SIG_ghz1_1_MCFM_JECNominal/pConst_HadZH_S_SIG_ghz1_1_MCFM_JECNominal
@@ -81,20 +81,20 @@ def D_g4(p_GG_SIG_ghg2_1_ghz1_1_JHUGen,p_GG_SIG_ghg2_1_ghz4_1_JHUGen):
   return p_GG_SIG_ghg2_1_ghz1_1_JHUGen/(p_GG_SIG_ghg2_1_ghz1_1_JHUGen + pow(2.521, 2)*p_GG_SIG_ghg2_1_ghz4_1_JHUGen) # Note the hardcoded c-constant!
 
 
-def DVBF2j_ME(p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal,p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal,ZZMass,DVBF2jetSpline):
-  c_Mela2j = getDVBF2jetsConstant(DVBF2jetSpline,ZZMass)  
+def DVBF2j_ME(p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal,p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal,ZZMass,cConstants):
+  c_Mela2j = getDVBF2jetsConstant(cConstants,ZZMass)  
   return 1./(1.+ c_Mela2j*p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal/p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal)
 
 
-def DVBF1j_ME(p_JVBF_SIG_ghv1_1_JHUGen_JECNominal,pAux_JVBF_SIG_ghv1_1_JHUGen_JECNominal,p_JQCD_SIG_ghg2_1_JHUGen_JECNominal,ZZMass,DVBF1jetSpline):
+def DVBF1j_ME(p_JVBF_SIG_ghv1_1_JHUGen_JECNominal,pAux_JVBF_SIG_ghv1_1_JHUGen_JECNominal,p_JQCD_SIG_ghg2_1_JHUGen_JECNominal,ZZMass,cConstants):
 
-  c_Mela1j = getDVBF1jetConstant(DVBF1jetSpline,ZZMass)
+  c_Mela1j = getDVBF1jetConstant(cConstants,ZZMass)
   return 1./(1.+ c_Mela1j*p_JQCD_SIG_ghg2_1_JHUGen_JECNominal/(p_JVBF_SIG_ghv1_1_JHUGen_JECNominal*pAux_JVBF_SIG_ghv1_1_JHUGen_JECNominal))
 
 
-def DWHh_ME(p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal,p_HadWH_mavjj_JECNominal,p_HadWH_mavjj_true_JECNominal,ZZMass,DWHhSpline):
+def DWHh_ME(p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal,p_HadWH_mavjj_JECNominal,p_HadWH_mavjj_true_JECNominal,ZZMass,cConstants):
 
-  c_MelaWH = getDWHhConstant(DWHhSpline,ZZMass)
+  c_MelaWH = getDWHhConstant(cConstants,ZZMass)
   # protection from dividing by 0 #
   if p_HadWH_SIG_ghw1_1_JHUGen_JECNominal == 0:
     return 0
@@ -102,8 +102,8 @@ def DWHh_ME(p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,p_JJQCD_SIG_ghg2_1_JHUGen_JECNo
     return 1./(1.+ c_MelaWH*(p_HadWH_mavjj_true_JECNominal*p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal)/(p_HadWH_mavjj_JECNominal*p_HadWH_SIG_ghw1_1_JHUGen_JECNominal))
 
 
-def DZHh_ME(p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal,p_HadZH_mavjj_JECNominal,p_HadZH_mavjj_true_JECNominal,ZZMass,DZHhSpline):
-  c_MelaZH = getDZHhConstant(DZHhSpline,ZZMass)
+def DZHh_ME(p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal,p_HadZH_mavjj_JECNominal,p_HadZH_mavjj_true_JECNominal,ZZMass,cConstants):
+  c_MelaZH = getDZHhConstant(cConstants,ZZMass)
   return 1./(1.+ c_MelaZH*(p_HadZH_mavjj_true_JECNominal*p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal)/(p_HadZH_mavjj_JECNominal*p_HadZH_SIG_ghz1_1_JHUGen_JECNominal))
 
 
@@ -116,29 +116,29 @@ def jetPgOverPq( jetQGLikelihood,  jetPhi):
     return 1./jetQGLikelihood - 1.
   
 
-def DVBF2j_ME_QG(p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal,p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal,ZZMass,jetQGLikelihood,jetPhi):
+def DVBF2j_ME_QG(p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal,p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal,ZZMass,jetQGLikelihood,jetPhi, cConstants):
 
-  DVBF2jME = DVBF2j_ME(p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal, p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal, ZZMass)
+  DVBF2jME = DVBF2j_ME(p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal, p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal, ZZMass, cConstants)
   GOverQ = ROOT.TMath.Power(jetPgOverPq(jetQGLikelihood[0],jetPhi[0]) * jetPgOverPq(jetQGLikelihood[1],jetPhi[1]) , 1./3.)
   return 1./(1.+ (1./DVBF2jME - 1.) * GOverQ)
 
 
-def DVBF1j_ME_QG(p_JVBF_SIG_ghv1_1_JHUGen_JECNominal,pAux_JVBF_SIG_ghv1_1_JHUGen_JECNominal,p_JQCD_SIG_ghg2_1_JHUGen_JECNominal,ZZMass,jetQGLikelihood,jetPhi):
+def DVBF1j_ME_QG(p_JVBF_SIG_ghv1_1_JHUGen_JECNominal,pAux_JVBF_SIG_ghv1_1_JHUGen_JECNominal,p_JQCD_SIG_ghg2_1_JHUGen_JECNominal,ZZMass,jetQGLikelihood,jetPhi,cConstants):
 
-  DVBF1jME = DVBF1j_ME(p_JVBF_SIG_ghv1_1_JHUGen_JECNominal, pAux_JVBF_SIG_ghv1_1_JHUGen_JECNominal, p_JQCD_SIG_ghg2_1_JHUGen_JECNominal, ZZMass)
+  DVBF1jME = DVBF1j_ME(p_JVBF_SIG_ghv1_1_JHUGen_JECNominal, pAux_JVBF_SIG_ghv1_1_JHUGen_JECNominal, p_JQCD_SIG_ghg2_1_JHUGen_JECNominal, ZZMass, cConstants)
   GOverQ = ROOT.TMath.Power( jetPgOverPq(jetQGLikelihood[0],jetPhi[0]) , 1./3. )
   return 1./(1.+ (1./DVBF1jME - 1.) * GOverQ)
 
 
-def DWHh_ME_QG(p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal,p_HadWH_mavjj_JECNominal,p_HadWH_mavjj_true_JECNominal,ZZMass,jetQGLikelihood,jetPhi):
+def DWHh_ME_QG(p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal,p_HadWH_mavjj_JECNominal,p_HadWH_mavjj_true_JECNominal,ZZMass,jetQGLikelihood,jetPhi, cConstants):
 
-  DWHhME = DWHh_ME(p_HadWH_SIG_ghw1_1_JHUGen_JECNominal, p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal, p_HadWH_mavjj_JECNominal, p_HadWH_mavjj_true_JECNominal, ZZMass)
+  DWHhME = DWHh_ME(p_HadWH_SIG_ghw1_1_JHUGen_JECNominal, p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal, p_HadWH_mavjj_JECNominal, p_HadWH_mavjj_true_JECNominal, ZZMass, cConstants)
   GOverQ = ROOT.TMath.Power( jetPgOverPq(jetQGLikelihood[0],jetPhi[0]) * jetPgOverPq(jetQGLikelihood[1],jetPhi[1]) , 1./3. )
   return 1./(1.+ (1./DWHhME - 1.) * GOverQ)
 
 
-def DZHh_ME_QG(p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal,p_HadZH_mavjj_JECNominal,p_HadZH_mavjj_true_JECNominal,ZZMass,jetQGLikelihood,jetPhi):
-  DZHhME = DZHh_ME(p_HadZH_SIG_ghz1_1_JHUGen_JECNominal, p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal, p_HadZH_mavjj_JECNominal, p_HadZH_mavjj_true_JECNominal, ZZMass)
+def DZHh_ME_QG(p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal,p_HadZH_mavjj_JECNominal,p_HadZH_mavjj_true_JECNominal,ZZMass,jetQGLikelihood,jetPhi, cConstants):
+  DZHhME = DZHh_ME(p_HadZH_SIG_ghz1_1_JHUGen_JECNominal, p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal, p_HadZH_mavjj_JECNominal, p_HadZH_mavjj_true_JECNominal, ZZMass, cConstants)
   GOverQ = ROOT.TMath.Power( jetPgOverPq(jetQGLikelihood[0],jetPhi[0]) * jetPgOverPq(jetQGLikelihood[1],jetPhi[1]) , 1./3. )
   return 1./(1.+ (1./DZHhME - 1.) * GOverQ)
 

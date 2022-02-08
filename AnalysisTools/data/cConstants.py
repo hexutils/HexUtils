@@ -23,9 +23,9 @@ def init_cConstants():
 
   cConstant_Dictionary = {
   	"D2jetZHSpline": D2jetZHSpline,
-  	"D2jetWHSpline": D2jetZHSpline,
-  	"D2jetVBFSpline": D2jetZHSpline,
-  	"D1jetVBFSpline": D2jetZHSpline,
+  	"D2jetWHSpline": D2jetWHSpline,
+  	"D2jetVBFSpline": D2jetVBFSpline,
+  	"D1jetVBFSpline": D1jetVBFSpline,
   	"DbkgkinSpline4e": DbkgkinSpline4e,
   	"DbkgkinSpline4mu": DbkgkinSpline4mu,
   	"DbkgkinSpline2e2mu": DbkgkinSpline2e2mu,
@@ -38,4 +38,3 @@ def init_cConstants():
         "DggbkgkinSpline2e2mu" : DggbkgkinSpline2e2mu,
         }
   return cConstant_Dictionary 
-

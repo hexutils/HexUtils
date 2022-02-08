@@ -1,18 +1,11 @@
 import numpy as np
 import ROOT
-from Discriminants import *
-import gConstants
+from .Discriminants import *
+from ..data import gConstants as gConstants
 
 def Protect_Category_Against_NAN(pConst_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,
 				 pConst_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,
 				 pConst_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,
-				 pConst_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,
-				 pConst_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,
-				 pConst_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,
-				 pConst_JJVBF_BKG_MCFM_JECNominal,
-				 pConst_HadZH_BKG_MCFM_JECNominal,
-				 pConst_HadWH_BKG_MCFM_JECNominal,
-				 pConst_JJQCD_BKG_MCFM_JECNominal,
 				 pConst_JJVBF_BKG_MCFM_JECNominal,
 				 pConst_HadZH_BKG_MCFM_JECNominal,
 				 pConst_HadWH_BKG_MCFM_JECNominal,
@@ -24,15 +17,15 @@ def Protect_Category_Against_NAN(pConst_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,
 				 p_HadWH_mavjj_JECNominal,
 				 p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,
 				 p_HadZH_mavjj_JECNominal,
-				 p_HadZH_SIG_ghz1_1_JHUGen_JECNominal)
+				 p_HadZH_SIG_ghz1_1_JHUGen_JECNominal):
 
   # This function returns true if one of the variables to be passed to the tagging funcion would cause it to return NaN and error out #
 
   # Signal VBF variables that will fail
-  if pConst_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal * pConst_HadZH_S_SIG_ghz1_1_MCFM_JECNominal * pConst_HadWH_S_SIG_ghw1_1_MCFM_JECNominal * pConst_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal * pConst_HadZH_S_SIG_ghz1_1_MCFM_JECNominal * pConst_HadWH_S_SIG_ghw1_1_MCFM_JECNominal == 0:
+  if pConst_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal * pConst_HadZH_S_SIG_ghz1_1_MCFM_JECNominal * pConst_HadWH_S_SIG_ghw1_1_MCFM_JECNominal == 0:
     return True 
   # Bkg VBF variables that will fail
-  elif pConst_JJVBF_BKG_MCFM_JECNominal * pConst_HadZH_BKG_MCFM_JECNominal * pConst_HadWH_BKG_MCFM_JECNominal * pConst_JJQCD_BKG_MCFM_JECNominal * pConst_JJVBF_BKG_MCFM_JECNominal * pConst_HadZH_BKG_MCFM_JECNominal * pConst_HadWH_BKG_MCFM_JECNominal * pConst_JJQCD_BKG_MCFM_JECNominal == 0:
+  elif pConst_JJVBF_BKG_MCFM_JECNominal * pConst_HadZH_BKG_MCFM_JECNominal * pConst_HadWH_BKG_MCFM_JECNominal * pConst_JJQCD_BKG_MCFM_JECNominal == 0:
     return True
   # QCD Scale variables that will fail #
   elif p_HadZH_mavjj_true_JECNominal * p_HadWH_mavjj_true_JECNominal == 0:
@@ -69,23 +62,23 @@ def Tag_MOR18(  nExtraLep,
 		PFMET,  
 		useVHMETTagged,  
 		useQGTagging , 
-		spline_list):
+		cConstants_list):
 
   # Moriond 2018 Categorization Algorithm # 
 
   # Load all of the spline names from the given init spline # 
  
-  DZHhSpline=spline_list[0]
-  DWHhSpline=spline_list[1]
-  DVBF2jetSpline=spline_list[2]
-  DVBF1jetSpline=spline_list[3]
-  DbkgkinSpline4e=spline_list[4]
-  DbkgkinSpline4mu=spline_list[5]
-  DbkgkinSpline2e2mu=spline_list[6]
-  DbkgjjEWQCDSpline4lHadVH=spline_list[7]
-  DbkgjjEWQCDSpline2l2lHadVH=spline_list[8]
-  DbkgjjEWQCDSpline4lJJVBF=spline_list[9]
-  DbkgjjEWQCDSpline2l2lJJVBF=spline_list[10]
+  DZHhSpline=cConstants_list["D2jetZHSpline"]
+  DWHhSpline=cConstants_list["D2jetWHSpline"]
+  DVBF2jetSpline=cConstants_list["D2jetVBFSpline"]
+  DVBF1jetSpline=cConstants_list["D1jetVBFSpline"]
+  DbkgkinSpline4e=cConstants_list["DbkgkinSpline4e"]
+  DbkgkinSpline4mu=cConstants_list["DbkgkinSpline4mu"]
+  DbkgkinSpline2e2mu=cConstants_list["DbkgkinSpline2e2mu"]
+  DbkgjjEWQCDSpline4lHadVH=cConstants_list["DbkgjjEWQCDSpline4lHadVH"]
+  DbkgjjEWQCDSpline2l2lHadVH=cConstants_list["DbkgjjEWQCDSpline2l2lHadVH"]
+  DbkgjjEWQCDSpline4lJJVBF=cConstants_list["DbkgjjEWQCDSpline4lJJVBF"]
+  DbkgjjEWQCDSpline2l2lJJVBF=cConstants_list["DbkgjjEWQCDSpline2l2lJJVBF"]
 
 
   # Num for each category #
@@ -107,19 +100,19 @@ def Tag_MOR18(  nExtraLep,
  
   if(useQGTagging):
     if(nCleanedJetsPt30==1):
-      D_VBF1j = DVBF1j_ME_QG(p_JVBF_SIG_ghv1_1_JHUGen_JECNominal, pAux_JVBF_SIG_ghv1_1_JHUGen_JECNominal, p_JQCD_SIG_ghg2_1_JHUGen_JECNominal, ZZMass, jetQGLikelihood, jetPhi)
+      D_VBF1j = DVBF1j_ME_QG(p_JVBF_SIG_ghv1_1_JHUGen_JECNominal, pAux_JVBF_SIG_ghv1_1_JHUGen_JECNominal, p_JQCD_SIG_ghg2_1_JHUGen_JECNominal, ZZMass, jetQGLikelihood, jetPhi, cConstants_list)
     elif(nCleanedJetsPt30>=2):
-      D_VBF2j = DVBF2j_ME_QG(p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal, p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal, ZZMass, jetQGLikelihood, jetPhi)
-      D_WHh   = DWHh_ME_QG(p_HadWH_SIG_ghw1_1_JHUGen_JECNominal, p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal, p_HadWH_mavjj_JECNominal, p_HadWH_mavjj_true_JECNominal, ZZMass, jetQGLikelihood, jetPhi)
-      D_ZHh   = DZHh_ME_QG(p_HadZH_SIG_ghz1_1_JHUGen_JECNominal, p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal, p_HadZH_mavjj_JECNominal, p_HadZH_mavjj_true_JECNominal, ZZMass, jetQGLikelihood, jetPhi)
+      D_VBF2j = DVBF2j_ME_QG(p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal, p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal, ZZMass, jetQGLikelihood, jetPhi, cConstants_list)
+      D_WHh   = DWHh_ME_QG(p_HadWH_SIG_ghw1_1_JHUGen_JECNominal, p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal, p_HadWH_mavjj_JECNominal, p_HadWH_mavjj_true_JECNominal, ZZMass, jetQGLikelihood, jetPhi, cConstants_list)
+      D_ZHh   = DZHh_ME_QG(p_HadZH_SIG_ghz1_1_JHUGen_JECNominal, p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal, p_HadZH_mavjj_JECNominal, p_HadZH_mavjj_true_JECNominal, ZZMass, jetQGLikelihood, jetPhi, cConstants_list)
     
   else:
     if(nCleanedJetsPt30==1):
-      D_VBF1j = DVBF1j_ME(p_JVBF_SIG_ghv1_1_JHUGen_JECNominal, pAux_JVBF_SIG_ghv1_1_JHUGen_JECNominal, p_JQCD_SIG_ghg2_1_JHUGen_JECNominal, ZZMass, DVBF1jetSpline)
+      D_VBF1j = DVBF1j_ME(p_JVBF_SIG_ghv1_1_JHUGen_JECNominal, pAux_JVBF_SIG_ghv1_1_JHUGen_JECNominal, p_JQCD_SIG_ghg2_1_JHUGen_JECNominal, ZZMass, cConstants_list)
     elif(nCleanedJetsPt30>=2):
-      D_VBF2j = DVBF2j_ME(p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal, p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal, ZZMass, DVBF2jetSpline)
-      D_WHh   = DWHh_ME(p_HadWH_SIG_ghw1_1_JHUGen_JECNominal, p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal, p_HadWH_mavjj_JECNominal, p_HadWH_mavjj_true_JECNominal, ZZMass, DWHhSpline)
-      D_ZHh   = DZHh_ME(p_HadZH_SIG_ghz1_1_JHUGen_JECNominal, p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal, p_HadZH_mavjj_JECNominal, p_HadZH_mavjj_true_JECNominal, ZZMass, DZHhSpline)
+      D_VBF2j = DVBF2j_ME(p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal, p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal, ZZMass, cConstants_list)
+      D_WHh   = DWHh_ME(p_HadWH_SIG_ghw1_1_JHUGen_JECNominal, p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal, p_HadWH_mavjj_JECNominal, p_HadWH_mavjj_true_JECNominal, ZZMass, cConstants_list)
+      D_ZHh   = DZHh_ME(p_HadZH_SIG_ghz1_1_JHUGen_JECNominal, p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal, p_HadZH_mavjj_JECNominal, p_HadZH_mavjj_true_JECNominal, ZZMass, cConstants_list)
 
   WP_VBF2j = getDVBF2jetsWP(ZZMass, useQGTagging)
   WP_VBF1j = getDVBF1jetWP(ZZMass, useQGTagging)
@@ -181,7 +174,7 @@ def Tag_AC_19_Scheme_1( nExtraLep,
 			PhotonPt, 
 			useVHMETTagged,  
 			useQGTagging , 
-			spline_list):
+			cConstant_list):
 
   #Higgs 19-009 Categorization Scheme 1, Not Complete/Exactly as described in paper #
 
@@ -197,7 +190,7 @@ def Tag_AC_19_Scheme_1( nExtraLep,
   gammaHTagged  = 9
   Failed = -999
 
-  c = Tag_MOR18( nExtraLep,  nExtraZ,  nCleanedJetsPt30,  nCleanedJetsPt30BTagged_bTagSF,  jetQGLikelihood, p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal,  p_JQCD_SIG_ghg2_1_JHUGen_JECNominal,  p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal,  p_JVBF_SIG_ghv1_1_JHUGen_JECNominal,  pAux_JVBF_SIG_ghv1_1_JHUGen_JECNominal,  p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,  p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,  p_HadWH_mavjj_JECNominal,  p_HadWH_mavjj_true_JECNominal,  p_HadZH_mavjj_JECNominal,  p_HadZH_mavjj_true_JECNominal,  jetPhi,  ZZMass,  ZZPt,  PFMET, useVHMETTagged,  useQGTagging , spline_list)
+  c = Tag_MOR18( nExtraLep,  nExtraZ,  nCleanedJetsPt30,  nCleanedJetsPt30BTagged_bTagSF,  jetQGLikelihood, p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal,  p_JQCD_SIG_ghg2_1_JHUGen_JECNominal,  p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal,  p_JVBF_SIG_ghv1_1_JHUGen_JECNominal,  pAux_JVBF_SIG_ghv1_1_JHUGen_JECNominal,  p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,  p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,  p_HadWH_mavjj_JECNominal,  p_HadWH_mavjj_true_JECNominal,  p_HadZH_mavjj_JECNominal,  p_HadZH_mavjj_true_JECNominal,  jetPhi,  ZZMass,  ZZPt,  PFMET, useVHMETTagged,  useQGTagging , cConstant_list)
 
   # Scheme 1 does not have a boosted category
   

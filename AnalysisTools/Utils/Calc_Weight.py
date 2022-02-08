@@ -46,6 +46,9 @@ def Calc_Event_Weight_200205(t,name): #Tree input as t and the name of the tree 
         elif "ggZZ" in name: #or self.isggZZoffshell: 
 	  KFactor_QCD_ggZZ_Nominal = tree2array(tree=t,branches=["KFactor_QCD_ggZZ_Nominal"]).astype(float)
 	  scale = scale * KFactor_QCD_ggZZ_Nominal
+	if "ggH" in name:
+          ggH_NNLOPS_weight = tree2array(tree=t,branches=["ggH_NNLOPS_weight"]).astype(float)
+          scale = scale * ggH_NNLOPS_weight
         elif "qqZZ" in name:
             if "GEN" in name: #Must check this later # 
 	      scale = scale * 1
@@ -90,6 +93,9 @@ def Calc_Event_Weight_2021_gammaH(t,name): #Tree input as t and the name of the 
 	  scale = scale * LepScale
 	if any( x in ["ggH","VBF","ZH","WH","ttH","bbH","tqH","WplusH","WminusH","VBFbkg","TTZZ","ZZZ","WZZ","WWZ","TTWW","TTZJets_M10_MLM","TTZToLLNuNu_M10","TTZToLL_M1to10_MLM"] for x in name):
 	  scale = scale * 1.
+	if "ggH" in name:
+          ggH_NNLOPS_weight = tree2array(tree=t,branches=["ggH_NNLOPS_weight"]).astype(float)
+          scale = scale * ggH_NNLOPS_weight
         elif "ggZZ" in name: #or self.isggZZoffshell: 
 	  LepLepId = tree2array(tree=t,branches=["KFactor_QCD_ggZZ_Nominal"])
 	  scale = scale * KFactor_QCD_ggZZ_Nominal

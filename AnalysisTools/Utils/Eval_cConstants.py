@@ -1,14 +1,14 @@
 import ROOT
 
 # This initializes discriminat splines for categorizations #
-def getDVBF2jetsConstant(DVBF2jetsSpline,ZZMass):
-  return DVBF2jetsSpline.Eval(ZZMass)
-def getDVBF1jetConstant(DVBF1jetSpline,ZZMass):
-  return DVBF1jetSpline.Eval(ZZMass)
-def getDWHhConstant(DWHhSpline, ZZMass):
-  return DWHhSpline.Eval(ZZMass)
-def getDZHhConstant(DZHhSpline,ZZMass):
-  return DZHhSpline.Eval(ZZMass)
+def getDVBF2jetsConstant(cConstants,ZZMass):
+  return cConstants["D2jetVBFSpline"].Eval(ZZMass)
+def getDVBF1jetConstant(cConstants,ZZMass):
+  return cConstants["D1jetVBFSpline"].Eval(ZZMass)
+def getDWHhConstant(cConstants,ZZMass):
+  return cConstants["D2jetWHSpline"].Eval(ZZMass)
+def getDZHhConstant(cConstants,ZZMass):
+  return cConstants["D2jetZHSpline"].Eval(ZZMass)
 def getDVBF2jetsWP( ZZMass,  useQGTagging):
   if (useQGTagging):
     assert 0
@@ -16,7 +16,7 @@ def getDVBF2jetsWP( ZZMass,  useQGTagging):
   else:
     return 0.46386
 
-def getDVBF1jetWP( ZZMass,  useQGTagging):
+def getDVBF1jetWP(ZZMass,useQGTagging):
   if (useQGTagging):
     assert 0 
     return 0.716
@@ -37,59 +37,59 @@ def getDZHhWP(ZZMass,useQGTagging):
   else:
     return 0.91315
 
-def getDVBF2jetsConstant_shiftWP(DVBF2jetsSpline, ZZMass,  useQGTagging,  newWP) :
-  oldc = getDVBF2jetsConstant(DVBF2jetsSpline,ZZMass)
+def getDVBF2jetsConstant_shiftWP(cConstants, ZZMass,  useQGTagging,  newWP) :
+  oldc = getDVBF2jetsConstant(cConstants,ZZMass)
   oldWP = getDVBF2jetsWP(ZZMass, useQGTagging)
   return oldc * (oldWP/newWP) * ((1-newWP)/(1-oldWP))
 
-def getDVBF1jetConstant_shiftWP(DVBF1jetSpline, ZZMass,  useQGTagging,  newWP) :
-  oldc = getDVBF1jetConstant(DVBF1jetSpline,ZZMass)
+def getDVBF1jetConstant_shiftWP(cConstants, ZZMass,  useQGTagging,  newWP) :
+  oldc = getDVBF1jetConstant(cConstants,ZZMass)
   oldWP = getDVBF1jetWP(ZZMass, useQGTagging)
   return oldc * (oldWP/newWP) * ((1-newWP)/(1-oldWP))
 
-def getDWHhConstant_shiftWP(DWHhSpline, ZZMass,  useQGTagging,  newWP):
+def getDWHhConstant_shiftWP(cConstants, ZZMass,  useQGTagging,  newWP):
   oldc = getDWHhConstant(DWHhSpline,ZZMass)
   oldWP = getDWHhWP(ZZMass, useQGTagging)
   return oldc * (oldWP/newWP) * ((1-newWP)/(1-oldWP))
 
-def getDZHhConstant_shiftWP( ZZMass,  useQGTagging,  newWP):
-  oldc = getDZHhConstant(ZZMass)
+def getDZHhConstant_shiftWP(cConstants, ZZMass,  useQGTagging,  newWP):
+  oldc = getDZHhConstant(cConstants,ZZMass)
   oldWP = getDZHhWP(ZZMass, useQGTagging)
   return oldc * (oldWP/newWP) * ((1-newWP)/(1-oldWP))
 
-def getDbkgVBFdecConstant( ZZflav,  ZZMass): # ZZflav==id1*id2*id3*id4
+def getDbkgVBFdecConstant(cConstants, ZZflav, ZZMass): # ZZflav==id1*id2*id3*id4
   if (abs(ZZflav)==11*11*11*11 or abs(ZZflav)==2*11*11*11*11 or abs(ZZflav)==2*11*11*2*11*11): 
-    return DbkgVBFdecSpline4l.Eval(ZZMass)  
+    return cConstants["DbkgjjEWQCDSpline4lJJVBF"].Eval(ZZMass)  
   if (abs(ZZflav)==11*11*13*13 or abs(ZZflav)==2*11*11*13*13 or abs(ZZflav)==2*11*11*2*13*13): 
-    return DbkgVBFdecSpline2l2l.Eval(ZZMass)
+    return cConstants["DbkgjjEWQCDSpline2l2lJJVBF"].Eval(ZZMass)
   if (abs(ZZflav)==13*13*13*13 or abs(ZZflav)==2*13*13*13*13 or abs(ZZflav)==2*13*13*2*13*13): 
-    return DbkgVBFdecSpline4l.Eval(ZZMass)
-  print "Invalid ZZflav " + str(ZZflav)
+    return cConstants["DbkgjjEWQCDSpline4lJJVBF"].Eval(ZZMass)
+  print("Invalid ZZflav " + str(ZZflav))
   assert 0
   return 0
 
-def getDbkgVHdecConstant( ZZflav,  ZZMass): # ZZflav==id1*id2*id3*id4
+def getDbkgVHdecConstant(cConstants, ZZflav,  ZZMass): # ZZflav==id1*id2*id3*id4
   if (abs(ZZflav)==11*11*11*11 or abs(ZZflav)==2*11*11*11*11 or abs(ZZflav)==2*11*11*2*11*11): 
-    return DbkgVHdecSpline4l.Eval(ZZMass);
+    return cConstants["DbkgjjEWQCDSpline4lHadVH"].Eval(ZZMass)
   if (abs(ZZflav)==11*11*13*13 or abs(ZZflav)==2*11*11*13*13 or abs(ZZflav)==2*11*11*2*13*13): 
-    return DbkgVHdecSpline2l2l.Eval(ZZMass)
+    return cConstants["DbkgjjEWQCDSpline2l2lHadVH"].Eval(ZZMass)
   if (abs(ZZflav)==13*13*13*13 or abs(ZZflav)==2*13*13*13*13 or abs(ZZflav)==2*13*13*2*13*13): 
-    return DbkgVHdecSpline4l.Eval(ZZMass)
-  print "Invalid ZZflav " + str(ZZflav)
+    return cConstants["DbkgjjEWQCDSpline4lHadVH"].Eval(ZZMass)
+  print("Invalid ZZflav " + str(ZZflav))
   assert 0
   return 0
 
-def getDbkgkinConstant( ZZflav,  ZZMass): # ZZflav==id1*id2*id3*id4
+def getDbkgkinConstant(cConstants, ZZflav,  ZZMass): # ZZflav==id1*id2*id3*id4
   if (abs(ZZflav)==11*11*11*11 or abs(ZZflav)==2*11*11*11*11 or abs(ZZflav)==2*11*11*2*11*11):
-     return DbkgkinSpline4e.Eval(ZZMass)
+     return cConstants["DggbkgkinSpline4e"].Eval(ZZMass)
   if (abs(ZZflav)==11*11*13*13 or abs(ZZflav)==2*11*11*13*13 or abs(ZZflav)==2*11*11*2*13*13):
-     return DbkgkinSpline2e2mu.Eval(ZZMass)
+     return cConstants["DggbkgkinSpline2e2mu"].Eval(ZZMass)
   if (abs(ZZflav)==13*13*13*13 or abs(ZZflav)==2*13*13*13*13 or abs(ZZflav)==2*13*13*2*13*13):
-     return DbkgkinSpline4mu.Eval(ZZMass)
-  print "Invalid ZZflav " + str(ZZflav) 
+     return cConstants["DggbkgkinSpline4mu"].Eval(ZZMass)
+  print("Invalid ZZflav " + str(ZZflav))
   assert 0
   return 0
 
-def getDbkgConstant( ZZflav,  ZZMass):
-  return getDbkgkinConstant(ZZflav, ZZMass)
+def getDbkgConstant(cConstants, ZZflav,  ZZMass):
+  return getDbkgkinConstant(cConstants, ZZflav, ZZMass)
 
