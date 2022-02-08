@@ -1,6 +1,0 @@
-<tool name="py3-qtconsole" version="5.1.1-f90d80fb0d03dfba8201085997978a2a">
-  <client>
-    <environment name="PY3_QTCONSOLE_BASE" default="/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/py3-qtconsole/5.1.1-f90d80fb0d03dfba8201085997978a2a"/>
-  </client>
-  <runtime name="PATH" value="$PY3_QTCONSOLE_BASE/bin" type="path"/>
-</tool>
