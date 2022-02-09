@@ -1,6 +1,0 @@
-<tool name="py3-law" version="0.1.5-6ceddccdb25377e4a92baea52493ae1d">
-  <client>
-    <environment name="PY3_LAW_BASE" default="/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/py3-law/0.1.5-6ceddccdb25377e4a92baea52493ae1d"/>
-  </client>
-  <runtime name="PATH" value="$PY3_LAW_BASE/bin" type="path"/>
-</tool>

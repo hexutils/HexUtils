@@ -1,5 +1,0 @@
-<tool name="alpaka-tbb" version="0.7.0-5a96dd826734f6146f2213e558100afe">
-  <use name="alpaka"/>
-  <use name="tbb"/>
-  <flags CXXFLAGS="-DALPAKA_ACC_CPU_B_TBB_T_SEQ_ENABLED"/>
-</tool>

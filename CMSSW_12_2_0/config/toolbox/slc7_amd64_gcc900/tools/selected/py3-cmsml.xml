@@ -1,6 +1,0 @@
-<tool name="py3-cmsml" version="0.1.2-0cbf0b982e37b191007142f60e3ce0f4">
-  <client>
-    <environment name="PY3_CMSML_BASE" default="/cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/py3-cmsml/0.1.2-0cbf0b982e37b191007142f60e3ce0f4"/>
-  </client>
-  <runtime name="PATH" value="$PY3_CMSML_BASE/bin" type="path"/>
-</tool>

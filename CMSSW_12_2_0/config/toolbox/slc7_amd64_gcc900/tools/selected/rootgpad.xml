@@ -1,6 +1,0 @@
-<tool name="rootgpad" version="6.22.08-8d9ab2b279c3f35e6100d909611c3c2f"> 
-  <info url="http://root.cern.ch/root/"/>
-  <lib name="Gpad"/>
-  <lib name="Graf"/>
-  <use name="roothistmatrix"/>
-</tool>
