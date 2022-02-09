@@ -1,5 +1,8 @@
 import os
 from .Eval_cConstants import *
+from ..data import gConstants as gCon
+from numpy import sqrt as sqrt
+#=========================================== OnShell_Categorization Discriminants ===========================================#
 
 def D_bkg_kin(p_GG_SIG_ghg2_1_ghz1_1_JHUGen,p_QQB_BKG_MCFM,cConstants,ZZFlav,ZZMass):
   return p_GG_SIG_ghg2_1_ghz1_1_JHUGen/(p_GG_SIG_ghg2_1_ghz1_1_JHUGen + p_QQB_BKG_MCFM*getDbkgkinConstant(cConstants,ZZFlav,ZZMass)) 
@@ -141,4 +144,115 @@ def DZHh_ME_QG(p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,p_JJQCD_SIG_ghg2_1_JHUGen_JE
   DZHhME = DZHh_ME(p_HadZH_SIG_ghz1_1_JHUGen_JECNominal, p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal, p_HadZH_mavjj_JECNominal, p_HadZH_mavjj_true_JECNominal, ZZMass, cConstants)
   GOverQ = ROOT.TMath.Power( jetPgOverPq(jetQGLikelihood[0],jetPhi[0]) * jetPgOverPq(jetQGLikelihood[1],jetPhi[1]) , 1./3. )
   return 1./(1.+ (1./DZHhME - 1.) * GOverQ)
+
+
+#=================================== OnShell Anomalous Coupling Disriminants =======================================#
+
+def D_0minus_decay(p_GG_SIG_ghg2_1_ghz1_1_JHUGen, p_GG_SIG_ghg2_1_ghz4_1_JHUGen ,m4l, gConstants):
+        try:
+          return p_GG_SIG_ghg2_1_ghz1_1_JHUGen / (p_GG_SIG_ghg2_1_ghz1_1_JHUGen + p_GG_SIG_ghg2_1_ghz4_1_JHUGen*gCon.getvalue("g4","HZZ2e2mu",m4l,gConstants)**2)
+        except ZeroDivisionError:
+          return 0
+
+def D_CP_decay(p_GG_SIG_ghg2_1_ghz1_1_ghz4_1_JHUGen,p_GG_SIG_ghg2_1_ghz1_1_JHUGen,p_GG_SIG_ghg2_1_ghz4_1_JHUGen,m4l,gConstants):
+        try:
+          return p_GG_SIG_ghg2_1_ghz1_1_ghz4_1_JHUGen*gCon.getvalue("g4","HZZ2e2mu",m4l,gConstants) / (2 * sqrt(p_GG_SIG_ghg2_1_ghz1_1_JHUGen * p_GG_SIG_ghg2_1_ghz4_1_JHUGen*gCon.getvalue("g4","HZZ2e2mu",m4l,gConstants)**2))
+        except ZeroDivisionError:
+          return 0
+
+def D_0hplus_decay(p_GG_SIG_ghg2_1_ghz1_1_JHUGen,p_GG_SIG_ghg2_1_ghz1_1_ghz2_1_JHUGen,m4l,gConstants):
+        try:
+          return p_GG_SIG_ghg2_1_ghz1_1_JHUGen / (p_GG_SIG_ghg2_1_ghz1_1_JHUGen + p_GG_SIG_ghg2_1_ghz1_1_ghz2_1_JHUGen*gCon.getvalue("g2","HZZ2e2mu",m4l,gConstants)**2)
+        except ZeroDivisionError:
+          return 0
+
+def D_int_decay(p_GG_SIG_ghg2_1_ghz1_1_ghz2_1_JHUGen,p_GG_SIG_ghg2_1_ghz1_1_JHUGen,m4l,gConstants):
+        try:
+          return p_GG_SIG_ghg2_1_ghz1_1_ghz2_1_JHUGen*gCon.getvalue("g2","HZZ2e2mu",m4l,gConstants) / (2 * sqrt(p_GG_SIG_ghg2_1_ghz1_1_JHUGen * p_GG_SIG_ghg2_1_ghz1_1_ghz2_1_JHUGen*gCon.getvalue("g2","HZZ2e2mu",m4l,gConstants)**2))
+        except ZeroDivisionError:
+          return 0
+
+def D_L1_decay(p_GG_SIG_ghg2_1_ghz1_1_JHUGen,p_GG_SIG_ghg2_1_ghz1prime2_1E4_JHUGen,m4l,gConstants):
+        try:
+          return p_GG_SIG_ghg2_1_ghz1_1_JHUGen / (p_GG_SIG_ghg2_1_ghz1_1_JHUGen + p_GG_SIG_ghg2_1_ghz1prime2_1E4_JHUGen / 1e4**2*gCon.getvalue("L1","HZZ2e2mu",m4l,gConstants)**2)
+        except ZeroDivisionError:
+          return 0
+
+def D_L1int_decay(p_GG_SIG_ghg2_1_ghz1_1_ghz1prime2_1E4_JHUGen,p_GG_SIG_ghg2_1_ghz1_1_JHUGen,p_GG_SIG_ghg2_1_ghz1prime2_1E4_JHUGen,m4l,gConstants):
+        try:
+          return p_GG_SIG_ghg2_1_ghz1_1_ghz1prime2_1E4_JHUGen /1e4*gCon.getvalue("L1","HZZ2e2mu",m4l,gConstants) / (2 * sqrt(p_GG_SIG_ghg2_1_ghz1_1_JHUGen * p_GG_SIG_ghg2_1_ghz1prime2_1E4_JHUGen / 1e4**2*gCon.getvalue("L1","HZZ2e2mu",m4l,gConstants)**2))
+        except ZeroDivisionError:
+          return 0
+
+def D_L1Zg_decay(p_GG_SIG_ghg2_1_ghz1_1_JHUGen,p_GG_SIG_ghg2_1_ghza1prime2_1E4_JHUGen,m4l,gConstants):
+        try:
+          return p_GG_SIG_ghg2_1_ghz1_1_JHUGen / (p_GG_SIG_ghg2_1_ghz1_1_JHUGen + p_GG_SIG_ghg2_1_ghza1prime2_1E4_JHUGen / 1e4**2*gCon.getvalue("L1Zgs","HZZ2e2mu",m4l,gConstants)**2)
+        except ZeroDivisionError:
+          return 0
+
+def D_L1Zgint_decay(p_GG_SIG_ghg2_1_ghz1_1_ghza1prime2_1E4_JHUGen,p_GG_SIG_ghg2_1_ghz1_1_JHUGen,p_GG_SIG_ghg2_1_ghza1prime2_1E4_JHUGen,m4l,gConstants):
+        try:
+          return p_GG_SIG_ghg2_1_ghz1_1_ghza1prime2_1E4_JHUGen / 1e4*gCon.getvalue("L1Zgs","HZZ2e2mu",m4l,gConstants) / (2 * sqrt(p_GG_SIG_ghg2_1_ghz1_1_JHUGen * p_GG_SIG_ghg2_1_ghza1prime2_1E4_JHUGen / 1e4**2*gCon.getvalue("L1Zgs","HZZ2e2mu",m4l,gConstants)**2))
+        except ZeroDivisionError:
+          return 0
+
+def D_L1L1Zg_decay(p_GG_SIG_ghg2_1_ghz1prime2_1E4_JHUGen, p_GG_SIG_ghg2_1_ghza1prime2_1E4_JHUGen,m4l,gConstants):
+        try:
+          return p_GG_SIG_ghg2_1_ghz1prime2_1E4_JHUGen / 1e4**2*gCon.getvalue("L1","HZZ2e2mu",m4l,gConstants)**2 / (p_GG_SIG_ghg2_1_ghz1prime2_1E4_JHUGen / 1e4**2*gCon.getvalue("L1","HZZ2e2mu",m4l,gConstants)**2 + p_GG_SIG_ghg2_1_ghza1prime2_1E4_JHUGen / 1e4**2*gCon.getvalue("L1Zgs","HZZ2e2mu",m4l,gConstants)**2)
+        except ZeroDivisionError:
+          return 0
+
+def D_L1L1Zgint_decay(p_GG_SIG_ghg2_1_ghz1prime2_1E4_ghza1prime2_1E4_JHUGen,p_GG_SIG_ghg2_1_ghz1prime2_1E4_JHUGen,p_GG_SIG_ghg2_1_ghza1prime2_1E4_JHUGen,m4l,gConstants):
+        try:
+          return p_GG_SIG_ghg2_1_ghz1prime2_1E4_ghza1prime2_1E4_JHUGen / 1e4**2*gCon.getvalue("L1","HZZ2e2mu",m4l,gConstants)*gCon.getvalue("L1Zgs","HZZ2e2mu",m4l,gConstants) / (2 * sqrt(p_GG_SIG_ghg2_1_ghz1prime2_1E4_JHUGen / 1e4**2*gCon.getvalue("L1","HZZ2e2mu",m4l,gConstants)**2 * p_GG_SIG_ghg2_1_ghza1prime2_1E4_JHUGen / 1e4**2*gCon.getvalue("L1Zgs","HZZ2e2mu",m4l,gConstants)**2))
+        except ZeroDivisionError:
+          return 0
+
+def D_0minus_Zg_decay(p_GG_SIG_ghg2_1_ghz1_1_JHUGen,p_GG_SIG_ghg2_1_ghza4_1_JHUGen,m4l,gConstants):
+        try:
+          return p_GG_SIG_ghg2_1_ghz1_1_JHUGen / (p_GG_SIG_ghg2_1_ghz1_1_JHUGen + p_GG_SIG_ghg2_1_ghza4_1_JHUGen*gCon.getvalue("g4Zg","HZZ2e2mu",m4l,gConstants)**2)
+        except ZeroDivisionError:
+          return 0
+
+def D_CP_Zg_decay(p_GG_SIG_ghg2_1_ghz1_1_ghza4_1_JHUGen,p_GG_SIG_ghg2_1_ghz1_1_JHUGen,p_GG_SIG_ghg2_1_ghza4_1_JHUGen,m4l,gConstants):
+        try:
+          return p_GG_SIG_ghg2_1_ghz1_1_ghza4_1_JHUGen*gCon.getvalue("g4Zg","HZZ2e2mu",m4l,gConstants) / (2 * sqrt(p_GG_SIG_ghg2_1_ghz1_1_JHUGen * p_GG_SIG_ghg2_1_ghza4_1_JHUGen*gCon.getvalue("g4Zg","HZZ2e2mu",m4l,gConstants)**2))
+        except ZeroDivisionError:
+          return 0
+
+def D_0hplus_Zg_decay(p_GG_SIG_ghg2_1_ghz1_1_JHUGen,p_GG_SIG_ghg2_1_ghza2_1_JHUGen,m4l,gConstants):
+        try:
+          return p_GG_SIG_ghg2_1_ghz1_1_JHUGen / (p_GG_SIG_ghg2_1_ghz1_1_JHUGen + p_GG_SIG_ghg2_1_ghza2_1_JHUGen*gCon.getvalue("g2Zg","HZZ2e2mu",m4l,gConstants)**2)
+        except ZeroDivisionError:
+          return 0
+
+def D_int_Zg_decay(p_GG_SIG_ghg2_1_ghz1_1_ghza2_1_JHUGen,p_GG_SIG_ghg2_1_ghz1_1_JHUGen,p_GG_SIG_ghg2_1_ghza2_1_JHUGen,m4l,gConstants):
+        try:
+          return p_GG_SIG_ghg2_1_ghz1_1_ghza2_1_JHUGen*gCon.getvalue("g2Zg","HZZ2e2mu",m4l,gConstants) / (2 * sqrt(p_GG_SIG_ghg2_1_ghz1_1_JHUGen * p_GG_SIG_ghg2_1_ghza2_1_JHUGen*gCon.getvalue("g2Zg","HZZ2e2mu",m4l,gConstants)**2))
+        except ZeroDivisionError:
+          return 0
+
+def D_0minus_gg_decay(p_GG_SIG_ghg2_1_ghz1_1_JHUGen,p_GG_SIG_ghg2_1_gha4_1_JHUGen,m4l,gConstants):
+        try:
+          return p_GG_SIG_ghg2_1_ghz1_1_JHUGen / (p_GG_SIG_ghg2_1_ghz1_1_JHUGen + p_GG_SIG_ghg2_1_gha4_1_JHUGen*gCon.getvalue("g4gg","HZZ2e2mu",m4l,gConstants)**2)
+        except ZeroDivisionError:
+          return 0
+
+def D_CP_gg_decay(p_GG_SIG_ghg2_1_ghz1_1_gha4_1_JHUGen,p_GG_SIG_ghg2_1_ghz1_1_JHUGen,p_GG_SIG_ghg2_1_gha4_1_JHUGen,m4l,gConstants):
+        try:
+          return p_GG_SIG_ghg2_1_ghz1_1_gha4_1_JHUGen*gCon.getvalue("g4gg","HZZ2e2mu",m4l,gConstants) / (2 * sqrt(p_GG_SIG_ghg2_1_ghz1_1_JHUGen * p_GG_SIG_ghg2_1_gha4_1_JHUGen*gCon.getvalue("g4gg","HZZ2e2mu",m4l,gConstants)**2))
+        except ZeroDivisionError:
+          return 0
+
+def D_0hplus_gg_decay(p_GG_SIG_ghg2_1_ghz1_1_JHUGen,p_GG_SIG_ghg2_1_gha2_1_JHUGen,m4l,gConstants):
+        try:
+          return p_GG_SIG_ghg2_1_ghz1_1_JHUGen / (p_GG_SIG_ghg2_1_ghz1_1_JHUGen + p_GG_SIG_ghg2_1_gha2_1_JHUGen*gCon.getvalue("g2gg","HZZ2e2mu",m4l,gConstants)**2)
+        except ZeroDivisionError:
+          return 0
+
+def D_int_gg_decay(p_GG_SIG_ghg2_1_ghz1_1_gha2_1_JHUGen,p_GG_SIG_ghg2_1_ghz1_1_JHUGen,m4l,gConstants):
+        try:
+          return p_GG_SIG_ghg2_1_ghz1_1_gha2_1_JHUGen*gCon.getvalue("g2gg","HZZ2e2mu",m4l,gConstants) / (2 * sqrt(p_GG_SIG_ghg2_1_ghz1_1_JHUGen * p_GG_SIG_ghg2_1_gha2_1_JHUGen*gCon.getvalue("g2gg","HZZ2e2mu",m4l,gConstants)**2))
+        except ZeroDivisionError:
+          return 0
 

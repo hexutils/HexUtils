@@ -31,6 +31,7 @@ from AnalysisTools.data import gConstants as gConstants
 from AnalysisTools.data import cConstants as cConstants
 from AnalysisTools.Utils import Config as Config
 from AnalysisTools.Utils import OnShell_Category as OnShell_Category
+from AnalysisTools.Utils import Discriminants as Discriminants
 def main(argv):
     inputfile = ''
     outputdir = ''
@@ -137,12 +138,13 @@ def main(argv):
                     branchdict[branch.replace("-", "m")] = [] 
                 elif branch not in treebranches:
                     branchdict[branch.replace("-", "m")] = [-999] * t.GetEntries()
-
+	   
             branchdict["EventTag"] = []
-            branchdict["Dbkg"] = []
-            branchdict["Dbsi"] = []
             branchdict["Bin40"] = []
             
+            # Load the Disriminants to be saved as branches #
+            for name in Analysis_Config.Discriminants_To_Calculate:
+              branchdict[name] = []
             #for ent in trange(t.GetEntries()):
             for ent in trange(1000):
 
@@ -155,14 +157,12 @@ def main(argv):
                     branchdict["Bin40"].append(f.Get("ZZTree/Counters").GetBinContent(40))
                     if tree == "candTree_failed":
                         branchdict["EventTag"].append(-999)
-                        branchdict["Dbkg"].append(-999)
-                        branchdict["Dbsi"].append(-999)
+                        for name in Analysis_Config.Discriminants_To_Calculate:
+                          branchdict[name].append(-999)
                         for key in signfixdict.keys():
                             branchdict[key].append(signfixdict[key][0])
                         break
-                    else:
-                        branchdict["Dbkg"].append(1)
-                        branchdict["Dbsi"].append(1)
+            
                     #================ Tagging event by category ================				
                     if Analysis_Config.TaggingProcess == "Tag_AC_19_Scheme_2":
                       Protect = OnShell_Category.Protect_Category_Against_NAN(t.pConst_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,
@@ -220,12 +220,45 @@ def main(argv):
                                                    Analysis_Config.useQGTagging, 
                                                    cConstants_list, 
                                                    gConstants_list)
-                        branchdict["EventTag"].append(tag)
                     #================ Saving category tag ================
-
+                        branchdict["EventTag"].append(tag)
+                    #================ Calculating AC discriminants ================
+                    if "D_0minus_decay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_0minus_decay"].append(Discriminants.D_0minus_decay(t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_GG_SIG_ghg2_1_ghz4_1_JHUGen,t.ZZMass,gConstants_list))
+                    if "D_CP_decay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_CP_decay"].append(Discriminants.D_CP_decay(t.p_GG_SIG_ghg2_1_ghz1_1_ghz4_1_JHUGen,t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_GG_SIG_ghg2_1_ghz4_1_JHUGen,t.ZZMass,gConstants_list))
+                    if "D_0hplus_decay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_0hplus_decay"].append(Discriminants.D_0hplus_decay(t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_GG_SIG_ghg2_1_ghz1_1_ghz2_1_JHUGen,t.ZZMass,gConstants_list))
+                    if "D_int_decay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_int_decay"].append(Discriminants.D_int_decay(t.p_GG_SIG_ghg2_1_ghz1_1_ghz2_1_JHUGen,t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.ZZMass,gConstants_list))
+                    if "D_L1_decay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_L1_decay"].append(Discriminants.D_L1_decay(t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_GG_SIG_ghg2_1_ghz1prime2_1E4_JHUGen,t.ZZMass,gConstants_list))
+                    if "D_L1int_decay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_L1int_decay"].append(Discriminants.D_L1int_decay(t.p_GG_SIG_ghg2_1_ghz1_1_ghz1prime2_1E4_JHUGen,t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_GG_SIG_ghg2_1_ghz1prime2_1E4_JHUGen,t.ZZMass,gConstants_list))
+                    if "D_L1Zg_decay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_L1Zg_decay"].append(Discriminants.D_L1Zg_decay(t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_GG_SIG_ghg2_1_ghza1prime2_1E4_JHUGen,t.ZZMass,gConstants_list))
+                    if "D_L1Zgint_decay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_L1Zgint_decay"].append(Discriminants.D_L1Zgint_decay(t.p_GG_SIG_ghg2_1_ghz1_1_ghza1prime2_1E4_JHUGen,t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_GG_SIG_ghg2_1_ghza1prime2_1E4_JHUGen,t.ZZMass,gConstants_list))
+                    if "D_L1L1Zg_decay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_L1L1Zg_decay"].append(Discriminants.D_L1L1Zg_decay(t.p_GG_SIG_ghg2_1_ghz1prime2_1E4_JHUGen, t.p_GG_SIG_ghg2_1_ghza1prime2_1E4_JHUGen,t.ZZMass,gConstants_list))
+                    if "D_L1L1Zgint_decay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_L1L1Zgint_decay"].append(Discriminants.D_L1L1Zgint_decay(t.p_GG_SIG_ghg2_1_ghz1prime2_1E4_ghza1prime2_1E4_JHUGen,t.p_GG_SIG_ghg2_1_ghz1prime2_1E4_JHUGen,t.p_GG_SIG_ghg2_1_ghza1prime2_1E4_JHUGen,t.ZZMass,gConstants_list))
+                    if "D_0minus_Zg_decay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_0minus_Zg_decay"].append(Discriminants.D_0minus_Zg_decay(t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_GG_SIG_ghg2_1_ghza4_1_JHUGen,t.ZZMass,gConstants_list))
+                    if "D_CP_Zg_decay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_CP_Zg_decay"].append(Discriminants.D_CP_Zg_decay(t.p_GG_SIG_ghg2_1_ghz1_1_ghza4_1_JHUGen,t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_GG_SIG_ghg2_1_ghza4_1_JHUGen,t.ZZMass,gConstants_list))
+                    if "D_0hplus_Zg_decay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_0hplus_Zg_decay"].append(Discriminants.D_0hplus_Zg_decay(t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_GG_SIG_ghg2_1_ghza2_1_JHUGen,t.ZZMass,gConstants_list))
+                    if "D_int_Zg_decay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_int_Zg_decay"].append(Discriminants.D_int_Zg_decay(t.p_GG_SIG_ghg2_1_ghz1_1_ghza2_1_JHUGen,t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_GG_SIG_ghg2_1_ghza2_1_JHUGen,t.ZZMass,gConstants_list))
+                    if "D_0minus_gg_decay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_0minus_gg_decay"].append(Discriminants.D_0minus_gg_decay(t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_GG_SIG_ghg2_1_gha4_1_JHUGen,t.ZZMass,gConstants_list))
+                    if "D_CP_gg_decay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_CP_gg_decay"].append(Discriminants.D_CP_gg_decay(t.p_GG_SIG_ghg2_1_ghz1_1_gha4_1_JHUGen,t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_GG_SIG_ghg2_1_gha4_1_JHUGen,t.ZZMass,gConstants_list))
+                    if "D_0hplus_gg_decay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_0hplus_gg_decay"].append(Discriminants.D_0hplus_gg_decay(t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_GG_SIG_ghg2_1_gha2_1_JHUGen,t.ZZMass,gConstants_list))
                     #================ Calculating EW discriminants ================
-
-                    ZZflav = t.Z1Flav * t.Z2Flav
+                        
                     #================ Calculating gg discriminants ================
 
                     #================ Saving calculated discriminants ================
