@@ -5,7 +5,6 @@ CMSSW_release=CMSSW_12_2_0
 CMSSW_release_name=    #Leave this blank if you don't know what it is.  It's just a marker in case you have multiple identical directories. No need for the underscore.
 SCRAM_ARCH_name="amd64_gcc900" # Leave slc6/7 out
 
-
 MACHINESPECS="$(uname -a)"
 echo "Machine specifics: ${MACHINESPECS}"
 declare -i FOUND_EL6=0
@@ -21,7 +20,6 @@ else
     fi
   done
 fi
-
 
 if [[ ${FOUND_EL6} -eq 1 ]]; then
   SCRAM_ARCH_name="slc6_${SCRAM_ARCH_name}"
@@ -60,16 +58,6 @@ git clone git@github.com:hexutils/HexUtils.git
 
 # MELA Analytics
 #git clone git@github.com:MELALabs/MelaAnalytics.git
-
-#########################
-#  DeepAK8 fat jet tagger
-# #######################
-# check out the package - note, need ssh key in gitlab.cern.ch
-# because this is top secret code that needs to be password protected apparently
-# and thus, the user must either configure ssh keys or manually type their password.
-# the latter ruins the whole "run this install script, get a coffee, use the ntuplemaker" workflow.
-# git clone ssh://git@gitlab.cern.ch:7999/DeepAK8/NNKit.git -b ver_2018-03-08_for94X
-git clone ssh://git@gitlab.cern.ch:7999/TreeMaker/NNKit.git -b ver_2018-03-08
 
 #export LD_PRELOAD=/cvmfs/cms.cern.ch/slc7_amd64_gcc700/cms/cmssw/CMSSW_10_2_22/external/slc7_amd64_gcc700/lib/libjemalloc.so.2
 #scram b -j
