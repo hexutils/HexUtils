@@ -32,6 +32,8 @@ from AnalysisTools.data import cConstants as cConstants
 from AnalysisTools.Utils import Config as Config
 from AnalysisTools.Utils import OnShell_Category as OnShell_Category
 from AnalysisTools.Utils import Discriminants as Discriminants
+from AnalysisTools.Utils import OnShell_Help as OnShell_Help
+
 def main(argv):
     inputfile = ''
     outputdir = ''
@@ -222,6 +224,8 @@ def main(argv):
                                                    gConstants_list)
                     #================ Saving category tag ================
                         branchdict["EventTag"].append(tag)
+                    #===== Calculating Useful Info for OnShell Discriminants ======
+                    notdijet = OnShell_Help.notdijet(t.p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal)
                     #================ Calculating AC discriminants ================
                     if "D_0minus_decay" in Analysis_Config.Discriminants_To_Calculate:
                       branchdict["D_0minus_decay"].append(Discriminants.D_0minus_decay(t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_GG_SIG_ghg2_1_ghz4_1_JHUGen,t.ZZMass,gConstants_list))
@@ -257,8 +261,88 @@ def main(argv):
                       branchdict["D_CP_gg_decay"].append(Discriminants.D_CP_gg_decay(t.p_GG_SIG_ghg2_1_ghz1_1_gha4_1_JHUGen,t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_GG_SIG_ghg2_1_gha4_1_JHUGen,t.ZZMass,gConstants_list))
                     if "D_0hplus_gg_decay" in Analysis_Config.Discriminants_To_Calculate:
                       branchdict["D_0hplus_gg_decay"].append(Discriminants.D_0hplus_gg_decay(t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_GG_SIG_ghg2_1_gha2_1_JHUGen,t.ZZMass,gConstants_list))
+                    #=============== Calculating VBF Discriminants ================
+                    if "D_0minus_VBF" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_0minus_VBF"].append(Discriminants.D_0minus_VBF(t.p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal,t.p_JJVBF_SIG_ghv4_1_JHUGen_JECNominal,notdijet,t.ZZMass,gConstants_list))
+                    if "D_CP_VBF" in Analysis_Config.Discriminants_To_Calculate:
+                     branchdict["D_CP_VBF"].append(Discriminants.D_CP_VBF(t.p_JJVBF_SIG_ghv1_1_ghv4_1_JHUGen_JECNominal,t.p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal,t.p_JJVBF_SIG_ghv4_1_JHUGen_JECNominal,notdijet,t.ZZMass,gConstants_list))
+                    if "D_0hplus_VBF" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_0hplus_VBF"].append(Discriminants.D_0hplus_VBF(t.p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal,t.p_JJVBF_SIG_ghv2_1_JHUGen_JECNominal,notdijet,t.ZZMass,gConstants_list))
+                    if "D_int_VBF" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_int_VBF"].append(Discriminants.D_int_VBF(t.p_JJVBF_SIG_ghv1_1_ghv2_1_JHUGen_JECNominal,t.p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal,t.p_JJVBF_SIG_ghv2_1_JHUGen_JECNominal,notdijet,t.ZZMass,gConstants_list))
+                    if "D_L1_VBF" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_L1_VBF"].append(Discriminants.D_L1_VBF(t.p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal,t.p_JJVBF_SIG_ghv1prime2_1E4_JHUGen_JECNominal,notdijet,t.ZZMass,gConstants_list))
+                    if "D_L1int_VBF" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_L1int_VBF"].append(Discriminants.D_L1int_VBF(t.p_JJVBF_SIG_ghv1_1_ghv1prime2_1E4_JHUGen_JECNominal,t.p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal,t.p_JJVBF_SIG_ghv1prime2_1E4_JHUGen_JECNominal,notdijet,t.ZZMass,gConstants_list))
+                    if "D_L1Zg_VBF" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_L1Zg_VBF"].append(Discriminants.D_L1Zg_VBF(t.p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal,t.p_JJVBF_SIG_ghza1prime2_1E4_JHUGen_JECNominal,notdijet,t.ZZMass,gConstants_list))
+                    if "D_L1Zgint_VBF" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_L1Zgint_VBF"].append(Discriminants.D_L1Zgint_VBF(t.p_JJVBF_SIG_ghv1_1_ghza1prime2_1E4_JHUGen_JECNominal,t.p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal,t.p_JJVBF_SIG_ghza1prime2_1E4_JHUGen_JECNominal,notdijet,t.ZZMass,gConstants_list))
+                    if "D_0minus_Zg_VBF" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_0minus_Zg_VBF"].append(Discriminants.D_0minus_Zg_VBF(t.p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal,t.p_JJVBF_SIG_ghza4_1_JHUGen_JECNominal,notdijet,t.ZZMass,gConstants_list))
+                    if "D_CP_Zg_VBF" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_CP_Zg_VBF"].append(Discriminants.D_CP_Zg_VBF(t.p_JJVBF_SIG_ghv1_1_ghza4_1_JHUGen_JECNominal,t.p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal,t.p_JJVBF_SIG_ghza4_1_JHUGen_JECNominal,notdijet,t.ZZMass,gConstants_list))
+                    if "D_0hplus_Zg_VBF" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_0hplus_Zg_VBF"].append(Discriminants.D_0hplus_Zg_VBF(t.p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal,t.p_JJVBF_SIG_ghza2_1_JHUGen_JECNominal,notdijet,t.ZZMass,gConstants_list))
+                    if "D_int_Zg_VBF" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_int_Zg_VBF"].append(Discriminants.D_int_Zg_VBF(t.p_JJVBF_SIG_ghv1_1_ghza2_1_JHUGen_JECNominal,t.p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal,t.p_JJVBF_SIG_ghza2_1_JHUGen_JECNominal,notdijet,t.ZZMass,gConstants_list))
+                    #=============== Calculating VBF with Decay Discriminants ================
+                    if "D_0minus_VBFdecay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_0minus_VBFdecay"].append(Discriminants.D_0minus_VBFdecay(t.p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_JJVBF_SIG_ghv4_1_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_ghz4_1_JHUGen,notdijet,t.ZZMass,gConstants_list))
+                    if "D_0hplus_VBFdecay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_0hplus_VBFdecay"].append(Discriminants.D_0hplus_VBFdecay(t.p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_JJVBF_SIG_ghv2_1_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_ghz2_1_JHUGen,notdijet,t.ZZMass,gConstants_list))
+                    if "D_L1_VBFdecay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_L1_VBFdecay"].append(Discriminants.D_L1_VBFdecay(t.p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_JJVBF_SIG_ghv1prime2_1E4_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_ghz1prime2_1E4_JHUGen,notdijet,t.ZZMass,gConstants_list))
+                    if "D_L1Zg_VBFdecay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_L1Zg_VBFdecay"].append(Discriminants.D_L1Zg_VBFdecay(t.p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_JJVBF_SIG_ghza1prime2_1E4_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_ghza1prime2_1E4_JHUGen,notdijet,t.ZZMass,gConstants_list))
+                    if "D_0minus_Zg_VBFdecay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_0minus_Zg_VBFdecay"].append(Discriminants.D_0minus_Zg_VBFdecay(t.p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_JJVBF_SIG_ghza4_1_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_ghza4_1_JHUGen,notdijet,t.ZZMass,gConstants_list))
+                    if "D_0hplus_Zg_VBFdecay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_0hplus_Zg_VBFdecay"].append(Discriminants.D_0hplus_Zg_VBFdecay(t.p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_JJVBF_SIG_ghza2_1_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_ghza2_1_JHUGen,notdijet,t.ZZMass,gConstants_list))
+                    if "D_0minus_gg_VBFdecay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_0minus_gg_VBFdecay"].append(Discriminants.D_0minus_gg_VBFdecay(t.p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_JJVBF_SIG_gha4_1_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_gha4_1_JHUGen,notdijet,t.ZZMass,gConstants_list))
+                    if "D_0hplus_gg_VBFdecay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_0hplus_gg_VBFdecay"].append(Discriminants.D_0hplus_gg_VBFdecay(t.p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_JJVBF_SIG_gha2_1_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_gha2_1_JHUGen,notdijet,t.ZZMass,gConstants_list))
+                    #=========== Calculating VH Hadronic Discriminants ============
+
+                    WH_scale = OnShell_Help.HadWH_Scale_Nominal(t.p_HadWH_mavjj_JECNominal,t.p_HadWH_mavjj_true_JECNominal,t.pConst_HadWH_SIG_ghw1_1_JHUGen_JECNominal)
+                    ZH_scale = OnShell_Help.HadZH_Scale_Nominal(t.p_HadZH_mavjj_JECNominal,t.p_HadZH_mavjj_true_JECNominal,t.pConst_HadZH_SIG_ghz1_1_JHUGen_JECNominal)
+            
+
+                    if "D_0minus_HadVH" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_0minus_HadVH"].append(Discriminants.D_0minus_HadVH(t.p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,t.p_HadWH_SIG_ghw4_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz4_1_JHUGen_JECNominal,WH_scale,ZH_scale,notdijet,t.ZZMass,gConstants_list))
+                    if "D_CP_HadVH" in Analysis_Config.Discriminants_To_Calculate:
+                     branchdict["D_CP_HadVH"].append(Discriminants.D_CP_HadVH(t.p_HadZH_SIG_ghz1_1_ghz4_1_JHUGen_JECNominal,t.p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,t.p_HadWH_SIG_ghw4_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz4_1_JHUGen_JECNominal,WH_scale,ZH_scale,notdijet))
+                    if "D_0hplus_HadVH" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_0hplus_HadVH"].append(Discriminants.D_0hplus_HadVH(t.p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,t.p_HadWH_SIG_ghw2_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz2_1_JHUGen_JECNominal,WH_scale,ZH_scale,notdijet,t.ZZMass,gConstants_list))
+                    if "D_int_HadVH" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_int_HadVH"].append(Discriminants.D_int_HadVH(t.p_HadZH_SIG_ghz1_1_ghz2_1_JHUGen_JECNominal,t.p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,t.p_HadWH_SIG_ghw2_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,t.p_HadWH_SIG_ghw2_1_JHUGen_JECNominal,WH_scale,ZH_scale,notdijet))
+                    if "D_L1_HadVH" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_L1_HadVH"].append(Discriminants.D_L1_HadVH(t.p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,t.p_HadWH_SIG_ghw1prime2_1E4_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1prime2_1E4_JHUGen_JECNominal,WH_scale,ZH_scale,notdijet,t.ZZMass,gConstants_list))
+                    if "D_L1int_HadVH" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_L1int_HadVH"].append(Discriminants.D_L1int_HadVH(t.p_HadWH_SIG_ghw1_1_ghw1prime2_1E4_JHUGen_JECNominal,t.p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,t.p_HadWH_SIG_ghw1prime2_1E4_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_ghz1prime2_1E4_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1prime2_1E4_JHUGen_JECNominal,WH_scale,ZH_scale,notdijet,t.ZZMass,gConstants_list))
+                    if "D_L1Zg_HadVH" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_L1Zg_HadVH"].append(Discriminants.D_L1Zg_HadVH(t.p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,0,t.p_HadZH_SIG_ghza1prime2_1E4_JHUGen_JECNominal,WH_scale,ZH_scale,notdijet,t.ZZMass,gConstants_list))
+                    if "D_L1Zgint_HadVH" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_L1Zgint_HadVH"].append(Discriminants.D_L1Zgint_HadVH(t.p_HadZH_SIG_ghz1_1_ghz1prime2_1E4_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghza1prime2_1E4_JHUGen_JECNominal,WH_scale,ZH_scale,notdijet,t.ZZMass,gConstants_list))
+                    if "D_0minus_Zg_HadVH" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_0minus_Zg_HadVH"].append(Discriminants.D_0minus_Zg_HadVH(t.p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,0,t.p_HadZH_SIG_ghza4_1_JHUGen_JECNominal,WH_scale,ZH_scale,notdijet,t.ZZMass,gConstants_list))
+                    if "D_CP_Zg_HadVH" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_CP_Zg_HadVH"].append(Discriminants.D_CP_Zg_HadVH(t.p_HadZH_SIG_ghz1_1_ghza4_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghza4_1_JHUGen_JECNominal,WH_scale,ZH_scale,notdijet))
+                    if "D_0hplus_Zg_HadVH" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_0hplus_Zg_HadVH"].append(Discriminants.D_0hplus_Zg_HadVH(t.p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,0,t.p_HadZH_SIG_ghza2_1_JHUGen_JECNominal,WH_scale,ZH_scale,notdijet,t.ZZMass,gConstants_list))
+                    if "D_int_Zg_HadVH" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_int_Zg_HadVH"].append(Discriminants.D_int_Zg_HadVH(t.p_HadZH_SIG_ghz1_1_ghza2_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghza2_1_JHUGen_JECNominal,WH_scale,ZH_scale,notdijet,t.ZZMass,gConstants_list))
+                    if "D_0minus_gg_HadVH" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_0minus_gg_HadVH"].append(Discriminants.D_0minus_gg_HadVH(t.p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,0,t.p_HadZH_SIG_gha4_1_JHUGen_JECNominal,WH_scale,ZH_scale,notdijet,t.ZZMass,gConstants_list))
+                    if "D_CP_gg_HadVH" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_CP_gg_HadVH"].append(Discriminants.D_CP_gg_HadVH(t.p_HadZH_SIG_ghz1_1_gha4_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,t.p_HadZH_SIG_gha4_1_JHUGen_JECNominal,WH_scale,ZH_scale,notdijet))
+                    if "D_0hplus_gg_HadVH" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_0hplus_gg_HadVH"].append(Discriminants.D_0hplus_gg_HadVH(t.p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,0,t.p_HadZH_SIG_gha2_1_JHUGen_JECNominal,WH_scale,ZH_scale,notdijet,t.ZZMass,gConstants_list))
+                    if "D_int_gg_HadVH" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_int_gg_HadVH"].append(Discriminants.D_int_gg_HadVH(t.p_HadZH_SIG_ghz1_1_gha2_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,t.p_HadZH_SIG_gha2_1_JHUGen_JECNominal,WH_scale,ZH_scale,notdijet,t.ZZMass,gConstants_list))
                     #================ Calculating EW discriminants ================
-                        
+                    
                     #================ Calculating gg discriminants ================
 
                     #================ Saving calculated discriminants ================
