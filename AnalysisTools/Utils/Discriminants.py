@@ -2,7 +2,9 @@ import os
 from .Eval_cConstants import *
 from ..data import gConstants as gCon
 from numpy import sqrt as sqrt
-#=========================================== OnShell_Categorization Discriminants ===========================================#
+#======================================================================================================#
+#========================== OnShell_Categorization and Bkg Discriminants ==============================#
+#======================================================================================================#
 
 def D_bkg_kin(p_GG_SIG_ghg2_1_ghz1_1_JHUGen,p_QQB_BKG_MCFM,cConstants,ZZFlav,ZZMass):
   return p_GG_SIG_ghg2_1_ghz1_1_JHUGen/(p_GG_SIG_ghg2_1_ghz1_1_JHUGen + p_QQB_BKG_MCFM*getDbkgkinConstant(cConstants,ZZFlav,ZZMass)) 
@@ -10,7 +12,7 @@ def D_bkg_kin(p_GG_SIG_ghg2_1_ghz1_1_JHUGen,p_QQB_BKG_MCFM,cConstants,ZZFlav,ZZM
 def D_bkg(p_GG_SIG_ghg2_1_ghz1_1_JHUGen,p_m4l_SIG,p_QQB_BKG_MCFM,p_m4l_BKG,cConstants,ZZFlav,ZZMass):
   return p_GG_SIG_ghg2_1_ghz1_1_JHUGen*p_m4l_SIG/(p_GG_SIG_ghg2_1_ghz1_1_JHUGen*p_m4l_SIG + p_QQB_BKG_MCFM*p_m4l_BKG*getDbkgConstant(cConstants,ZZFlav,ZZMass))
 
-def D_bkg_VBFdec(p_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,p_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,p_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,p_JJVBF_BKG_MCFM_JECNominal,p_HadZH_BKG_MCFM_JECNominal,p_HadWH_BKG_MCFM_JECNominal,p_JJQCD_BKG_MCFM_JECNominal,p_HadZH_mavjj_JECNominal,p_HadZH_mavjj_true_JECNominal,p_HadWH_mavjj_JECNominal,p_HadWH_mavjj_true_JECNominal,pConst_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,pConst_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,pConst_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,pConst_JJVBF_BKG_MCFM_JECNominal,pConst_HadZH_BKG_MCFM_JECNominal,pConst_HadWH_BKG_MCFM_JECNominal,pConst_JJQCD_BKG_MCFM_JECNominal,cConstants,ZZFlav,ZZMass):
+def D_bkg_kin_VBFdecay(p_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,p_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,p_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,p_JJVBF_BKG_MCFM_JECNominal,p_HadZH_BKG_MCFM_JECNominal,p_HadWH_BKG_MCFM_JECNominal,p_JJQCD_BKG_MCFM_JECNominal,p_HadZH_mavjj_JECNominal,p_HadZH_mavjj_true_JECNominal,p_HadWH_mavjj_JECNominal,p_HadWH_mavjj_true_JECNominal,pConst_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,pConst_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,pConst_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,pConst_JJVBF_BKG_MCFM_JECNominal,pConst_HadZH_BKG_MCFM_JECNominal,pConst_HadWH_BKG_MCFM_JECNominal,pConst_JJQCD_BKG_MCFM_JECNominal,cConstants,ZZFlav,ZZMass):
 
    constant = getDbkgVBFdecConstant(cConstants,ZZFlav,ZZMass)
 
@@ -44,8 +46,18 @@ def D_bkg_VBFdec(p_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,p_HadZH_S_SIG_ghz1_1_MCFM_
 
    return PA/(PA+constant*PB)
 
+def D_bkg_VBFdecay(p_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,p_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,p_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,p_JJVBF_BKG_MCFM_JECNominal,p_HadZH_BKG_MCFM_JECNominal,p_HadWH_BKG_MCFM_JECNominal,p_JJQCD_BKG_MCFM_JECNominal,p_HadZH_mavjj_JECNominal,p_HadZH_mavjj_true_JECNominal,p_HadWH_mavjj_JECNominal,p_HadWH_mavjj_true_JECNominal,pConst_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,pConst_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,pConst_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,pConst_JJVBF_BKG_MCFM_JECNominal,pConst_HadZH_BKG_MCFM_JECNominal,pConst_HadWH_BKG_MCFM_JECNominal,pConst_JJQCD_BKG_MCFM_JECNominal,cConstants,ZZFlav,ZZMass,p_m4l_BKG,p_m4l_SIG,notdijet):
+        if notdijet or p_m4l_SIG <= 0: return -999
 
-def D_bkg_VHdec(p_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,p_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,p_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,p_JJVBF_BKG_MCFM_JECNominal,p_HadZH_BKG_MCFM_JECNominal,p_HadWH_BKG_MCFM_JECNominal,p_JJQCD_BKG_MCFM_JECNominal,p_HadZH_mavjj_JECNominal,p_HadZH_mavjj_true_JECNominal,p_HadWH_mavjj_JECNominal,p_HadWH_mavjj_true_JECNominal,pConst_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,pConst_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,pConst_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,pConst_JJVBF_BKG_MCFM_JECNominal,pConst_HadZH_BKG_MCFM_JECNominal,pConst_HadWH_BKG_MCFM_JECNominal,pConst_JJQCD_BKG_MCFM_JECNominal,cConstants,ZZFlav,ZZMass):
+        result = D_bkg_kin_VBFdecay(p_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,p_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,p_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,p_JJVBF_BKG_MCFM_JECNominal,p_HadZH_BKG_MCFM_JECNominal,p_HadWH_BKG_MCFM_JECNominal,p_JJQCD_BKG_MCFM_JECNominal,p_HadZH_mavjj_JECNominal,p_HadZH_mavjj_true_JECNominal,p_HadWH_mavjj_JECNominal,p_HadWH_mavjj_true_JECNominal,pConst_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,pConst_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,pConst_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,pConst_JJVBF_BKG_MCFM_JECNominal,pConst_HadZH_BKG_MCFM_JECNominal,pConst_HadWH_BKG_MCFM_JECNominal,pConst_JJQCD_BKG_MCFM_JECNominal,cConstants,ZZFlav,ZZMass)
+
+        result = 1/result - 1
+        result *= p_m4l_BKG / p_m4l_SIG * getDbkgConstant(cConstants, ZZFlav,  ZZMass) / getDbkgkinConstant(cConstants, ZZFlav,ZZMass)
+        result = 1/(1+result)
+
+        return result
+
+def D_bkg_kin_HadVHdecay(p_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,p_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,p_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,p_JJVBF_BKG_MCFM_JECNominal,p_HadZH_BKG_MCFM_JECNominal,p_HadWH_BKG_MCFM_JECNominal,p_JJQCD_BKG_MCFM_JECNominal,p_HadZH_mavjj_JECNominal,p_HadZH_mavjj_true_JECNominal,p_HadWH_mavjj_JECNominal,p_HadWH_mavjj_true_JECNominal,pConst_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,pConst_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,pConst_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,pConst_JJVBF_BKG_MCFM_JECNominal,pConst_HadZH_BKG_MCFM_JECNominal,pConst_HadWH_BKG_MCFM_JECNominal,pConst_JJQCD_BKG_MCFM_JECNominal,cConstants,ZZFlav,ZZMass):
 
    constant = getDbkgVHdecConstant(cConstants,ZZFlav,ZZMass)
 
@@ -78,6 +90,17 @@ def D_bkg_VHdec(p_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,p_HadZH_S_SIG_ghz1_1_MCFM_J
    PB = (vbs + zzz + wzz + qcdzz)*constB
 
    return PA/(PA+constant*PB)
+
+def D_bkg_HadVHdecay(p_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,p_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,p_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,p_JJVBF_BKG_MCFM_JECNominal,p_HadZH_BKG_MCFM_JECNominal,p_HadWH_BKG_MCFM_JECNominal,p_JJQCD_BKG_MCFM_JECNominal,p_HadZH_mavjj_JECNominal,p_HadZH_mavjj_true_JECNominal,p_HadWH_mavjj_JECNominal,p_HadWH_mavjj_true_JECNominal,pConst_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,pConst_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,pConst_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,pConst_JJVBF_BKG_MCFM_JECNominal,pConst_HadZH_BKG_MCFM_JECNominal,pConst_HadWH_BKG_MCFM_JECNominal,pConst_JJQCD_BKG_MCFM_JECNominal,cConstants,ZZFlav,ZZMass,p_m4l_BKG,p_m4l_SIG,notdijet):
+        if notdijet or p_m4l_SIG <= 0: return -999
+
+        result = D_bkg_kin_HadVHdecay(p_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,p_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,p_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,p_JJVBF_BKG_MCFM_JECNominal,p_HadZH_BKG_MCFM_JECNominal,p_HadWH_BKG_MCFM_JECNominal,p_JJQCD_BKG_MCFM_JECNominal,p_HadZH_mavjj_JECNominal,p_HadZH_mavjj_true_JECNominal,p_HadWH_mavjj_JECNominal,p_HadWH_mavjj_true_JECNominal,pConst_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,pConst_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,pConst_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,pConst_JJVBF_BKG_MCFM_JECNominal,pConst_HadZH_BKG_MCFM_JECNominal,pConst_HadWH_BKG_MCFM_JECNominal,pConst_JJQCD_BKG_MCFM_JECNominal,cConstants,ZZFlav,ZZMass)
+
+        result = 1/result - 1
+        result *= p_m4l_BKG / p_m4l_SIG * getDbkgConstant(cConstants, ZZFlav,  ZZMass) / getDbkgkinConstant(cConstants, ZZFlav,ZZMass)
+        result = 1/(1+result)
+
+        return result
 
 
 def D_g4(p_GG_SIG_ghg2_1_ghz1_1_JHUGen,p_GG_SIG_ghg2_1_ghz4_1_JHUGen):
@@ -144,7 +167,6 @@ def DZHh_ME_QG(p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,p_JJQCD_SIG_ghg2_1_JHUGen_JE
   DZHhME = DZHh_ME(p_HadZH_SIG_ghz1_1_JHUGen_JECNominal, p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal, p_HadZH_mavjj_JECNominal, p_HadZH_mavjj_true_JECNominal, ZZMass, cConstants)
   GOverQ = ROOT.TMath.Power( jetPgOverPq(jetQGLikelihood[0],jetPhi[0]) * jetPgOverPq(jetQGLikelihood[1],jetPhi[1]) , 1./3. )
   return 1./(1.+ (1./DZHhME - 1.) * GOverQ)
-
 
 #==============================================================================================================#
 #================================= OnShell Anomalous Coupling Disriminants ====================================#

@@ -92,4 +92,3 @@ def getDbkgkinConstant(cConstants, ZZflav,  ZZMass): # ZZflav==id1*id2*id3*id4
 
 def getDbkgConstant(cConstants, ZZflav,  ZZMass):
   return getDbkgkinConstant(cConstants, ZZflav, ZZMass)
-
