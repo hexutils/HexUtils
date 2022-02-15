@@ -307,8 +307,6 @@ def main(argv):
 
                     WH_scale = OnShell_Help.HadWH_Scale_Nominal(t.p_HadWH_mavjj_JECNominal,t.p_HadWH_mavjj_true_JECNominal,t.pConst_HadWH_SIG_ghw1_1_JHUGen_JECNominal)
                     ZH_scale = OnShell_Help.HadZH_Scale_Nominal(t.p_HadZH_mavjj_JECNominal,t.p_HadZH_mavjj_true_JECNominal,t.pConst_HadZH_SIG_ghz1_1_JHUGen_JECNominal)
-            
-
                     if "D_0minus_HadVH" in Analysis_Config.Discriminants_To_Calculate:
                       branchdict["D_0minus_HadVH"].append(Discriminants.D_0minus_HadVH(t.p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,t.p_HadWH_SIG_ghw4_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz4_1_JHUGen_JECNominal,WH_scale,ZH_scale,notdijet,t.ZZMass,gConstants_list))
                     if "D_CP_HadVH" in Analysis_Config.Discriminants_To_Calculate:
@@ -341,6 +339,15 @@ def main(argv):
                       branchdict["D_0hplus_gg_HadVH"].append(Discriminants.D_0hplus_gg_HadVH(t.p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,0,t.p_HadZH_SIG_gha2_1_JHUGen_JECNominal,WH_scale,ZH_scale,notdijet,t.ZZMass,gConstants_list))
                     if "D_int_gg_HadVH" in Analysis_Config.Discriminants_To_Calculate:
                       branchdict["D_int_gg_HadVH"].append(Discriminants.D_int_gg_HadVH(t.p_HadZH_SIG_ghz1_1_gha2_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,t.p_HadZH_SIG_gha2_1_JHUGen_JECNominal,WH_scale,ZH_scale,notdijet,t.ZZMass,gConstants_list))
+                    #================ Calculating BKG discriminants ===============
+                    ZZFlav=t.Z1Flav*t.Z2Flav
+                    if "D_bkg" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_bkg"].append(Discriminants.D_bkg(t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_m4l_SIG,t.p_QQB_BKG_MCFM,t.p_m4l_BKG,cConstants_list,ZZFlav,t.ZZMass))
+                    if "D_bkg_VBFdecay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_bkg_VBFdecay"].append(Discriminants.D_bkg_VBFdecay(t.p_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,t.p_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,t.p_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,t.p_JJVBF_BKG_MCFM_JECNominal,t.p_HadZH_BKG_MCFM_JECNominal,t.p_HadWH_BKG_MCFM_JECNominal,t.p_JJQCD_BKG_MCFM_JECNominal,t.p_HadZH_mavjj_JECNominal,t.p_HadZH_mavjj_true_JECNominal,t.p_HadWH_mavjj_JECNominal,t.p_HadWH_mavjj_true_JECNominal,t.pConst_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,t.pConst_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,t.pConst_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,t.pConst_JJVBF_BKG_MCFM_JECNominal,t.pConst_HadZH_BKG_MCFM_JECNominal,t.pConst_HadWH_BKG_MCFM_JECNominal,t.pConst_JJQCD_BKG_MCFM_JECNominal,cConstants_list,ZZFlav,t.ZZMass,t.p_m4l_BKG,t.p_m4l_SIG,notdijet))
+                    if "D_bkg_HadVHdecay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_bkg_HadVHdecay"].append(Discriminants.D_bkg_HadVHdecay(t.p_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,t.p_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,t.p_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,t.p_JJVBF_BKG_MCFM_JECNominal,t.p_HadZH_BKG_MCFM_JECNominal,t.p_HadWH_BKG_MCFM_JECNominal,t.p_JJQCD_BKG_MCFM_JECNominal,t.p_HadZH_mavjj_JECNominal,t.p_HadZH_mavjj_true_JECNominal,t.p_HadWH_mavjj_JECNominal,t.p_HadWH_mavjj_true_JECNominal,t.pConst_JJVBF_S_SIG_ghv1_1_MCFM_JECNominal,t.pConst_HadZH_S_SIG_ghz1_1_MCFM_JECNominal,t.pConst_HadWH_S_SIG_ghw1_1_MCFM_JECNominal,t.pConst_JJVBF_BKG_MCFM_JECNominal,t.pConst_HadZH_BKG_MCFM_JECNominal,t.pConst_HadWH_BKG_MCFM_JECNominal,t.pConst_JJQCD_BKG_MCFM_JECNominal,cConstants_list,ZZFlav,t.ZZMass,t.p_m4l_BKG,t.p_m4l_SIG,notdijet))
+
                     #================ Calculating EW discriminants ================
                     
                     #================ Calculating gg discriminants ================
