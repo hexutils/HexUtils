@@ -132,7 +132,11 @@ def main(argv):
 
             branchdict = {}
             signfixdict = {}
-
+            # Save any Branch with p_ in the name. This allows for variable branch names in different samples #
+            if Analysis_Config.Save_p == True:
+              for branch in treebranches: 
+                if 'p_' in branch:
+                  branchlist.append(branch)
             for branch in branchlist:
                 if "-" in branch and branch in treebranches:
                     signfixdict[branch.replace("-", "m")] = array('f',[0])

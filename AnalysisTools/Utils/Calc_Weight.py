@@ -118,6 +118,6 @@ def Calc_Event_Weight_2021_gammaH(t,name): #Tree input as t and the name of the 
 	
         #return tree2array(tree=t,branches=["overallEventWeight*genBR*(genxsec/xsec)*L1prefiringWeight/Bin40"]).astype(float) * scale * new_xsec * pb_to_fb
         #return tree2array(tree=t,branches=["xsec*overallEventWeight*L1prefiringWeight/Bin40"]).astype(float) * scale  * pb_to_fb
-	print tree2array(tree=t,branches=["Bin40"])[0][0],name
+	#print tree2array(tree=t,branches=["Bin40"])[0][0],name
 	return tree2array(tree=t,branches=["overallEventWeight*L1prefiringWeight/Bin40"]).astype(float) * new_xsec * scale  * pb_to_fb
 	#return tree2array(tree=t,branches=["overallEventWeight/Bin40"]).astype(float) * new_xsec * scale  * pb_to_fb
