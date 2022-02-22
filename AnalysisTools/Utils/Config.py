@@ -17,5 +17,6 @@ class Analysis_Config:
                                          "D_0minus_VBF","D_CP_VBF","D_0hplus_VBF","D_int_VBF","D_L1_VBF","D_L1int_VBF","D_L1Zg_VBF","D_L1Zgint_VBF","D_0minus_Zg_VBF","D_CP_Zg_VBF","D_0hplus_Zg_VBF","D_int_Zg_VBF",
                                          "D_0minus_VBFdecay","D_0hplus_VBFdecay","D_L1_VBFdecay","D_0minus_VBFdecay","D_0minus_Zg_VBFdecay","D_0hplus_Zg_VBFdecay","D_0minus_gg_VBFdecay", "D_0hplus_gg_VBFdecay",
                                          "D_0minus_HadVH","D_CP_HadVH","D_0hplus_HadVH","D_int_HadVH","D_L1_HadVH","D_L1int_HadVH","D_L1Zg_HadVH","D_L1Zgint_HadVH","D_0minus_Zg_HadVH", "D_CP_Zg_HadVH","D_0hplus_Zg_HadVH","D_int_Zg_HadVH", "D_0minus_gg_HadVH","D_CP_gg_HadVH","D_0hplus_gg_HadVH","D_int_gg_HadVH",
-                                         "D_bkg","D_bkg_VBFdecay","D_bkg_HadVHdecay"]
+                                         "D_bkg","D_bkg_VBFdecay","D_bkg_HadVHdecay",
+                                         "Pt4l"]
       self.lumi = {'MC_2016':35.9,'MC_2017':41.5,'MC_2018':59.7}
