@@ -152,7 +152,7 @@ def main(argv):
             for name in Analysis_Config.Discriminants_To_Calculate:
               branchdict[name] = []
             #for ent in trange(t.GetEntries()):
-            for ent in trange(1000):
+            for ent in trange(t.GetEntries()):
 
                 #================ Loop over events ================
 
@@ -228,6 +228,9 @@ def main(argv):
                                                    gConstants_list)
                     #================ Saving category tag ================
                         branchdict["EventTag"].append(tag)
+                    #============= Save pt_4l discriminants ==============
+                    if "Pt4l" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["Pt4l"].append(t.ZZPt)
                     #===== Calculating Useful Info for OnShell Discriminants ======
                     notdijet = OnShell_Help.notdijet(t.p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal)
                     #================ Calculating AC discriminants ================
