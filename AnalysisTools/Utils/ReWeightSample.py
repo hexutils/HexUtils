@@ -390,9 +390,8 @@ def Reweight_Event(InputEvent,ProductionMode,InputHypothesis,OutputHypothesis,Hf
   return eventweight * namespace['MELA_Weight'] * lumi
 
 ### This function returns an array of the new event weights ### 
-def Reweight_Branch(InputTree,ProductionMode,InputHypothesis,OutputHypothesis,HffHypothesis,isData,Analysis_Config,lumi,year):
+def Reweight_Branch(InputTree,ProductionMode,OutputHypothesis,HffHypothesis,isData,Analysis_Config,lumi,year):
   # Check the input for Input Hypothesis and Output Hypothesis #
-  Check_Input(ProductionMode,InputHypothesis,HffHypothesis)
   Check_Input(ProductionMode,OutputHypothesis,HffHypothesis)
   # Get List of Hypothesis to Reweight By #
   MelaConstantNames = GetConstantsAndMELA(OutputHypothesis,ProductionMode,isData)
@@ -403,8 +402,24 @@ def Reweight_Branch(InputTree,ProductionMode,InputHypothesis,OutputHypothesis,Hf
   # Get the Nominal event weight #
   eventweight = 1
   if Analysis_Config.ReweightProcess == "Calc_Event_Weight_2021_gammaH": 
-    eventweight = Calc_Tree_Weight_2021_gammaH(InputTree,InputHypothesis+"_"+str(year))
+    eventweight = Calc_Tree_Weight_2021_gammaH(InputTree,ProductionMode+"_"+str(year))
   return eventweight * tree2array(tree=InputTree,branches=[Branch_Names]).astype(float) *lumi
+
+def Reweight_Branch_NoHff(InputTree,ProductionMode,OutputHypothesis,isData,Analysis_Config,lumi,year):
+  # Check the input for Input Hypothesis and Output Hypothesis #
+  Check_Input(ProductionMode,OutputHypothesis,"Hff0+")
+  # Get List of Hypothesis to Reweight By #
+  MelaConstantNames = GetConstantsAndMELA(OutputHypothesis,ProductionMode,isData)
+  Branch_Names = ""
+  if len(MelaConstantNames) == 1:
+    Branch_Names += MelaConstantNames[0]
+  # Note that there is no option right now to support reweighting to non isolated hypothesis
+  # Get the Nominal event weight #
+  eventweight = 1
+  if Analysis_Config.ReweightProcess == "Calc_Event_Weight_2021_gammaH": 
+    eventweight = Calc_Tree_Weight_2021_gammaH(InputTree,ProductionMode+"_"+str(year))
+  return eventweight * tree2array(tree=InputTree,branches=[Branch_Names]).astype(float) *lumi
+
 
 
 
