@@ -30,5 +30,5 @@ class Analysis_Config:
       self.ttHHadrTagged_Discriminants = {}
       self.VHMETTagged_Discriminants = {}
       self.Boosted_Discriminants = {"D_bkg":[0,.33,.66,1],"Pt4l":[0,100,200]}
-      self.Untagged_Discriminants = {"D_bkg":[0,.33,.66,1],"Pt4l":[0,100,200]}
+      self.Untagged_Discriminants = {"D_bkg":[0,.33,.66,1],"D_CP_decay":[-1,0,.66,1],"D_0hplus_decay":[0,.33,.66,1],"D_0minus_decay":[0,.33,.66,1],"D_L1_decay":[0,.33,.66,1],"D_L1Zg_decay":[0,.33,.66,1],"D_int_decay":[0,.33,.66,1]}
 
