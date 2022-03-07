@@ -105,7 +105,7 @@ for numfile in range(0,len(treelist)):
         elif prod == "VBF":
             yeardict[year][prod][0].append(filename)
         elif prod == "ZZTo4l":
-            print ("appended", filename)
+            #print ("appended", filename)
             yeardict[year][prod][0].append(filename)
         else:
             print("ERROR: Cannot recognize production mode of " + filename + "! Tree not sorted!")
@@ -162,7 +162,7 @@ def FillHist(targetprod,targetcomp,targetcateg,h_list,shape_syst_list) :
     hf_systdn = ROOT.TH1F("hf_kew_systdn","",100,0,2000)
     hf_systup = ROOT.TH1F("hf_kew_systup","",100,0,2000)
     hf_nom    = ROOT.TH1F("hf_nom","",100,0,2000)
-
+    
     hf_syst = []                        
     for i,systname  in enumerate (shape_syst_list): 
         hf_syst_up = ROOT.TH3F("hf_syst_up","", len(medges)-1, medges, len(d1edges)-1, d1edges, len(d2edges)-1, d2edges)
@@ -186,9 +186,9 @@ def FillHist(targetprod,targetcomp,targetcateg,h_list,shape_syst_list) :
     
     for keynum in range(0,len(yeardict.keys())):
         year = list(yeardict.keys())[keynum]
-        print (list(yeardict.keys())[keynum])
+        #print (list(yeardict.keys())[keynum])
         #if year != targetyear: continue
-        #print("\n", year, lumi[year])
+        lumi_year = lumi[year]
 
         hs = ROOT.TH3F("hs","", len(medges)-1, medges, len(d1edges)-1, d1edges, len(d2edges)-1, d2edges)
         hs_systdn = ROOT.TH1F("hs_kew_systdn","",100,0,2000)
@@ -249,11 +249,13 @@ def FillHist(targetprod,targetcomp,targetcateg,h_list,shape_syst_list) :
             print ("about to fill")
             for itfile,tfile in enumerate(range(len(decay))):
                 
-                #print(decay[tfile])
+                print(decay[tfile])
                 if "VBF" in decay[tfile]:
+                    if  "0L1" in decay[tfile] : continue
+                    #print (decay[tfile])
                     skey = decay[tfile].split("/")[-2].replace('_M125_GaSM', '')
                     sampleweight = refden[skey]
-
+                    
                 if ( os.stat(decay[tfile]).st_size > 100 ):  
                         f = ROOT.TFile(decay[tfile])
                         t = f.Get("eventTree")
@@ -304,31 +306,43 @@ def FillHist(targetprod,targetcomp,targetcateg,h_list,shape_syst_list) :
                                     if targetcomp == 0 : wght = event.p_Gen_JJEW_SIG_ghv1_1_MCFM*0.5
                                     if targetcomp == 1 : wght = event.p_Gen_JJEW_BSI_ghv1_1_MCFM*0.5
                                     if targetcomp == 2 : wght = event.p_Gen_JJEW_BKG_MCFM*0.5
+                                    samplew = -1.
+                                    samplew = eval( "event."+sampleweight ) 
+                                    wght = wght/samplew 
                                     
-
-                                weight_nom = wght*137.1*1000*event.xsec*event.overallEventWeight*event.L1prefiringWeight/event.Bin40   
+                                weight_nom = wght*lumi_year*1000*event.xsec*event.overallEventWeight*event.L1prefiringWeight/event.Bin40   
                                 
-                                htt.Fill(event.ZZMass,event.Dbsi,event.Dbkg,weight_nom)
+                                htt.Fill(event.ZZMass,event.Dbkg,event.Dbsi,weight_nom)
+                                #print (event.ZZMass,"Dbsi" , event.Dbsi,"Dbkg",event.Dbkg)
                                 htt_nom.Fill(event.ZZMass,weight_nom)
                                 
+                                #print ("for background ",weight_nom,htt.Integral())
+
+                                
+
+
                                 for isyst,systt in enumerate(htt_syst) : 
                                     #need to change here the up and down systematics
-                                    wsystu,wsystdn  = getsyst("pdf",0,2018,event.ZZMass)
-                                    #print (wsystu,wsystdn)
+                                    if "qqZZ" not in systt : 
+                                        wsystu,wsystdn  = getsyst(systt,0,2018,event.ZZMass)
+                                    else : 
+                                        wsystu   = 1.0 + event.KFactor_EW_qqZZ_unc
+                                        wsystdn  = 1.0 - event.KFactor_EW_qqZZ_unc
+                                        #print (wsystu,wsystdn)
                                     #print (htt_syst[isyst])
-                                    htt_syst[isyst][0].Fill(event.ZZMass,event.Dbsi,event.Dbkg,wsystu*weight_nom)                     
-                                    htt_syst[isyst][1].Fill(event.ZZMass,event.Dbsi,event.Dbkg,wsystdn*weight_nom)
+                                    htt_syst[isyst][0].Fill(event.ZZMass,event.Dbkg,event.Dbsi,wsystu*weight_nom)                     
+                                    htt_syst[isyst][1].Fill(event.ZZMass,event.Dbkg,event.Dbsi,wsystdn*weight_nom)
                                     #print (weight_nom,wsystu,wsystdn)
 
                                     
 
-                        #t.Draw("Dbsi:Dbkg:ZZMass>>htt",weight,"")                        
+                       #t.Draw("Dbsi:Dbkg:ZZMass>>htt",weight,"")                        
                         #t.Draw("ZZMass>>htt_nom",weight,"")
                         #t.Draw("ZZMass>>htt_ew_systup",weightewzzup,"")
                         #t.Draw("ZZMass>>htt_ew_systdn",weightewzzdn,"")
                         #t.Draw("ZZMass>>htt_qr_up",weightqrup,"")    
                         #t.Draw("ZZMass>>htt_qr_dn",weightqrdn,"")    
-                        #print ("htt_up:", htt_ew_systup.Integral())
+                        #print ("htt: file", htt.Integral())
                         #print ("htt_dn:", htt_ew_systdn.Integral())
                         #print("doneevents",htt.Integral())
                         if count == 0:
@@ -369,7 +383,7 @@ def FillHist(targetprod,targetcomp,targetcateg,h_list,shape_syst_list) :
                             
                             count+=1
             #print ("ht = ", ht.Integral())
-            #print ("count :",count)
+            
             ht.Scale(1./count)
             ht_nom.Scale(1./count)
             ht_systdn.Scale(1./count)
@@ -378,7 +392,7 @@ def FillHist(targetprod,targetcomp,targetcateg,h_list,shape_syst_list) :
                 ht_syst[isyst][0].Scale(1./count)
                 ht_syst[isyst][1].Scale(1./count)
                             
-                    
+            #print ("ht = ",ht.Integral(),"count :",count)        
             #print("ht = ", ht.Integral())
             hs.Add(ht)
             #print ("hs =", hs.Integral())
@@ -391,10 +405,11 @@ def FillHist(targetprod,targetcomp,targetcateg,h_list,shape_syst_list) :
             hs_nom.Add(ht_nom)
             #hs_qr_up.Add(ht_qr_up)
             #hs_qr_dn.Add(ht_qr_dn) 
-            #print("hs = ", hs.Integral())
+            #print("hs = ", hs.GetEntries())
 
+        #print ("hf  before addition:",hf.GetEntries())    
         hf.Add(hs)
-        #print  ("hf = ", hf.Integral())
+        #print  ("hf = ", hf.GetEntries())
         for isyst in range(0,len(hf_syst)) : 
             hf_syst[isyst][0].Add(hs_syst[isyst][0])
             hf_syst[isyst][1].Add(hs_syst[isyst][1])
@@ -410,12 +425,14 @@ def FillHist(targetprod,targetcomp,targetcateg,h_list,shape_syst_list) :
 
         #print("hf = ", hf_nom.Integral())
         hf.Scale(1./len(yeardict.keys()))
+        #print (1./len(yeardict.keys()))
         hf_systdn.Scale(1./len(yeardict.keys()))
         hf_systup.Scale(1./len(yeardict.keys()))
         hf_nom.Scale(1./len(yeardict.keys()))
         hf.SetName(production+"_"+str(targetcomp))
+        #print("hf@listapp  = ", hf_nom.Integral())
         h_list.append(hf)
-
+        
         for isyst in range(0,len(hf_syst)) :
             
             h_list.append(hf_syst[isyst][0])
@@ -426,7 +443,10 @@ def FillHist(targetprod,targetcomp,targetcateg,h_list,shape_syst_list) :
 
 syst_list = []
 if production == "gg" : 
-    syst_list = ["qcd_ren","qcd_fact","pdf","a_strong"]
+    syst_list = ["qcdren","qcdfact","pdf","astrong","kfqcd","kfpdf","kfas","kfnnqcd","kfnnpdf","kfnnas"]
+if production == "ZZTo4l" : 
+    syst_list = ["ewqqZZ"]
+
 h_list_withsyst =[]
 catt = -1
 if category == "Untagged" : catt = 0 
@@ -440,7 +460,7 @@ for tcomp in ltargetcomp:
        print ("Running ",production," ",catt,"  comp:",tcomp)    #FillHist(production,tcomp,catt,h_list_withsyst,syst_list_ggh)
        FillHist(production,tcomp,catt,h_list_withsyst,syst_list)
 
-       
+
 
 '''
         
