@@ -265,8 +265,8 @@ def Tag_AC_19_Scheme_2( nExtraLep,
   p_HadZH_SIG_ghz1prime2_1E4_JHUGen_JECNominal = p_HadZH_SIG_ghz1prime2_1E4_JHUGen_JECNominal * (gConstants.getvalue("L1","ZH",ZZMass,gConstant_list)/10000)**2 
   p_HadWH_SIG_ghw1prime2_1E4_JHUGen_JECNominal = p_HadWH_SIG_ghw1prime2_1E4_JHUGen_JECNominal * (gConstants.getvalue("L1","WH",ZZMass,gConstant_list)/10000)**2 
   # ghzgsprime1 
-  p_JJVBF_SIG_ghza1prime2_1E4_JHUGen_JECNominal = p_JJVBF_SIG_ghza1prime2_1E4_JHUGen_JECNominal * (gConstants.getvalue("L1Zgs","VBF",ZZMass,gConstant_list)/10000)**2 
-  p_HadZH_SIG_ghza1prime2_1E4_JHUGen_JECNominal = p_HadZH_SIG_ghza1prime2_1E4_JHUGen_JECNominal * (gConstants.getvalue("L1Zgs","ZH",ZZMass,gConstant_list)/10000)**2 
+  p_JJVBF_SIG_ghza1prime2_1E4_JHUGen_JECNominal = p_JJVBF_SIG_ghza1prime2_1E4_JHUGen_JECNominal * (gConstants.getvalue("L1Zg","VBF",ZZMass,gConstant_list)/10000)**2 
+  p_HadZH_SIG_ghza1prime2_1E4_JHUGen_JECNominal = p_HadZH_SIG_ghza1prime2_1E4_JHUGen_JECNominal * (gConstants.getvalue("L1Zg","ZH",ZZMass,gConstant_list)/10000)**2 
   p_HadWH_SIG_ghza1prime2_1E4_JHUGen_JECNominal = 0
   # g4 
   p_JJVBF_SIG_ghv4_1_JHUGen_JECNominal = p_JJVBF_SIG_ghv4_1_JHUGen_JECNominal * gConstants.getvalue("g4","VBF",ZZMass,gConstant_list)**2 
@@ -333,8 +333,8 @@ def Tag_AC_19_Scheme_2_gammaH( nExtraLep,  nExtraZ,  nCleanedJetsPt30,  nCleaned
   p_HadZH_SIG_ghz1prime2_1E4_JHUGen_JECNominal = p_HadZH_SIG_ghz1prime2_1E4_JHUGen_JECNominal * (gConstants.getvalue("L1","ZH",ZZMass,gConstant_list)/10000)**2 
   p_HadWH_SIG_ghw1prime2_1E4_JHUGen_JECNominal = p_HadWH_SIG_ghw1prime2_1E4_JHUGen_JECNominal * (gConstants.getvalue("L1","WH",ZZMass,gConstant_list)/10000)**2 
   # ghzgsprime1 
-  p_JJVBF_SIG_ghza1prime2_1E4_JHUGen_JECNominal = p_JJVBF_SIG_ghza1prime2_1E4_JHUGen_JECNominal * (gConstants.getvalue("L1Zgs","VBF",ZZMass,gConstant_list)/10000)**2 
-  p_HadZH_SIG_ghza1prime2_1E4_JHUGen_JECNominal = p_HadZH_SIG_ghza1prime2_1E4_JHUGen_JECNominal * (gConstants.getvalue("L1Zgs","ZH",ZZMass,gConstant_list)/10000)**2 
+  p_JJVBF_SIG_ghza1prime2_1E4_JHUGen_JECNominal = p_JJVBF_SIG_ghza1prime2_1E4_JHUGen_JECNominal * (gConstants.getvalue("L1Zg","VBF",ZZMass,gConstant_list)/10000)**2 
+  p_HadZH_SIG_ghza1prime2_1E4_JHUGen_JECNominal = p_HadZH_SIG_ghza1prime2_1E4_JHUGen_JECNominal * (gConstants.getvalue("L1Zg","ZH",ZZMass,gConstant_list)/10000)**2 
   p_HadWH_SIG_ghza1prime2_1E4_JHUGen_JECNominal = 0
   # g4 
   p_JJVBF_SIG_ghv4_1_JHUGen_JECNominal = p_JJVBF_SIG_ghv4_1_JHUGen_JECNominal * gConstants.getvalue("g4","VBF",ZZMass,gConstant_list)**2 

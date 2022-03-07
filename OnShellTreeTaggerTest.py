@@ -152,7 +152,7 @@ def main(argv):
             for name in Analysis_Config.Discriminants_To_Calculate:
               branchdict[name] = []
             #for ent in trange(t.GetEntries()):
-            for ent in trange(1000):
+            for ent in trange(t.GetEntries()):
 
                 #================ Loop over events ================
 
@@ -228,6 +228,9 @@ def main(argv):
                                                    gConstants_list)
                     #================ Saving category tag ================
                         branchdict["EventTag"].append(tag)
+                    #============= Save pt_4l discriminants ==============
+                    if "Pt4l" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["Pt4l"].append(t.ZZPt)
                     #===== Calculating Useful Info for OnShell Discriminants ======
                     notdijet = OnShell_Help.notdijet(t.p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal)
                     #================ Calculating AC discriminants ================
@@ -238,7 +241,7 @@ def main(argv):
                     if "D_0hplus_decay" in Analysis_Config.Discriminants_To_Calculate:
                       branchdict["D_0hplus_decay"].append(Discriminants.D_0hplus_decay(t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_GG_SIG_ghg2_1_ghz1_1_ghz2_1_JHUGen,t.ZZMass,gConstants_list))
                     if "D_int_decay" in Analysis_Config.Discriminants_To_Calculate:
-                      branchdict["D_int_decay"].append(Discriminants.D_int_decay(t.p_GG_SIG_ghg2_1_ghz1_1_ghz2_1_JHUGen,t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.ZZMass,gConstants_list))
+                      branchdict["D_int_decay"].append(Discriminants.D_int_decay(t.p_GG_SIG_ghg2_1_ghz1_1_ghz2_1_JHUGen,t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_GG_SIG_ghg2_1_ghz2_1_JHUGen,t.ZZMass,gConstants_list))
                     if "D_L1_decay" in Analysis_Config.Discriminants_To_Calculate:
                       branchdict["D_L1_decay"].append(Discriminants.D_L1_decay(t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_GG_SIG_ghg2_1_ghz1prime2_1E4_JHUGen,t.ZZMass,gConstants_list))
                     if "D_L1int_decay" in Analysis_Config.Discriminants_To_Calculate:
@@ -308,7 +311,6 @@ def main(argv):
                     if "D_0hplus_gg_VBFdecay" in Analysis_Config.Discriminants_To_Calculate:
                       branchdict["D_0hplus_gg_VBFdecay"].append(Discriminants.D_0hplus_gg_VBFdecay(t.p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_JJVBF_SIG_gha2_1_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_gha2_1_JHUGen,notdijet,t.ZZMass,gConstants_list))
                     #=========== Calculating VH Hadronic Discriminants ============
-
                     WH_scale = OnShell_Help.HadWH_Scale_Nominal(t.p_HadWH_mavjj_JECNominal,t.p_HadWH_mavjj_true_JECNominal,t.pConst_HadWH_SIG_ghw1_1_JHUGen_JECNominal)
                     ZH_scale = OnShell_Help.HadZH_Scale_Nominal(t.p_HadZH_mavjj_JECNominal,t.p_HadZH_mavjj_true_JECNominal,t.pConst_HadZH_SIG_ghz1_1_JHUGen_JECNominal)
                     if "D_0minus_HadVH" in Analysis_Config.Discriminants_To_Calculate:
@@ -343,6 +345,8 @@ def main(argv):
                       branchdict["D_0hplus_gg_HadVH"].append(Discriminants.D_0hplus_gg_HadVH(t.p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,0,t.p_HadZH_SIG_gha2_1_JHUGen_JECNominal,WH_scale,ZH_scale,notdijet,t.ZZMass,gConstants_list))
                     if "D_int_gg_HadVH" in Analysis_Config.Discriminants_To_Calculate:
                       branchdict["D_int_gg_HadVH"].append(Discriminants.D_int_gg_HadVH(t.p_HadZH_SIG_ghz1_1_gha2_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,t.p_HadZH_SIG_gha2_1_JHUGen_JECNominal,WH_scale,ZH_scale,notdijet,t.ZZMass,gConstants_list))
+                    #============== Calculating VH Decay Discriminants ============
+
                     #================ Calculating BKG discriminants ===============
                     ZZFlav=t.Z1Flav*t.Z2Flav
                     if "D_bkg" in Analysis_Config.Discriminants_To_Calculate:

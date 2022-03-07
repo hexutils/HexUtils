@@ -74,7 +74,7 @@ def getvalue(hypothesis,process,m4l,gConstants):
     if process == "ZH": return gConstants["ZH_L1"].Eval(m4l)
     if process == "VBF": return gConstants["VBF_L1"].Eval(m4l)
     assert False, process
-  if hypothesis == "L1Zgs":
+  if hypothesis == "L1Zg":
     if process == "HZZ2e2mu": return gConstants["HZZ2e2mu_L1Zgs"].Eval(m4l)
     if process == "VH": return gConstants["VH_L1Zgs"].Eval(m4l)
     if process == "ZH": return gConstants["ZH_L1Zgs"].Eval(m4l)
