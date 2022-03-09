@@ -1,6 +1,7 @@
 import ROOT
 import sys 
 from ..data.Lep_Scale_Factor import *
+from ..data.Fake_Rates import getFakeRate, Normalize_ZX
 from .Fix_Xsec import *
 from root_numpy import array2tree, tree2array
 import numpy as np
@@ -104,6 +105,20 @@ def Calc_Tree_Weight_2021_gammaH(t,name): #Tree input as t and the name of the t
               KFactor_EW_qqZZ = tree2array(tree=t,branches=["KFactor_EW_qqZZ"])
               KFactor_EW_qqZZ = tree2array(tree=t,branches=["KFactor_QCD_qqZZ_M"])
               scale = scale * KFactor_EW_qqZZ * KFactor_QCD_qqZZ_M
+        elif "ZX" in name or "data" in name:
+          if "data" in name:
+            return np.ones(nEntries)
+          elif "ZX" in name:
+            LepLepId = tree2array(tree=t,branches=["LepLepId"])
+            LepPt = tree2array(tree=t,branches=["LepPt"])
+            LepEta = tree2array(tree=t,branches=["LepEta"])
+            ZX_Weight = []
+            for i in range(nEntries):
+              ZX_Norm = FakeRate.normalizeZX(self.year, self.usenewobjects, self.tree.Z1Flav, self.tree.Z2Flav) 
+              ZX_Lep2FR = ZX.getfakerate(self.year, self.usenewobjects, LepPt[2], LepEta[2], LepLepId[2]) 
+              ZX_Lep3FR = ZX.getfakerate(self.year, self.usenewobjects, LepPt[3], LepEta[3], LepLepId[3])
+              ZX_Weight.append(ZX_Norm * ZX_Lep2FR * ZX_Lep3FR)
+            return ZX_Weight
         #===================================Make an array of each event weight===========================================#
 
         # Need to add Z + X stuff here at some point #
@@ -158,6 +173,20 @@ def Calc_Event_Weight_2021_gammaH(event,name): #Tree input as t and the name of 
               KFactor_EW_qqZZ = event.KFactor_EW_qqZZ
               KFactor_EW_qqZZ = event.KFactor_QCD_qqZZ_M
               scale = scale * KFactor_EW_qqZZ * KFactor_QCD_qqZZ_M
+        elif "ZX" in name or "data" in name:
+          if "data" in name:
+            return 1
+          elif "ZX" in name:
+            LepLepId = event.LepLepId
+            LepPt = event.LepPt
+            LepEta = event.LepEta
+            ZX_Weight = 0
+            ZX_Norm = FakeRate.normalizeZX(self.year, self.usenewobjects, self.tree.Z1Flav, self.tree.Z2Flav)
+            ZX_Lep2FR = ZX.getfakerate(self.year, self.usenewobjects, LepPt[2], LepEta[2], LepLepId[2])
+            ZX_Lep3FR = ZX.getfakerate(self.year, self.usenewobjects, LepPt[3], LepEta[3], LepLepId[3])
+            ZX_Weight.append(ZX_Norm * ZX_Lep2FR * ZX_Lep3FR)
+            return ZX_Weight
+
         #===================================Make an array of each event weight===========================================#
 
         # Need to add Z + X stuff here at some point #
