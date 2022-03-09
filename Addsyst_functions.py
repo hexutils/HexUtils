@@ -1,8 +1,22 @@
+def addhzzbr(lines,processes):
+    line = "hzz_br lnN"
+    for pr in processes :
+        if "back" not in pr : 
+            line =  line + " 1.02"
+        else :
+             line = line + " -"
+    
+    lines.append(line)    
+    
+
+
 def addlumi(lines,processes):
     line = "lumi_13TeV lnN"
     for pr in processes :
-        line =  line + " 1.025/0.975" 
-    #line = line + " \n"    
+        line =  line + " 1.016/0.984" 
+    #line = line + " \n"
+    #taken from https://twiki.cern.ch/twiki/bin/view/CMS/TWikiLUM#SummaryTable
+    
     lines.append(line)    
 
 def addQCDscale_muR_ggH(lines,processes):
@@ -49,6 +63,21 @@ def addQCDscale_muF_qqH(lines,processes):
     #line = line + " \n"    
     lines.append(line)
 
+
+def addCMS_EFF_mu(lines,processes):
+    line = "CMS_eff_mu lnN"
+    
+    for pr in processes : 
+        line = line + " 1.0191/0.9799"
+    lines.append(line)
+        
+def addCMS_EFF_e(lines,processes):
+    line = "CMS_eff_e lnN"
+    
+    for pr in processes : 
+        line = line + " 1.0584/0.9383"
+    lines.append(line)
+        
 
 
 def addEWcorr_qqZZ(lines,processes):

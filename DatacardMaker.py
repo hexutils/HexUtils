@@ -29,11 +29,12 @@ for key in fin.GetListOfKeys():
         
         if "Up" not in h_name and "Down" not in h_name and "data" not in h_name:
             hist = fin.Get(h_name)
+            
             hrate = hist.Integral()
             processes.append(h_name)
             rate.append(hrate)
             h_temp = fin.Get(h_name)
-            print (h_name , hrate)
+            print ("this:",h_name , hrate)
         elif "data" not in h_name:
             hnml = h_name.split("_")
             syst_name = hnml[2]
@@ -44,7 +45,7 @@ for key in fin.GetListOfKeys():
             syst_name = syst_name.replace("Up","")        
             syst_name = syst_name.replace("positive_","")        
             syst_name = syst_name.replace("negative_","")        
-            #print (syst_name)
+            print (syst_name)
             if syst_name not in applyshapesyst : applyshapesyst.append(syst_name)
             psyst = h_name.replace("Down","")
             psyst = psyst.replace("Up","")
@@ -108,7 +109,10 @@ for isyst,syst in enumerate(applyshapesyst):
 
 scale_syst = []
 addlumi(scale_syst,processes)
-addEWcorr_qqZZ(scale_syst,processes)
+addhzzbr(scale_syst,processes)
+addCMS_EFF_e(scale_syst,processes)
+addCMS_EFF_mu(scale_syst,processes)
+#addEWcorr_qqZZ(scale_syst,processes)
 
 
           
