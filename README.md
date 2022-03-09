@@ -1,5 +1,11 @@
 # HexUtils
 
+HexUtils is a coherent framework assembled by the Higgs group at Johns Hopkins University, comprised of mostly Python-based tools which are actively maintained for use in our research and designed to be compatible with the CJLST framework for H → ZZ → 4l. 
+
+The wiki pages in this repository are meant to orient new users as well as provide detailed instructions for use of these tools in physics analyses. 
+
+Keep in mind that this framework can be modified to run over any kind of ROOT TTrees, but is intended for OOTB use on trees produced by the CJLST framework. (Please contact one of the members of our group for more information about modification.) Also note that while HexUtils is maintained by the Higgs group at JHU, it is entirely independent from JHUGen which is our model-independent generator of new resonances that produces LHE files of simulated events.
+
 ## Installing the framework
 
 Follow these instructions if you are installing these tools on **LXPLUS** or a similar service which has CMSSW releases available. Otherwise, read on. 
