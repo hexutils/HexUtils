@@ -2,7 +2,7 @@
 
 ## Installing
 
-Follow these instructions if you are isntalling these tools on **LXPLUS** or a similar service which has CMSSW releases available. Otherwise, simply clone this repository into your working area, compile, and read on. Reference the **Rockfish** section at the bottom for more information on using the Rockfish cluster.
+Follow these instructions if you are installing these tools on **LXPLUS** or a similar service which has CMSSW releases available. Otherwise, simply clone this repository into your working area, compile, and read on. Reference the **Rockfish** section at the bottom for more information on using the Rockfish cluster.
 1. Copy the install.sh locally.
 2. Specify the ```CMSSW_release``` you want to use at the top of install.sh. Currently **CMSSW_12_2_0** is recommended.
 3. ```source install.sh``` will check out the CMSSW release and HexUtils repository, and build everything.
