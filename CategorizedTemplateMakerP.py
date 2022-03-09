@@ -301,7 +301,7 @@ def FillHist(targetprod,targetcomp,targetcateg,h_list,shape_syst_list) :
                                     if targetcomp == 2 : wght = event.p_Gen_GG_BKG_MCFM*event.KFactor_QCD_ggZZ_Nominal
                                     
                                 if production == "ZZTo4l" :
-                                    wght =1
+                                    wght = event.KFactor_EW_qqZZ
                                 if production == "VBF" : 
                                     if targetcomp == 0 : wght = event.p_Gen_JJEW_SIG_ghv1_1_MCFM*0.5
                                     if targetcomp == 1 : wght = event.p_Gen_JJEW_BSI_ghv1_1_MCFM*0.5
