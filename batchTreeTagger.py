@@ -82,7 +82,7 @@ def main(argv):
 
     print("Input CJLST TTree is '{}'".format(inputfile))
     print("Path subdirectory is '{}'".format(pthsubdir))
-    print("Output directory is '{}'".format(outputdir))
+    print("Output directory is '{}'".format(outputdir[:-1]))
     print("Branch list file is '{}'".format(branchfile))
 
     print("\n================ Processing user input ================\n")
@@ -125,6 +125,8 @@ def main(argv):
     WPCshift2jw = 0.88384/(1. - 0.88384)
 
     #================ Check existence of output and set up target branches ================
+
+    removeSubtrees = False
 
     print("================ Check output location and set up branches ================\n")
 
@@ -172,8 +174,8 @@ def main(argv):
                     signfixdict[branch.replace("-", "m")] = array('f',[0])
                     t.SetBranchAddress(branch, signfixdict[branch.replace("-", "m")])
                     branchdict[branch.replace("-", "m")] = [] 
-                elif branch not in treebranches:
-                    branchdict[branch.replace("-", "m")] = [-999] * t.GetEntries()
+#                elif branch not in treebranches:
+#                    branchdict[branch.replace("-", "m")] = [-999] * t.GetEntries()
 
             branchdict["EventTag"] = []
             branchdict["Dbkg"] = []
@@ -461,9 +463,10 @@ def main(argv):
 
         print("Merged eventTree written to '{}'\n".format(tagtreefilename))
 
-        for i in range(len(treenames)):
-            if os.path.exists(tagtreefilename.replace(".root", "_subtree"+str(i)+".root")):
-                os.remove(tagtreefilename.replace(".root", "_subtree"+str(i)+".root"))
+        if removeSubtrees:
+            for i in range(len(treenames)):
+                if os.path.exists(tagtreefilename.replace(".root", "_subtree"+str(i)+".root")):
+                    os.remove(tagtreefilename.replace(".root", "_subtree"+str(i)+".root"))
 
         f = ROOT.TFile(tagtreefilename, 'READ')
         t = f.Get("eventTree")
