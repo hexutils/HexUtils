@@ -112,6 +112,7 @@ addlumi(scale_syst,processes)
 addhzzbr(scale_syst,processes)
 addCMS_EFF_e(scale_syst,processes)
 addCMS_EFF_mu(scale_syst,processes)
+addkf_ggZZ_background(scale_syst,processes)
 #addEWcorr_qqZZ(scale_syst,processes)
 
 
