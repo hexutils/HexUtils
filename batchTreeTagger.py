@@ -69,12 +69,12 @@ def main(argv):
 
     removesubtrees = removesubtrees.replace(" ", "").capitalize()
 
-    if not Path(inputfile).exists():
+    if not os.path.exists(inputfile):
         print("\nERROR: \tROOT file '" + inputfile + "' cannot be located. Please try again with valid input.\n")
         print('batchTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
         exit()
 
-    if not Path(branchfile).exists():
+    if not os.path.exists(branchfile):
         print("\nERROR: \tBranches list '" + branchfile + "' cannot be located. Please try again with valid input.\n")
         print('batchTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
         exit()
@@ -145,17 +145,17 @@ def main(argv):
 
     print("================ Check output location and set up branches ================\n")
 
-    if not Path(filename).exists():
+    if not os.path.exists(filename):
         print("ERROR: \t'" + filename + "' does not exist!\n")
         exit()
 
-    elif Path(tagtreefilename).exists() or glob.glob(tagtreefilename.replace(".root", "_subtree*.root")):
+    elif os.path.exists(tagtreefilename) or glob.glob(tagtreefilename.replace(".root", "_subtree*.root")):
         print("ERROR: \t'" + tagtreefilename + "' or parts of it already exist!\n\tNote that part to all of the final eventTree can be reconstructed from its subtree files if necessary.\n")
         exit()
 
     else:
         print("Pre-existing output TTree not found --- safe to proceed")
-        if not Path("/".join(tagtreefilename.split("/")[:-1])).exists():
+        if not os.path.exists("/".join(tagtreefilename.split("/")[:-1])):
             Path("/".join(tagtreefilename.split("/")[:-1])).mkdir(True, True)
 
         branchlist = []
@@ -172,7 +172,13 @@ def main(argv):
 
         #================ Loop over target trees ================
 
+        d = f.Get("ZZTree")
+        fobjects = [key.GetName() for key in d.GetListOfKeys()]
+
         for tind, tree in enumerate(treenames):
+            if tree not in fobjects:
+                continue
+            
             print("\n================ Reading events from '" + tree + "' and calculating new branches ================\n")
 
             t = f.Get("ZZTree/"+tree)
@@ -473,13 +479,14 @@ def main(argv):
         mergecmd = "hadd -O {}".format(tagtreefilename)
 
         for i in range(len(treenames)):
-            mergecmd = mergecmd + " {}".format(tagtreefilename.replace(".root", "_subtree"+str(i)+".root"))
+            if os.path.exists(tagtreefilename.replace(".root", "_subtree"+str(i)+".root")):
+                mergecmd = mergecmd + " {}".format(tagtreefilename.replace(".root", "_subtree"+str(i)+".root"))
         
         process = subprocess.Popen(mergecmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         
         process.communicate()
 
-        print("Merged eventTree written to '{}' with return code {}\n".format(tagtreefilename, process.returncode))
+        print("Merged eventTree written to '{}'\n".format(tagtreefilename))
 
         if removesubtrees:
             for i in range(len(treenames)):
