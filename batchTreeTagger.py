@@ -470,7 +470,7 @@ def main(argv):
 
         print("\n================ Building and saving final merged eventTree ================\n")
 
-        mergecmd = "hadd -f {}".format(tagtreefilename)
+        mergecmd = "hadd -O {}".format(tagtreefilename)
 
         for i in range(len(treenames)):
             mergecmd = mergecmd + " {}".format(tagtreefilename.replace(".root", "_subtree"+str(i)+".root"))
