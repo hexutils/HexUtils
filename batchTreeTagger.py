@@ -27,20 +27,22 @@ from collections import Counter
 from decimal import *
 import root_numpy
 from root_numpy import array2tree, tree2array
+import subprocess
 
 def main(argv):
     inputfile = ''
     pthsubdir = ''
     outputdir = ''
     branchfile = ''
+    removesubtrees = ''
     try:
-        opts, args = getopt.getopt(argv,"hi:s:o:b:",["ifile=","subdr=","outdr=","bfile="])
+        opts, args = getopt.getopt(argv,"hi:s:o:b:c:",["ifile=","subdr=","outdr=","bfile=","clean="])
     except getopt.GetoptError:
-        print('\nbatchTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile>\n')
+        print('\nbatchTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
         exit()
     for opt, arg in opts:
-        if opt == '-h':
-            print('\nbatchTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile>\n')
+        if opt == '-h' or opt == '--help':
+            print('\nbatchTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
             exit()
         elif opt in ("-i", "--ifile"):
             inputfile = arg
@@ -50,9 +52,11 @@ def main(argv):
             outputdir = arg
         elif opt in ("-b", "--bfile"):
             branchfile = arg
-    
+        elif opt in ("-c", "--clean"):
+            removesubtrees = arg
+
     if not all([inputfile, pthsubdir, outputdir, branchfile]):
-        print('\nbatchTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile>\n')
+        print('\nbatchTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
         exit()
 
     if not outputdir.endswith("/"):
@@ -63,20 +67,31 @@ def main(argv):
 
     pthsubdir = pthsubdir.split("/")[-2]
 
+    removesubtrees = removesubtrees.replace(" ", "").capitalize()
+
     if not Path(inputfile).exists():
-        print("\nERROR: \tROOT file '" + inputfile + "' cannot be located! Please try again with valid input.\n")
-        print('batchTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile>\n')
+        print("\nERROR: \tROOT file '" + inputfile + "' cannot be located. Please try again with valid input.\n")
+        print('batchTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
         exit()
 
     if not Path(branchfile).exists():
-        print("\nERROR: \tBranches list '" + branchfile + "' cannot be located! Please try again with valid input.\n")
-        print('batchTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile>\n')
+        print("\nERROR: \tBranches list '" + branchfile + "' cannot be located. Please try again with valid input.\n")
+        print('batchTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
         exit()
 
     if pthsubdir not in inputfile:
-        print("\nERROR: \tSubdirectory '" + pthsubdir + "' is not in the input path! Please try again with valid input.\n")
-        print('batchTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile>\n')
+        print("\nERROR: \tSubdirectory '" + pthsubdir + "' is not in the input path. Please try again with valid input.\n")
+        print('batchTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
         exit()
+
+    if len(removesubtrees) > 0:
+        if removesubtrees not in ["True", "False"]:
+            print("\nERROR: \tOption '-c' is expected to be True or False. Please try again with valid input.\n")
+            print('batchTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
+            exit()
+    else: removesubtrees = "True"
+
+    removesubtrees = eval(removesubtrees)
 
     print("\n================ Reading user input ================\n")
 
@@ -84,6 +99,8 @@ def main(argv):
     print("Path subdirectory is '{}'".format(pthsubdir))
     print("Output directory is '{}'".format(outputdir[:-1]))
     print("Branch list file is '{}'".format(branchfile))
+    if removesubtrees: print("Subtrees will be removed after combination")
+    else: print("Subtrees will be maintained after combination")
 
     print("\n================ Processing user input ================\n")
 
@@ -126,8 +143,6 @@ def main(argv):
 
     #================ Check existence of output and set up target branches ================
 
-    removeSubtrees = False
-
     print("================ Check output location and set up branches ================\n")
 
     if not Path(filename).exists():
@@ -158,8 +173,6 @@ def main(argv):
         #================ Loop over target trees ================
 
         for tind, tree in enumerate(treenames):
-            ftemptree = ROOT.TFile(tagtreefilename.replace(".root", "_subtree"+str(tind)+".root"), "CREATE")
-
             print("\n================ Reading events from '" + tree + "' and calculating new branches ================\n")
 
             t = f.Get("ZZTree/"+tree)
@@ -174,8 +187,6 @@ def main(argv):
                     signfixdict[branch.replace("-", "m")] = array('f',[0])
                     t.SetBranchAddress(branch, signfixdict[branch.replace("-", "m")])
                     branchdict[branch.replace("-", "m")] = [] 
-#                elif branch not in treebranches:
-#                    branchdict[branch.replace("-", "m")] = [-999] * t.GetEntries()
 
             branchdict["EventTag"] = []
             branchdict["Dbkg"] = []
@@ -436,34 +447,41 @@ def main(argv):
                 if branch not in branchlist or "-" in branch:
                     t.SetBranchStatus(branch, 0)
 
-            exec("new{} = t.CloneTree()".format(tree))
+            ftemptree = ROOT.TFile(tagtreefilename.replace(".root", "_subtree"+str(tind)+".root"), "CREATE")
+            
+            t.SetObject('eventTree', 'eventTree')
+
+            exec("new{} = t.CloneTree(-1, 'fast')".format(tree))
 
             for key in branchdict.keys():
-                exec("array2tree(np.array(branchdict['{}'], dtype=[('{}', float)]), tree=new{})".format(key, key, tree))
+                exec("array2tree(np.array(branchdict['{}'], dtype=[('{}', np.single)]), tree=new{})".format(key, key, tree))
 
             print("\n================ Saving processed '"+tree+"' ================\n")
 
             exec("new{}.SetName('eventTree')".format(tree))
+
             exec("new{}.Write()".format(tree))
 
             ftemptree.Close()
-
+            
             print("Modified '{}' written to '{}'".format(tree, tagtreefilename.replace(".root", "_subtree"+str(tind)+".root")))
 
         f.Close()
 
         print("\n================ Building and saving final merged eventTree ================\n")
 
-        chain = ROOT.TChain("eventTree")
+        mergecmd = "hadd -f {}".format(tagtreefilename)
 
         for i in range(len(treenames)):
-            chain.Add(tagtreefilename.replace(".root", "_subtree"+str(i)+".root"))
+            mergecmd = mergecmd + " {}".format(tagtreefilename.replace(".root", "_subtree"+str(i)+".root"))
+        
+        process = subprocess.Popen(mergecmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        
+        process.communicate()
 
-        chain.Merge(tagtreefilename)
+        print("Merged eventTree written to '{}' with return code {}\n".format(tagtreefilename, process.returncode))
 
-        print("Merged eventTree written to '{}'\n".format(tagtreefilename))
-
-        if removeSubtrees:
+        if removesubtrees:
             for i in range(len(treenames)):
                 if os.path.exists(tagtreefilename.replace(".root", "_subtree"+str(i)+".root")):
                     os.remove(tagtreefilename.replace(".root", "_subtree"+str(i)+".root"))
