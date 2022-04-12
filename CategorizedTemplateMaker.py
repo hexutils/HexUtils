@@ -26,16 +26,17 @@ def main(argv):
     treelistpath = ''
     production = ''
     category = ''
+    final_state = ''
     year = ''
     outputdir = ''
     try:
-        opts, args = getopt.getopt(argv,"hi:p:c:y:o:",["ifile=","pfile=","cfile=","yfile=","ofile="])
+        opts, args = getopt.getopt(argv,"hi:p:c:f:y:o:",["ifile=","pfile=","cfile=","ffile=","yfile=","ofile="])
     except getopt.GetoptError:
-        print('CategorizedTemplateMaker.py -i <treelistpath> -p <production> -c <category> -y <year> -o <output_directory>')
+        print('CategorizedTemplateMaker.py -i <treelistpath> -p <production> -c <category> -f <final_state> -y <year> -o <output_directory>')
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print('CategorizedTemplateMaker.py -i <treelistpath> -p <production> -c <category> -y <year> -o <output_directory>')
+            print('CategorizedTemplateMaker.py -i <treelistpath> -p <production> -c <category> -f <final_state> -y <year> -o <output_directory>')
             sys.exit()
         elif opt in ("-i", "--ifile"):
             treelistpath = arg
@@ -43,12 +44,14 @@ def main(argv):
             production = arg
         elif opt in ("-c", "--cfile"):
             category = arg
+        elif opt in ("-f", "--ffile"):
+            final_state = arg
         elif opt in ("-y", "--yfile"):
             year = arg
         elif opt in ("-o", "--ofile"):
             outputdir = arg
-    if not all([treelistpath, production, category, year, outputdir]):
-        print('CategorizedTemplateMaker.py -i <treelistpath> -p <production> -c <category> -y <year> -o <output_dir>')
+    if not all([treelistpath, production, category, final_state, year, outputdir]):
+        print('CategorizedTemplateMaker.py -i <treelistpath> -p <production> -c <category> -fs <final_state> -y <year> -o <output_dir>')
         sys.exit(2)
     if not outputdir.endswith("/"):
         outputdir = outputdir+"/"
@@ -59,6 +62,7 @@ def main(argv):
     print("Production mode is '{}'".format(production))
     print("Category is '{}'".format(category))
     print("Year is '{}'".format(year))
+    print("Final state is '{}'".format(final_state))
     print("Output Directory is '{}'".format(outputdir))
 
     print("\n================ Processing user input ================\n")
@@ -103,7 +107,7 @@ def main(argv):
 
     for numfile in range(0,len(treelist)):
       filename = treelist[numfile]
-      print(filename)
+      #print(filename)
       ind = filename.split("/").index(Analysis_Config.TreeFile) # ex 200205_CutBased set in Config #
       year = filename.split("/")[ind:][1]
       ## Allow for strings in the year##
@@ -124,14 +128,13 @@ def main(argv):
         yeardict[year][prod][0].append(filename)
       except:
         print("ERROR: Cannot recognize production mode of " + filename + "! Tree not sorted!")
-    print(yeardict)
+    print("yeardict: ",yeardict)
 
     hlist = []
-    foutName = FillHistOnShellNoSyst(production,category,hlist,yeardict,Analysis_Config,year) # Store the Histrograms before unrolling
+    foutName = FillHistOnShellNoSyst(production,category,hlist,yeardict,Analysis_Config,year,final_state) # Store the Histrograms before unrolling
     fout = ROOT.TFile(rolled_dir+foutName,"recreate")
     fout.cd()
 
-    print  ("here")
     for hist in hlist: 
       print ("writing :",hist.GetName(),hist.Integral())
       hist.Write()
