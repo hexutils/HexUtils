@@ -4,4 +4,4 @@ cd /afs/cern.ch/work/j/jejeffre/public/HEP_Ex_Tools/HexUtils/HexUtils/CMSSW_12_2
 eval `scramv1 runtime -sh`
 cd /afs/cern.ch/work/j/jejeffre/public/HEP_Ex_Tools/HexUtils/HexUtils
 TREEFILENAME=$(sed $1!d signal_trees.txt)
-python3 OnShellTreeTaggerTest.py -i $TREEFILENAME -o Tagges_Signal_Trees -b branchlist.txt 2>&1
+python3 OnShellTreeTagger.py -i $TREEFILENAME -o Tagged_Signal_Trees -b branchlist.txt 2>&1
