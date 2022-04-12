@@ -1,10 +1,21 @@
 def sort_category(Analysis_Config,prod):
+   print("here")
    if Analysis_Config.name == "OnShell_HVV_Photons_2021":
      p_sorted = False
+     print("Here",prod)
      if "ZZTo4l" in prod: 
        prod = "ZZTo4l"
        p_sorted = True
-     if 'ggH' in prod:
+     elif any(x in prod for x in ["ggTo4e","ggTo2e2mu","ggTo2e2tau","ggTo2mu2tau","ggTo4mu","ggTo4tau"]): 
+       prod = "ggTo4l"
+       p_sorted = True
+     elif all(x in prod for x in ["VBF","Contin"]): 
+       prod = "EWbkg"
+       p_sorted = True
+     elif 'data' in prod:
+       prod = "ZX"
+       p_sorted = True
+     elif 'ggH' in prod:
        prod = "ggH"
        p_sorted = True
      elif 'VBF' in prod:

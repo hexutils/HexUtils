@@ -250,56 +250,51 @@ def Check_Input(ProductionMode,Hypothesis,HffHypothesis):
                     raise ValueError("Bad hffhypothesis {} for {} productionmode\n{}".format(HffHypothesis, ProductionMode))
             else:
                 if HffHypothesis is not None:
-                    raise ValueError("Hff hypothesis provided for {} productionmode\n{}".format(ProductionMode))
-        elif ProductionMode in ("ggZZ", "VBF bkg"):
+                    raise ValueError("Hff hypothesis provided for {} productionmode\n".format(ProductionMode))
+        elif ProductionMode in ("ggZZ", "VBF_bkg"):
             if Hypothesis is not None:
-                raise ValueError("Hypothesis provided for {} productionmode\n{}".format(ProductionMode))
+                raise ValueError("Hypothesis provided for {} productionmode\n".format(ProductionMode))
             if HffHypothesis is not None:
-                raise ValueError("Hff hypothesis provided for {} productionmode\n{}".format(ProductionMode))
+                raise ValueError("Hff hypothesis provided for {} productionmode\n".format(ProductionMode))
         elif ProductionMode in ("qqZZ", "TTZZ", "ZZZ", "WZZ", "WWZ", "TTWW", "TTZJets_M10_MLM", "TTZToLLNuNu_M10", "TTZToLL_M1to10_MLM", "EW") + tuple(ggZZoffshellproductionmodes):
             if Hypothesis is not None:
-                raise ValueError("Hypothesis provided for {} productionmode\n{}".format(ProductionMode))
+                raise ValueError("Hypothesis provided for {} productionmode\n".format(ProductionMode))
             if HffHypothesis is not None:
-                raise ValueError("Hff hypothesis provided for {} productionmode\n{}".format(ProductionMode))
+                raise ValueError("Hff hypothesis provided for {} productionmode\n".format(ProductionMode))
         elif ProductionMode in ("ZX", "data"):
             if Hypothesis is not None:
-                raise ValueError("Hypothesis provided for {} productionmode\n{}".format(ProductionMode))
+                raise ValueError("Hypothesis provided for {} productionmode\n".format(ProductionMode))
             if HffHypothesis is not None:
-                raise ValueError("Hff hypothesis provided for {} productionmode\n{}".format(ProductionMode))
+                raise ValueError("Hff hypothesis provided for {} productionmode\n".format(ProductionMode))
         else:
             raise ValueError("Bad productionmode {}\n{}".format(ProductionMode))
 
 # This function will parse the couplings from the Hypothesis and return them separately #
 def ParseHypothesis(Hypothesis):
-  Coupling_Dict = dict({'ghz1': 0, 'ghz2': 0, 'ghz4': 0, 'ghz1prime2': 0, 'ghza1prime2': 0, 'ghza2': 0, 'ghza4': 0, 'gha2': 0, 'gha4': 0}) 
+  Coupling_Dict = dict({'ghz1': 0, 'ghz2': 0, 'ghz4': 0, 'ghz1prime2': 0, 'ghza1prime2': 0, 'ghza2': 0, 'ghza4': 0, 'gha2': 0, 'gha4': 0})
+  print("Hypothesis being parsed: ",Hypothesis)
+  if "interf" in Hypothesis:
+    print("Interference in hypotheses... stripping from string")
+    Hypothesis = Hypothesis.split("-")[0]
   #============ Check if there is a single hypothesis ============#
   if Hypothesis in ("0+", "SM", "scalar", "0PM", "a1", "g1"):
     Coupling_Dict["ghz1"]=1 
-    return Coupling_Dict
   elif Hypothesis in ("a2", "0h+", "0PH", "g2"):
     Coupling_Dict["ghz2"]=1
-    return Coupling_Dict
   elif Hypothesis in ("0-", "a3", "PS", "pseudoscalar", "0M", "g4"):
     Coupling_Dict["ghz4"]=1
-    return Coupling_Dict
   elif Hypothesis in ("L1", "Lambda1", "0L1"):
     Coupling_Dict["ghz1prime2"]=1
-    return Coupling_Dict
   elif Hypothesis in ("L1Zg", "0L1Zg", "L1Zgs"):
     Coupling_Dict["ghza1prime2"]=1
-    return Coupling_Dict
   elif Hypothesis in ("g2Zg", "g2Zgs", "a2Zg", "ghzgs2", "0PHZg"):
     Coupling_Dict["ghza2"]=1
-    return Coupling_Dict
   elif Hypothesis in ("g4Zg", "g4Zgs", "a3Zg", "ghzgs4", "0MZg"):
     Coupling_Dict["ghza4"]=1
-    return Coupling_Dict
   elif Hypothesis in ("g2gg", "g2gsgs", "a2gg", "ghgsgs2", "0PHgg"):
     Coupling_Dict["gha2"]=1
-    return Coupling_Dict
   elif Hypothesis in ("g4gg", "g4gsgs", "a3gg", "ghgsgs4", "0Mgg"):
     Coupling_Dict["gha4"]=1
-    return Coupling_Dict
   # ========= Check of there is a mixed hypothesis ============
   elif Hypothesis in ("fa20.5", "fa2dec0.5", "fa2+0.5", "fa2dec+0.5"):
     Coupling_Dict["ghz1"] = 1
@@ -313,14 +308,26 @@ def ParseHypothesis(Hypothesis):
   elif Hypothesis in ("fL1Zg0.5", "fL1Zgdec0.5", "fL1Zg+0.5", "fL1Zgdec+0.5"):
     Coupling_Dict["ghz1"] = 1
     Coupling_Dict["ghza1prime2"] = 1
-  return null
+  elif Hypothesis in ("fa2Zg0.5", "fa2Zgdec0.5", "fa2Zg+0.5", "fa2dec+0.5"):
+    Coupling_Dict["ghz1"] = 1
+    Coupling_Dict["ghza2"] = 1
+  elif Hypothesis in ("fa2gg0.5", "fa2ggdec0.5", "fa2gg+0.5", "fa2ggdec+0.5"):
+    Coupling_Dict["ghz1"] = 1
+    Coupling_Dict["gha2"] = 1
+  elif Hypothesis in ("fa3Zg0.5", "fa3Zgdec0.5", "fa3Zg+0.5", "fa3Zgdec+0.5"):
+    Coupling_Dict["ghz1"] = 1
+    Coupling_Dict["ghza4"] = 1
+  elif Hypothesis in ("fa3gg0.5", "fa3ggdec0.5", "fa3gg+0.5", "fa3ggdec+0.5"):
+    Coupling_Dict["ghz1"] = 1
+    Coupling_Dict["gha4"] = 1
+  return Coupling_Dict
 
 def CheckIsIso(Coupling_Dict):
   iso = False
   for key in Coupling_Dict.keys():
-    if Coupling_Dict[key] != 0 and not iso:
+    if Coupling_Dict[key] != 0 and iso == False:
       iso = True
-    else:
+    elif Coupling_Dict[key] != 0:
       return False
   return True
 
@@ -363,14 +370,63 @@ def GetIsoMelaConstants(Coupling_Dict,ProductionMode,isData):
     string = "p_Gen_"+prodName[i]+"_SIG_"+couplname[i]+"_"+value[i]+"_"+Generator[i]
     MelaIsoConstants.append(string)
   return MelaIsoConstants 
-  
+
+def GetMixedMelaConstants(Coupling_Dict,ProductionMode,isData):
+  prodName=[]
+  couplname_plus_value=[]
+  Generator=[]
+  CouplingValuesDict=GetCouplingValues()
+  MelaMixedConstants = []
+  if not isData:
+    if ProductionMode == 'ggH':
+          prodName.append('GG')        
+          Generator.append("MCFM")
+    elif ProductionMode in ('VBF','WplusH','WminusH','ZH'):
+          prodName.append('JJEW')
+          Generator.append('MCFM')
+    elif ProductionMode in('bbH','ttH'):
+          prodName.append('Dec')
+          Generator.append('JHUGen')
+  #====== Not Implemented Right Now ======
+    elif ProductionMode == 'tqH':
+      return null
+  # Sort all permutations of the non zero terms and assign strings #
+  Non_Zero_Coupling_String = []
+  for Coupling in Coupling_Dict.keys():
+    if Coupling_Dict[Coupling] != 0:
+      Non_Zero_Coupling_String.append(Coupling)
+  Mixed_Combos = list(combinations(Non_Zero_Coupling_String, 2))
+  #====== Make coupling names plus values string =======#
+  for combo in Mixed_Combos:
+    name_1 = combo[0]
+    name_2 = combo[1]
+    first = 0
+    second = 1
+    if "ghz1" in name_1 and not "prime" in name_1:
+      first = 0
+      second = 1
+    else:
+      first = 1
+      second = 0
+    if ProductionMode == 'ggH':
+      couplname_plus_value.append("kappaTopBot_1_"+name_1+"_"+CouplingValuesDict[name_1]+"_"+name_2+"_"+CouplingValuesDict[name_2])
+    else:
+      couplname_plus_value.append(name_1+"_"+CouplingValuesDict[name_1]+"_"+name_2+"_"+CouplingValuesDict[name_2])
+
+
+  #====== Make the Strings to pull from the Trees ======#
+  for i in range(len(couplname_plus_value)):
+    string = "p_Gen_"+prodName[i]+"_SIG_"+couplname_plus_value[i]+"_"+Generator[i]
+    MelaMixedConstants.append(string)
+  return MelaMixedConstants 
+
 # This function will interptret what the hypothesis means and what constants are needed #
 def GetConstantsAndMELA(Hypothesis,ProductionMode,isData):
-  MelaConstantNames=[]
+  MelaConstantNames={}
   Coupling_Dict = ParseHypothesis(Hypothesis)
-  IsIso = CheckIsIso(Coupling_Dict)
   # This list of tuples will include the names of the branches needed to reweight the event # 
-  MelaConstantNames += GetIsoMelaConstants(Coupling_Dict,ProductionMode,isData)
+  MelaConstantNames["Iso"]=(GetIsoMelaConstants(Coupling_Dict,ProductionMode,isData))
+  MelaConstantNames["Mixed"]=(GetMixedMelaConstants(Coupling_Dict,ProductionMode,isData))
   return MelaConstantNames
 
 def Reweight_Event(InputEvent,ProductionMode,InputHypothesis,OutputHypothesis,HffHypothesis,isData,Analysis_Config,lumi,year):
@@ -405,24 +461,44 @@ def Reweight_Branch(InputTree,ProductionMode,OutputHypothesis,HffHypothesis,isDa
     eventweight = Calc_Tree_Weight_2021_gammaH(InputTree,ProductionMode+"_"+str(year))
   return eventweight * tree2array(tree=InputTree,branches=[Branch_Names]).astype(float) *lumi
 
-def Reweight_Branch_NoHff(InputTree,ProductionMode,OutputHypothesis,isData,Analysis_Config,lumi,year):
+def Reweight_Branch_NoHff(InputTree,ProductionMode,OutputHypothesis,isData,Analysis_Config,lumi,year,DoInterf):
   # Check the input for Input Hypothesis and Output Hypothesis #
-  Check_Input(ProductionMode,OutputHypothesis,"Hff0+")
-  # Get List of Hypothesis to Reweight By #
-  MelaConstantNames = GetConstantsAndMELA(OutputHypothesis,ProductionMode,isData)
-  Branch_Names = ""
-  if len(MelaConstantNames) == 1:
-    Branch_Names += MelaConstantNames[0]
-  # Note that there is no option right now to support reweighting to non isolated hypothesis
-  # Get the Nominal event weight #
-  eventweight = 1
-  if Analysis_Config.ReweightProcess == "Calc_Event_Weight_2021_gammaH": 
+  print (ProductionMode,OutputHypothesis)
+  # If the Prodution mode is bkg we do not incude any hypothesis because we do not reweight bkg 
+  doMELA_Reweight = None
+  if OutputHypothesis == "bkg":
+    Check_Input(ProductionMode,None,None)
+    doMELA_Reweight = False
+  else:
+    Check_Input(ProductionMode,OutputHypothesis,"Hff0+")
+    doMELA_Reweight = True
+  if doMELA_Reweight is None:
+    raise ValueError('Choose MELA reweight opiton in reweight failed!')
+  # After Checking the validity of request calulate the per event weight for the sample
+  eventweight = []
+  if Analysis_Config.ReweightProcess == "Calc_Event_Weight_2021_gammaH":
     eventweight = Calc_Tree_Weight_2021_gammaH(InputTree,ProductionMode+"_"+str(year))
-  return eventweight * tree2array(tree=InputTree,branches=[Branch_Names]).astype(float) *lumi
-
-
-
-
-
-
-
+  else:
+    raise ValueError('Choose Valid Reweighting procedure in Analysis.Config') 
+  # Get List of Hypothesis to Reweight By #
+  if doMELA_Reweight:
+    MelaConstantNames = GetConstantsAndMELA(OutputHypothesis,ProductionMode,isData)
+    Branch_Names = ""
+    if DoInterf and len(MelaConstantNames["Mixed"]) != 0:
+      for i in range(len(MelaConstantNames["Mixed"])):
+        if i == 0:
+          Branch_Names += MelaConstantNames["Mixed"][i]
+        else:
+          Branch_Names += "+"+MelaConstantNames["Mixed"][i]
+      for i in range(len(MelaConstantNames["Iso"])):
+          Branch_Names += "-"+MelaConstantNames["Iso"][i]  
+    elif DoInterf and len(MelaConstantNames["Mixed"]) == 0:
+      raise ValueError('{} not valid mixed hypothesis'.format(OutputHypothesis))
+    elif len(MelaConstantNames["Mixed"]) == 0: # If there are no Mixed Couplings add the single Isolated coupling
+      Branch_Names += MelaConstantNames["Iso"][0]
+    elif len(MelaConstantNames["Mixed"]) != 0: # If there are Mixed Couplings this means we reweight with the Mixed Coupling
+      Branch_Names += MelaConstantNames["Mixed"][0]
+    # Note that there is no option right now to support reweighting to non isolated hypothesis
+    return eventweight * tree2array(tree=InputTree,branches=[Branch_Names]).astype(float) * lumi
+  else:
+    return eventweight 
