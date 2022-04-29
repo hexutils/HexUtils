@@ -5,18 +5,33 @@ from ROOT import TCanvas, TFile, TProfile, TNtuple, TH1F, TH3F
 def  Unroll(hist):
     xbins = hist.GetNbinsX()
     ybins = hist.GetNbinsY()
-    zbins = hist.GetNbinsZ()
+    
+    is2d = False
+    is3d = False
+    
+    if "TH2" in str(type(hist)) :
+        is2d = True 
+        temp_pos = TH1F("temp_pos","",xbins*ybins,0,xbins*ybins)
+        temp_neg = TH1F("temp_neg","dif",xbins*ybins,0,xbins*ybins)
 
+    if "TH3" in str(type(hist)) :
+        is3d = True 
+        zbins = hist.GetNbinsZ()
+        temp_pos = TH1F("temp_pos","",xbins*ybins*zbins,0,xbins*ybins*zbins)
+        temp_neg = TH1F("temp_neg","dif",xbins*ybins*zbins,0,xbins*ybins*zbins)
 
-    temp_pos = TH1F("temp_pos","",xbins*ybins*zbins,0,xbins*ybins*zbins)
-    temp_neg = TH1F("temp_neg","dif",xbins*ybins*zbins,0,xbins*ybins*zbins)
+        
+    
 
     #Unroll Hists
     indk = 0
     has_negative = False 
     for y in range (1,ybins+1):
         for x in range (1,xbins+1):
-            for z in range (1,zbins+1):
+            if is3d : 
+             zbins = hist.GetNbinsZ()
+
+             for z in range (1,zbins+1):
                 binx_c = hist.GetXaxis().GetBinCenter(x)
                 biny_c = hist.GetYaxis().GetBinCenter(y)
                 binz_c = hist.GetZaxis().GetBinCenter(z)
@@ -29,16 +44,35 @@ def  Unroll(hist):
                         intt = hist.Integral()
                         nb = ybins*xbins*zbins
                         contt = 0.1*intt*1.0/nb
-                        print ("found empty bin",contt)
+                        #print ("found empty bin",contt)
                         hist.SetBinContent(ibin,contt)
-                        print (cont)
+                        #print (cont)
+                if cont  < 0 :
+                    has_negative = True
+            else :
+                binx_c = hist.GetXaxis().GetBinCenter(x)
+                biny_c = hist.GetYaxis().GetBinCenter(y)
+                ibin =  hist.FindBin(binx_c,biny_c)
+                cont  = hist.GetBinContent(ibin)
+
+                #put small values in empty background bins
+                if cont == 0 : 
+                    if "back" in hist.GetName():
+                        intt = hist.Integral()
+                        nb = ybins*xbins
+                        contt = 0.1*intt*1.0/nb
+                        #print ("found empty bin",contt)
+                        hist.SetBinContent(ibin,contt)
+                        #print (cont)
                 if cont  < 0 :
                     has_negative = True
 
-                    
+                 
     for y in range (1,ybins+1):
         for x in range (1,xbins+1):
-            for z in range (1,zbins+1):
+            if is3d : 
+              zbins = hist.GetNbinsZ()  
+              for z in range (1,zbins+1):
                 binx_c = hist.GetXaxis().GetBinCenter(x)
                 biny_c = hist.GetYaxis().GetBinCenter(y)
                 binz_c = hist.GetZaxis().GetBinCenter(z)
@@ -49,6 +83,20 @@ def  Unroll(hist):
                 else :
                     temp_pos.Fill(indk,cont)
                 indk = indk +1
+            else :
+                  
+                binx_c = hist.GetXaxis().GetBinCenter(x)
+                biny_c = hist.GetYaxis().GetBinCenter(y)
+                
+                ibin =  hist.FindBin(binx_c,biny_c)
+                cont  = hist.GetBinContent(ibin)
+                if cont  < 0 :
+                    temp_neg.Fill(indk,-1*cont)
+                else :
+                    temp_pos.Fill(indk,cont)
+                indk = indk +1
+                 
+                
     temp_name = hist.GetName()
     
     tpname = temp_name
