@@ -1,18 +1,12 @@
 import os
 import sys
 import ROOT
-from Unroll_gen   import Unroll 
+from Unroll_gen import Unroll 
 import copy
 from Addsyst_functions import *
 
 nm = sys.argv[1]
 
-
-#name = nm.replace("./temps/","")
-#name = name.replace(".root","")
-#name = name.replace("_GEN_210702","")
-
-#backfile = nm.replace("ggh","background")
 fin = ROOT.TFile.Open(nm)
 
 processes      =[]
@@ -67,7 +61,7 @@ for key in fin.GetListOfKeys():
 proc = len(processes)
 category = nm.replace("input.root","offshell.txt")
 chanel = category.replace(".offshell.txt","")
-#print category
+print("here",category)
 f = open(category, "w")
 
 f.write("imax 1\n")
@@ -90,7 +84,7 @@ lineSHsyst= []
 print (procsyst)
 for isyst,syst in enumerate(applyshapesyst):
     lineSHsyst.append(syst)
-    print syst
+    print(syst)
     lineSHsyst[isyst] = lineSHsyst[isyst] + " shape1 "
     for proc in processes :
       pas = False

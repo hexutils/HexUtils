@@ -55,14 +55,17 @@ def main(argv):
         elif opt in ("-b", "--bfile"):
             branchfile = arg
         elif opt in ("-d", "--dfile"):
-            isData = bool(arg)
+            isData = arg
     if not all([inputfile, outputdir, branchfile, isData]):
         print('batchTreeTagger.py -i <inputfile> -o <outputdir> -b <branchfile> -d <isData>')
         sys.exit(2)
 
     if not outputdir.endswith("/"):
         outputdir = outputdir+"/"
-
+    if arg.upper()=="TRUE":
+        isData = True
+    elif arg.upper()=="FALSE":
+        isData = False
     print("\n================ Reading user input ================\n")
 
     print("Input CJLST TTree is '{}'".format(inputfile))
@@ -74,7 +77,8 @@ def main(argv):
     #=============== Load the Analysis Config =================
     cConstants_list = cConstants.init_cConstants()
     gConstants_list = gConstants.init_gConstants()
-    Analysis_Config = Config.Analysis_Config("OnShell_HVV_Photons_2021")
+    #Analysis_Config = Config.Analysis_Config("OnShell_HVV_Photons_2021")
+    Analysis_Config = Config.Analysis_Config("gammaH_Photons_Decay_Only")
 
     #================ Set input file path and output file path ================
     
@@ -128,7 +132,8 @@ def main(argv):
 
             print("\n================ Reading events from '" + tree + "' and calculating new branches ================\n")
             if not isData and "AllData" in tagtreefilename:
-              t = f.Get("CRZLL/"+tree)
+              print("here")
+              t = f.Get("CRZLLTree/"+tree)
             else:
               t = f.Get("ZZTree/"+tree)
 
@@ -232,6 +237,9 @@ def main(argv):
                                                    gConstants_list)
                     #================ Saving category tag ================
                         branchdict["EventTag"].append(tag)
+                    elif Analysis_Config.TaggingProcess == "Tag_Untagged_and_gammaH":
+                      tag = OnShell_Category.Tag_Untagged_and_gammaH(t.PhotonPt,t.PhotonIsCutBasedLooseID)
+                      branchdict["EventTag"].append(tag)
                     #============= Save pt_4l discriminants ==============
                     if "Pt4l" in Analysis_Config.Discriminants_To_Calculate:
                       branchdict["Pt4l"].append(t.ZZPt)

@@ -5,18 +5,18 @@ def init_FakeRates():
   Path_To_This_Directory = os.path.split(Path_To_This_File)[0]
   Relative_Path_To_Splines ="FakeRates/"
   PathToSpline = os.path.join(Path_To_This_Directory, Relative_Path_To_Splines)
-  FakeRates_OS_2016 = ROOT.TFile(PathToSpline+"/FakeRates_OS_2016.root").Get("")
-  FakeRates_OS_2017 = ROOT.TFile(PathToSpline+"/FakeRates_OS_2017.root").Get("")
-  FakeRates_OS_2018 = ROOT.TFile(PathToSpline+"/FakeRates_OS_2018.root").Get("")
-  FakeRates_SS_2016 = ROOT.TFile(PathToSpline+"/FakeRates_SS_2016.root").Get("")
-  FakeRates_SS_2017 = ROOT.TFile(PathToSpline+"/FakeRates_SS_2017.root").Get("")
-  FakeRates_SS_2018 = ROOT.TFile(PathToSpline+"/FakeRates_SS_2018.root").Get("")
-  newData_FakeRates_OS_2016 = ROOT.TFile(PathToSpline+"/newData_FakeRates_OS_2016.root").Get("")
-  newData_FakeRates_OS_2017 = ROOT.TFile(PathToSpline+"/newData_FakeRates_OS_2017.root").Get("")
-  newData_FakeRates_OS_2018 = ROOT.TFile(PathToSpline+"/newData_FakeRates_OS_2018.root").Get("")
-  newData_FakeRates_SS_2016 = ROOT.TFile(PathToSpline+"/newData_FakeRates_SS_2016.root").Get("")
-  newData_FakeRates_SS_2017 = ROOT.TFile(PathToSpline+"/newData_FakeRates_SS_2017.root").Get("")
-  newData_FakeRates_SS_2018 = ROOT.TFile(PathToSpline+"/newData_FakeRates_SS_2018.root").Get("")
+  FakeRates_OS_2016 = ROOT.TFile(PathToSpline+"/FakeRates_OS_2016.root")
+  FakeRates_OS_2017 = ROOT.TFile(PathToSpline+"/FakeRates_OS_2017.root")
+  FakeRates_OS_2018 = ROOT.TFile(PathToSpline+"/FakeRates_OS_2018.root")
+  FakeRates_SS_2016 = ROOT.TFile(PathToSpline+"/FakeRates_SS_2016.root")
+  FakeRates_SS_2017 = ROOT.TFile(PathToSpline+"/FakeRates_SS_2017.root")
+  FakeRates_SS_2018 = ROOT.TFile(PathToSpline+"/FakeRates_SS_2018.root")
+  newData_FakeRates_OS_2016 = ROOT.TFile(PathToSpline+"/newData_FakeRates_OS_2016.root")
+  newData_FakeRates_OS_2017 = ROOT.TFile(PathToSpline+"/newData_FakeRates_OS_2017.root")
+  newData_FakeRates_OS_2018 = ROOT.TFile(PathToSpline+"/newData_FakeRates_OS_2018.root")
+  newData_FakeRates_SS_2016 = ROOT.TFile(PathToSpline+"/newData_FakeRates_SS_2016.root")
+  newData_FakeRates_SS_2017 = ROOT.TFile(PathToSpline+"/newData_FakeRates_SS_2017.root")
+  newData_FakeRates_SS_2018 = ROOT.TFile(PathToSpline+"/newData_FakeRates_SS_2018.root")
 
   FakeRate_Dict = {"FakeRates_OS_2016":FakeRates_OS_2016,
                    "FakeRates_OS_2017":FakeRates_OS_2017,
@@ -24,11 +24,11 @@ def init_FakeRates():
                    "FakeRates_SS_2016":FakeRates_SS_2016,
                    "FakeRates_SS_2017":FakeRates_SS_2017,
                    "FakeRates_SS_2018":FakeRates_SS_2018,
-                   "newData_FakeRates_OS_2016":newData_FakeRates_OS_2016
-                   "newData_FakeRates_OS_2017":newData_FakeRates_OS_2017
-                   "newData_FakeRates_OS_2018":newData_FakeRates_OS_2018
-                   "newData_FakeRates_SS_2016":newData_FakeRates_SS_2016
-                   "newData_FakeRates_SS_2017":newData_FakeRates_SS_2017
+                   "newData_FakeRates_OS_2016":newData_FakeRates_OS_2016,
+                   "newData_FakeRates_OS_2017":newData_FakeRates_OS_2017,
+                   "newData_FakeRates_OS_2018":newData_FakeRates_OS_2018,
+                   "newData_FakeRates_SS_2016":newData_FakeRates_SS_2016,
+                   "newData_FakeRates_SS_2017":newData_FakeRates_SS_2017,
                    "newData_FakeRates_SS_2018":newData_FakeRates_SS_2018
   }
   return FakeRate_Dict
@@ -38,16 +38,15 @@ def init_FakeRates_SS():
   Path_To_This_Directory = os.path.split(Path_To_This_File)[0]
   Relative_Path_To_Splines ="FakeRates/"
   PathToSpline = os.path.join(Path_To_This_Directory, Relative_Path_To_Splines)
-  FakeRates_SS_2016 = ROOT.TFile(PathToSpline+"/FakeRates_SS_2016.root").Get("")
-  FakeRates_SS_2017 = ROOT.TFile(PathToSpline+"/FakeRates_SS_2017.root").Get("")
-  FakeRates_SS_2018 = ROOT.TFile(PathToSpline+"/FakeRates_SS_2018.root").Get("")
-  newData_FakeRates_SS_2016 = ROOT.TFile(PathToSpline+"/newData_FakeRates_SS_2016.root").Get("")
-  newData_FakeRates_SS_2017 = ROOT.TFile(PathToSpline+"/newData_FakeRates_SS_2017.root").Get("")
-  newData_FakeRates_SS_2018 = ROOT.TFile(PathToSpline+"/newData_FakeRates_SS_2018.root").Get("")
-
+  FakeRates_SS_2016 = ROOT.TFile(PathToSpline+"/FakeRates_SS_2016.root")
+  FakeRates_SS_2017 = ROOT.TFile(PathToSpline+"/FakeRates_SS_2017.root")
+  FakeRates_SS_2018 = ROOT.TFile(PathToSpline+"/FakeRates_SS_2018.root")
+  newData_FakeRates_SS_2016 = ROOT.TFile(PathToSpline+"/newData_FakeRates_SS_2016.root")
+  newData_FakeRates_SS_2017 = ROOT.TFile(PathToSpline+"/newData_FakeRates_SS_2017.root")
+  newData_FakeRates_SS_2018 = ROOT.TFile(PathToSpline+"/newData_FakeRates_SS_2018.root")
   FakeRate_Dict = {(2016, False):FakeRates_SS_2016,
                    (2017, False):FakeRates_SS_2017,
-                   (2086, False):FakeRates_SS_2018,
+                   (2018, False):FakeRates_SS_2018,
                    (2016, True):newData_FakeRates_SS_2016,
                    (2017, True):newData_FakeRates_SS_2017,
                    (2018, True):newData_FakeRates_SS_2018
@@ -59,58 +58,63 @@ def init_FakeRates_OS():
   Path_To_This_Directory = os.path.split(Path_To_This_File)[0]
   Relative_Path_To_Splines ="FakeRates/"
   PathToSpline = os.path.join(Path_To_This_Directory, Relative_Path_To_Splines)
-  FakeRates_OS_2016 = ROOT.TFile(PathToSpline+"/FakeRates_OS_2016.root").Get("")
-  FakeRates_OS_2017 = ROOT.TFile(PathToSpline+"/FakeRates_OS_2017.root").Get("")
-  FakeRates_OS_2018 = ROOT.TFile(PathToSpline+"/FakeRates_OS_2018.root").Get("")
-  newData_FakeRates_OS_2016 = ROOT.TFile(PathToSpline+"/newData_FakeRates_OS_2016.root").Get("")
-  newData_FakeRates_OS_2017 = ROOT.TFile(PathToSpline+"/newData_FakeRates_OS_2017.root").Get("")
-  newData_FakeRates_OS_2018 = ROOT.TFile(PathToSpline+"/newData_FakeRates_OS_2018.root").Get("")
-
-  FakeRate_Dict = {"FakeRates_OS_2016":FakeRates_SS_2016,
-                   "FakeRates_OS_2017":FakeRates_SS_2017,
-                   "FakeRates_OS_2018":FakeRates_SS_2018,
-                   "newData_FakeRates_OS_2016":newData_FakeRates_SS_2016
-                   "newData_FakeRates_OS_2017":newData_FakeRates_SS_2017
-                   "newData_FakeRates_OS_2018":newData_FakeRates_SS_2018
+  FakeRates_OS_2016 = ROOT.TFile(PathToSpline+"/FakeRates_OS_2016.root")
+  FakeRates_OS_2017 = ROOT.TFile(PathToSpline+"/FakeRates_OS_2017.root")
+  FakeRates_OS_2018 = ROOT.TFile(PathToSpline+"/FakeRates_OS_2018.root")
+  newData_FakeRates_OS_2016 = ROOT.TFile(PathToSpline+"/newData_FakeRates_OS_2016.root")
+  newData_FakeRates_OS_2017 = ROOT.TFile(PathToSpline+"/newData_FakeRates_OS_2017.root")
+  newData_FakeRates_OS_2018 = ROOT.TFile(PathToSpline+"/newData_FakeRates_OS_2018.root")
+ 
+  FakeRate_Dict = {(2016, False):FakeRates_OS_2016,
+                   (2017, False):FakeRates_OS_2017,
+                   (2018, False):FakeRates_OS_2018,
+                   (2016, True):newData_FakeRates_OS_2016,
+                   (2017, True):newData_FakeRates_OS_2017,
+                   (2018, True):newData_FakeRates_OS_2018
   }
   return FakeRate_Dict
 
-def get_Fake_Rate_From_File(FakeRate_Root_File,lep_Pt,lep_eta,lep_ID)
-
+def get_Fake_Rate_From_File(FakeRate_Root_File,lep_Pt,lep_eta,lep_ID):
+   if "SS" in FakeRate_Root_File.GetName():
+     g_FR_mu_EB = FakeRate_Root_File.Get("FR_SS_muon_EB")
+     g_FR_mu_EE = FakeRate_Root_File.Get("FR_SS_muon_EE")
+     g_FR_e_EB  = FakeRate_Root_File.Get("FR_SS_electron_EB")
+     g_FR_e_EE  = FakeRate_Root_File.Get("FR_SS_electron_EE")
+   elif "OS" in FakeRate_Root_File.GetName():
+     g_FR_mu_EB = FakeRate_Root_File.Get("FR_OS_muon_EB");
+     g_FR_mu_EE = FakeRate_Root_File.Get("FR_OS_muon_EE");
+     g_FR_e_EB  = FakeRate_Root_File.Get("FR_OS_electron_EB");
+     g_FR_e_EE  = FakeRate_Root_File.Get("FR_OS_electron_EE");
    # Pull the correct histograms from the root file #
-   g_FR_mu_EB = FakeRate_Root_File.Get("FR_SS_muon_EB")
-   g_FR_mu_EE = FakeRate_Root_File.Get("FR_SS_muon_EE")
-   g_FR_e_EB  = FakeRate_Root_File.Get("FR_SS_electron_EB")
-   g_FR_e_EE  = FakeRate_Root_File.Get("FR_SS_electron_EE")
 
    if lep_Pt >= 80:
      my_lep_Pt = 79
-   else
+   else:
      my_lep_Pt = lep_Pt
    
    my_lep_ID = abs(lep_ID)
 
    nbin = 0
-   if ( my_lep_Pt > 5 && my_lep_Pt <= 7 ): nbin = 0
-   elif ( my_lep_Pt >  7 && my_lep_Pt <= 10 ): nbin = 1
-   elif ( my_lep_Pt > 10 && my_lep_Pt <= 20 ): nbin = 2
-   elif ( my_lep_Pt > 20 && my_lep_Pt <= 30 ): nbin = 3
-   elif ( my_lep_Pt > 30 && my_lep_Pt <= 40 ): nbin = 4
-   elif ( my_lep_Pt > 40 && my_lep_Pt <= 50 ): nbin = 5
-   elif ( my_lep_Pt > 50 && my_lep_Pt <= 80 ): nbin = 6
+   if ( my_lep_Pt > 5 and my_lep_Pt <= 7 ): nbin = 0
+   elif ( my_lep_Pt >  7 and my_lep_Pt <= 10 ): nbin = 1
+   elif ( my_lep_Pt > 10 and my_lep_Pt <= 20 ): nbin = 2
+   elif ( my_lep_Pt > 20 and my_lep_Pt <= 30 ): nbin = 3
+   elif ( my_lep_Pt > 30 and my_lep_Pt <= 40 ): nbin = 4
+   elif ( my_lep_Pt > 40 and my_lep_Pt <= 50 ): nbin = 5
+   elif ( my_lep_Pt > 50 and my_lep_Pt <= 80 ): nbin = 6
    
-   if ( abs(my_lep_ID) == 11 ): bin = bin-1 # there is no [5, 7] bin in the electron fake rate
+   if ( abs(my_lep_ID) == 11 ): nbin = nbin-1 # there is no [5, 7] bin in the electron fake rate
 
    if ( my_lep_ID == 11 ):
-      if ( fabs(lep_eta) < 1.479 )
-         return (g_FR_e_EB.GetY())[bin];
-      else
-         return (g_FR_e_EE.GetY())[bin]:
-   elif ( my_lep_ID == 13 ):
-      if ( fabs(lep_eta) < 1.2 ):
-         return (g_FR_mu_EB.GetY())[bin];
+      if ( abs(lep_eta) < 1.479 ):
+         return (g_FR_e_EB.GetY())[nbin]
       else:
-         return (g_FR_mu_EE.GetY())[bin];
+         return (g_FR_e_EE.GetY())[nbin]
+   elif ( my_lep_ID == 13 ):
+      if ( abs(lep_eta) < 1.2 ):
+         return (g_FR_mu_EB.GetY())[nbin]
+      else:
+         return (g_FR_mu_EE.GetY())[nbin];
    else:
       print("[ERROR] Wrong lepton ID: " + my_lep_ID + "\n")
       return 0
@@ -141,6 +145,8 @@ def ratio_combination_over_SS_new(year, flavor):
     }[year][flavor]
 
 def ratio_combination_over_SS_old(year, flavor):
+   el = 11**2
+   mu = 13**2
    txtfileold = """
 ******************************************************************************
 2016		SS		OS	
@@ -201,7 +207,7 @@ COMB	2016	2017	2018	Full Run 2
 2e2mu	12.43	12.63	19.25	44.31
 TOT	24.8	25.36	39.5	89.66
   """
-
+  
    lines = iter(txtfileold.split("\n"))
    for line in lines:
      if line.startswith(str(year)): break
@@ -220,8 +226,8 @@ TOT	24.8	25.36	39.5	89.66
        break
    return combination / SS
 
-def Normalize_ZX(year, usenewobject, Z1Flav, Z2Flav): # This is the way it waw done in HIG 19 009 
+def Normalize_ZX(year, usenewobject, Z1Flav, Z2Flav): # This is the way it was done in HIG 19 009 
   if usenewobject:
-    return ratio_combination_over_SS_new(year,Z1Flav*Z2Flav)
+    return ratio_combination_over_SS_new(year,-Z1Flav*Z2Flav)
   else:
-    return ratio_combination_over_SS_old(year,Z1Flav*Z2Flav)
+    return ratio_combination_over_SS_old(year,-Z1Flav*Z2Flav)

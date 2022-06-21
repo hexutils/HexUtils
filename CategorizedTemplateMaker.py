@@ -27,7 +27,7 @@ def main(argv):
     production = ''
     category = ''
     final_state = ''
-    year = ''
+    inputyear = ''
     outputdir = ''
     try:
         opts, args = getopt.getopt(argv,"hi:p:c:f:y:o:",["ifile=","pfile=","cfile=","ffile=","yfile=","ofile="])
@@ -47,10 +47,10 @@ def main(argv):
         elif opt in ("-f", "--ffile"):
             final_state = arg
         elif opt in ("-y", "--yfile"):
-            year = arg
+            inputyear = arg
         elif opt in ("-o", "--ofile"):
             outputdir = arg
-    if not all([treelistpath, production, category, final_state, year, outputdir]):
+    if not all([treelistpath, production, category, final_state, inputyear, outputdir]):
         print('CategorizedTemplateMaker.py -i <treelistpath> -p <production> -c <category> -fs <final_state> -y <year> -o <output_dir>')
         sys.exit(2)
     if not outputdir.endswith("/"):
@@ -61,23 +61,26 @@ def main(argv):
     print("Input CJLST TTree is '{}'".format(treelistpath))
     print("Production mode is '{}'".format(production))
     print("Category is '{}'".format(category))
-    print("Year is '{}'".format(year))
+    print("Year is '{}'".format(inputyear))
     print("Final state is '{}'".format(final_state))
     print("Output Directory is '{}'".format(outputdir))
 
     print("\n================ Processing user input ================\n")
     
-    os.mkdir(outputdir)
+    if not os.path.exists(outputdir):
+      os.mkdir(outputdir) 
     unrolled_dir = outputdir+"unrolled/"
     rolled_dir = outputdir+"rolled/"
-    os.mkdir(unrolled_dir)
-    os.mkdir(rolled_dir)
+    if not os.path.exists(unrolled_dir):
+      os.mkdir(unrolled_dir)
+    if not os.path.exists(rolled_dir):
+      os.mkdir(rolled_dir)
 
 
     print("\n=============== Loading Analysis Config ===============\n")
     #====== Load Analysis Config =====#
-    Analysis_Config = Config.Analysis_Config("OnShell_HVV_Photons_2021")
-
+    #Analysis_Config = Config.Analysis_Config("OnShell_HVV_Photons_2021")
+    Analysis_Config = Config.Analysis_Config("gammaH_Photons_Decay_Only")
 
     lumi = Analysis_Config.lumi
 
@@ -128,10 +131,11 @@ def main(argv):
         yeardict[year][prod][0].append(filename)
       except:
         print("ERROR: Cannot recognize production mode of " + filename + "! Tree not sorted!")
-    print("yeardict: ",yeardict)
+    #print("yeardict: ",yeardict)
 
     hlist = []
-    foutName = FillHistOnShellNoSyst(production,category,hlist,yeardict,Analysis_Config,year,final_state) # Store the Histrograms before unrolling
+    #print(year)
+    foutName = FillHistOnShellNoSyst(production,category,hlist,yeardict,Analysis_Config,inputyear,final_state) # Store the Histrograms before unrolling
     fout = ROOT.TFile(rolled_dir+foutName,"recreate")
     fout.cd()
 
@@ -147,10 +151,12 @@ def main(argv):
     for hist in hlist:
       if type(hist) == type(ROOT.TH3F()):
         Temp_Neg, Temp_Pos = Unroll_3D_OnShell(hist)
+        #Temp_Neg, Temp_Pos = Unroll(hist)
         Temp_Neg.Write()
         Temp_Pos.Write()
       if type(hist) == type(ROOT.TH2F()):
         Temp_Neg, Temp_Pos = Unroll_2D_OnShell(hist)
+        #Temp_Neg, Temp_Pos = Unroll(hist)
         Temp_Neg.Write()
         Temp_Pos.Write()
 

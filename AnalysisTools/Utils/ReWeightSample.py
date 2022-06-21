@@ -256,7 +256,7 @@ def Check_Input(ProductionMode,Hypothesis,HffHypothesis):
                 raise ValueError("Hypothesis provided for {} productionmode\n".format(ProductionMode))
             if HffHypothesis is not None:
                 raise ValueError("Hff hypothesis provided for {} productionmode\n".format(ProductionMode))
-        elif ProductionMode in ("qqZZ", "TTZZ", "ZZZ", "WZZ", "WWZ", "TTWW", "TTZJets_M10_MLM", "TTZToLLNuNu_M10", "TTZToLL_M1to10_MLM", "EW") + tuple(ggZZoffshellproductionmodes):
+        elif ProductionMode in ("qqZZ", "TTZZ", "ZZZ", "WZZ", "WWZ", "TTWW", "TTZJets_M10_MLM", "TTZToLLNuNu_M10", "TTZToLL_M1to10_MLM", "EW","ew_bkg") + tuple(ggZZoffshellproductionmodes):
             if Hypothesis is not None:
                 raise ValueError("Hypothesis provided for {} productionmode\n".format(ProductionMode))
             if HffHypothesis is not None:
@@ -272,7 +272,7 @@ def Check_Input(ProductionMode,Hypothesis,HffHypothesis):
 # This function will parse the couplings from the Hypothesis and return them separately #
 def ParseHypothesis(Hypothesis):
   Coupling_Dict = dict({'ghz1': 0, 'ghz2': 0, 'ghz4': 0, 'ghz1prime2': 0, 'ghza1prime2': 0, 'ghza2': 0, 'ghza4': 0, 'gha2': 0, 'gha4': 0})
-  print("Hypothesis being parsed: ",Hypothesis)
+  print("Hypothesis being parsed: ", Hypothesis)
   if "interf" in Hypothesis:
     print("Interference in hypotheses... stripping from string")
     Hypothesis = Hypothesis.split("-")[0]
@@ -335,6 +335,17 @@ def GetCouplingValues():
   CouplingValuesDict=dict({'ghz1': '1', 'ghz2': '1', 'ghz4': '1', 'ghz1prime2': '1E4', 'ghza1prime2': '1E4', 'ghza2': '1', 'ghza4': '1', 'gha2': '1', 'gha4': '1'})
   return CouplingValuesDict
 
+def ConvertKeyToEWKey(key):
+  if key == 'ghz1':
+    key = 'ghv1'
+  elif key == 'ghz2':
+    key = 'ghv2'
+  elif key == 'ghz4':
+    key = 'ghv4'
+  elif key == 'ghz1prime2':
+    key = 'ghv1prime2'
+  return key
+
 def GetIsoMelaConstants(Coupling_Dict,ProductionMode,isData):
   prodName=[]
   couplname=[]
@@ -347,17 +358,26 @@ def GetIsoMelaConstants(Coupling_Dict,ProductionMode,isData):
       for key in Coupling_Dict.keys():
         if Coupling_Dict[key] != 0:
           prodName.append('GG')
-          couplname.append('kappaTopBot_1_'+key)         
+          couplname.append('kappaTopBot_1_'+key)            
           value.append(CouplingValuesDict[key])
           Generator.append("MCFM")
-    elif ProductionMode in ('VBF','WplusH','WminusH','ZH'):
+    elif ProductionMode in ('VBF'):
       for key in Coupling_Dict.keys():
+        if Coupling_Dict[key] != 0:
           prodName.append('JJEW')
-          couplname.append(key)         
+          couplname.append(ConvertKeyToEWKey(key))         
+          value.append(CouplingValuesDict[key])
+          Generator.append('MCFM')
+    elif ProductionMode in ('WplusH','WminusH','WH','ZH','VH'):
+      for key in Coupling_Dict.keys():
+        if Coupling_Dict[key] != 0:
+          prodName.append('JJEW')
+          couplname.append(ConvertKeyToEWKey(key))         
           value.append(CouplingValuesDict[key])
           Generator.append('MCFM')
     elif ProductionMode in('bbH','ttH'):
       for key in Coupling_Dict.keys():
+        if Coupling_Dict[key] != 0:
           prodName.append('Dec')
           couplname.append(key)
           value.append(CouplingValuesDict[key])
@@ -368,7 +388,7 @@ def GetIsoMelaConstants(Coupling_Dict,ProductionMode,isData):
   #====== Make the Strings to pull from the Trees ======#
   for i in range(len(prodName)):
     string = "p_Gen_"+prodName[i]+"_SIG_"+couplname[i]+"_"+value[i]+"_"+Generator[i]
-    MelaIsoConstants.append(string)
+    MelaIsoConstants.append(string)  
   return MelaIsoConstants 
 
 def GetMixedMelaConstants(Coupling_Dict,ProductionMode,isData):
@@ -381,20 +401,27 @@ def GetMixedMelaConstants(Coupling_Dict,ProductionMode,isData):
     if ProductionMode == 'ggH':
           prodName.append('GG')        
           Generator.append("MCFM")
-    elif ProductionMode in ('VBF','WplusH','WminusH','ZH'):
+    elif ProductionMode in ('VBF'):
           prodName.append('JJEW')
           Generator.append('MCFM')
-    elif ProductionMode in('bbH','ttH'):
+    elif ProductionMode in ('WplusH','WminusH','ZH','VH'):
+          prodName.append('JJEW')
+          Generator.append('MCFM')
+    elif ProductionMode in('bbH'):
+          prodName.append('Dec')
+          Generator.append('JHUGen')
+    elif ProductionMode in('ttH'):
           prodName.append('Dec')
           Generator.append('JHUGen')
   #====== Not Implemented Right Now ======
-    elif ProductionMode == 'tqH':
+    elif ProductionMode == 'tH':
       return null
   # Sort all permutations of the non zero terms and assign strings #
   Non_Zero_Coupling_String = []
   for Coupling in Coupling_Dict.keys():
     if Coupling_Dict[Coupling] != 0:
-      Non_Zero_Coupling_String.append(Coupling)
+        Non_Zero_Coupling_String.append(Coupling)
+      
   Mixed_Combos = list(combinations(Non_Zero_Coupling_String, 2))
   #====== Make coupling names plus values string =======#
   for combo in Mixed_Combos:
@@ -410,14 +437,21 @@ def GetMixedMelaConstants(Coupling_Dict,ProductionMode,isData):
       second = 0
     if ProductionMode == 'ggH':
       couplname_plus_value.append("kappaTopBot_1_"+name_1+"_"+CouplingValuesDict[name_1]+"_"+name_2+"_"+CouplingValuesDict[name_2])
-    else:
+    elif ProductionMode in('VBF','WplusH','WminusH','ZH','VH'):
+      couplname_plus_value.append(ConvertKeyToEWKey(name_1)+"_"+CouplingValuesDict[name_1]+"_"+ConvertKeyToEWKey(name_2)+"_"+CouplingValuesDict[name_2])
+    elif ProductionMode in('bbH','ttH'):
       couplname_plus_value.append(name_1+"_"+CouplingValuesDict[name_1]+"_"+name_2+"_"+CouplingValuesDict[name_2])
-
-
   #====== Make the Strings to pull from the Trees ======#
   for i in range(len(couplname_plus_value)):
-    string = "p_Gen_"+prodName[i]+"_SIG_"+couplname_plus_value[i]+"_"+Generator[i]
-    MelaMixedConstants.append(string)
+    if ProductionMode in 'ggH':
+      string = "p_Gen_"+prodName[i]+"_SIG_"+couplname_plus_value[i]+"_"+Generator[i]
+      MelaMixedConstants.append(string)
+    elif ProductionMode in('VBF','WplusH','WminusH','ZH','VH'):
+      string = "p_Gen_"+prodName[i]+"_BSI_"+couplname_plus_value[i]+"_"+Generator[i]
+      MelaMixedConstants.append(string)
+    elif ProductionMode in('bbH','ttH'):
+      string = "p_Gen_"+prodName[i]+"_SIG_"+couplname_plus_value[i]+"_"+Generator[i]
+      MelaMixedConstants.append(string)
   return MelaMixedConstants 
 
 # This function will interptret what the hypothesis means and what constants are needed #
@@ -461,29 +495,40 @@ def Reweight_Branch(InputTree,ProductionMode,OutputHypothesis,HffHypothesis,isDa
     eventweight = Calc_Tree_Weight_2021_gammaH(InputTree,ProductionMode+"_"+str(year))
   return eventweight * tree2array(tree=InputTree,branches=[Branch_Names]).astype(float) *lumi
 
-def Reweight_Branch_NoHff(InputTree,ProductionMode,OutputHypothesis,isData,Analysis_Config,lumi,year,DoInterf):
+def Reweight_Branch_NoHff(InputTree,ProductionMode,OutputHypothesis,isData,Analysis_Config,lumi,year,DoInterf,DoMassFilter):
   # Check the input for Input Hypothesis and Output Hypothesis #
-  print (ProductionMode,OutputHypothesis)
+  print ("InputTree:",InputTree)
+  print ("Production Mode:",ProductionMode)
+  print ("OutHypothesis:",OutputHypothesis)
   # If the Prodution mode is bkg we do not incude any hypothesis because we do not reweight bkg 
   doMELA_Reweight = None
   if OutputHypothesis == "bkg":
     Check_Input(ProductionMode,None,None)
     doMELA_Reweight = False
   else:
-    Check_Input(ProductionMode,OutputHypothesis,"Hff0+")
+    if any(prod in ProductionMode for prod in ['VBF','VH','ZH','WplusH','WminusH','bbH']):
+      Check_Input(ProductionMode,OutputHypothesis,None)
+    else:
+      Check_Input(ProductionMode,OutputHypothesis,"Hff0+")
     doMELA_Reweight = True
   if doMELA_Reweight is None:
-    raise ValueError('Choose MELA reweight opiton in reweight failed!')
+    raise ValueError('Choose MELA reweight option in reweight failed!')
   # After Checking the validity of request calulate the per event weight for the sample
   eventweight = []
   if Analysis_Config.ReweightProcess == "Calc_Event_Weight_2021_gammaH":
-    eventweight = Calc_Tree_Weight_2021_gammaH(InputTree,ProductionMode+"_"+str(year))
+    if 'WH' in InputTree:
+      eventweight = Calc_Tree_Weight_2021_gammaH(InputTree,"WH"+"_"+str(year),DoMassFilter)
+    elif 'ZH' in InputTree:         
+      eventweight = Calc_Tree_Weight_2021_gammaH(InputTree,"ZH"+"_"+str(year),DoMassFilter)
+    else:
+      eventweight = Calc_Tree_Weight_2021_gammaH(InputTree,ProductionMode+"_"+str(year),DoMassFilter)
   else:
     raise ValueError('Choose Valid Reweighting procedure in Analysis.Config') 
   # Get List of Hypothesis to Reweight By #
   if doMELA_Reweight:
     MelaConstantNames = GetConstantsAndMELA(OutputHypothesis,ProductionMode,isData)
     Branch_Names = ""
+    #print("MELACONSTANTNAMES: ",MelaConstantNames)
     if DoInterf and len(MelaConstantNames["Mixed"]) != 0:
       for i in range(len(MelaConstantNames["Mixed"])):
         if i == 0:
@@ -492,6 +537,8 @@ def Reweight_Branch_NoHff(InputTree,ProductionMode,OutputHypothesis,isData,Analy
           Branch_Names += "+"+MelaConstantNames["Mixed"][i]
       for i in range(len(MelaConstantNames["Iso"])):
           Branch_Names += "-"+MelaConstantNames["Iso"][i]  
+      if any(prod in ProductionMode for prod in ['VBF','ZH','WplusH','WminusH','VH']):
+          Branch_Names += "-p_Gen_JJEW_BKG_MCFM"
     elif DoInterf and len(MelaConstantNames["Mixed"]) == 0:
       raise ValueError('{} not valid mixed hypothesis'.format(OutputHypothesis))
     elif len(MelaConstantNames["Mixed"]) == 0: # If there are no Mixed Couplings add the single Isolated coupling
@@ -499,6 +546,11 @@ def Reweight_Branch_NoHff(InputTree,ProductionMode,OutputHypothesis,isData,Analy
     elif len(MelaConstantNames["Mixed"]) != 0: # If there are Mixed Couplings this means we reweight with the Mixed Coupling
       Branch_Names += MelaConstantNames["Mixed"][0]
     # Note that there is no option right now to support reweighting to non isolated hypothesis
+    #print(tree2array(tree=InputTree,branches=[Branch_Names]).astype(float))
+    #print(eventweight)
+    print(Branch_Names)
     return eventweight * tree2array(tree=InputTree,branches=[Branch_Names]).astype(float) * lumi
+  if "ZX" in ProductionMode: 
+    return np.array(eventweight) 
   else:
-    return eventweight 
+    return np.array(eventweight) * lumi 

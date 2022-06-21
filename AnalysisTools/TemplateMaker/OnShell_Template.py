@@ -18,9 +18,10 @@ def IsInterf(Hypothesis):
 def Parse_Tagged_Mode(Tag,Analysis_Config):
   # Get the Categorization from Analysis Config #
   Categorization = Analysis_Config.TaggingProcess
+  print (Tag,Categorization)
   cat_num = -999
   # Parse the Categorization and return  the number for the tag #
-  if Categorization == "Tag_AC_19_Scheme_2":
+  if Categorization in("Tag_AC_19_Scheme_2"):
     if Tag == "Untagged":
       cat_num =  0
     elif Tag == "VBF1jTagged":
@@ -38,7 +39,12 @@ def Parse_Tagged_Mode(Tag,Analysis_Config):
     elif Tag == "VHMETTagged":
       cat_num =  7
     elif Tag == "Boosted":
-      cat_num =  8   
+      cat_num =  8  
+  elif Categorization in("Tag_Untagged_and_gammaH"):
+    if Tag == "Untagged":
+      cat_num =  0
+    elif Tag == "gammaH":
+      cat_num = 9
   try:
     cat_num != -999 
   except ValueError:
@@ -46,18 +52,40 @@ def Parse_Tagged_Mode(Tag,Analysis_Config):
 
   return cat_num 
 
+def Parse_Final_States(fs): 
+  # Return the absolute value of |Z1Flav * Z2Flav|
+  if fs == '4l':
+    return False, null 
+  elif fs == '2e2mu':
+    return True, 11*11*13*13
+  elif fs == '4mu':
+    return True, 13*13*13*13
+  elif fs == '4e':
+    return True, 11*11*11*11
+  else:
+    raise ValueError("Please select a valid final state")
+
 def Convert_Hypothesis_And_Prodution_Mode_To_Template_Name(hypothesis,production_mode): #This function takes as input a given hypothesis and returns the correct naming convention for the combine physics model
 
   # establish naming convention for production mode#
   if ('ggH' in production_mode):
     production_mode = 'ggH'
+  elif ('VBF' in production_mode):
+    production_mode = 'qqH'
+  elif any(prod in production_mode for prod in ['ZH','WH','Wplus','Wminus','VH']):
+    production_mode = 'VH'
+  elif any(prod in production_mode for prod in ['tqH','tWH','ttH']):
+    production_mode = 'ttH'
+  elif ('bbH' in production_mode):
+    production_mode = 'bbH'
   elif("ggZZ" in production_mode):
     return "bkg_ggzz"
   elif("qqZZ" in production_mode):
     return "bkg_qqzz"
-  elif("VBF_bkg" in production_mode):
+  elif("ew_bkg" in production_mode):
     return "bkg_ew"
-  
+  elif("ZX" in production_mode):
+    return "bkg_zjets"
   Coupling_Dict = ParseHypothesis(hypothesis) # Needed to parse out the naming conventions
   print(Coupling_Dict,CheckIsIso(Coupling_Dict))
   if CheckIsIso(Coupling_Dict):
@@ -65,23 +93,46 @@ def Convert_Hypothesis_And_Prodution_Mode_To_Template_Name(hypothesis,production
     if Coupling_Dict["ghz1"] != 0:
       return production_mode+"_"+"0PM"
     elif Coupling_Dict["ghz2"] != 0:
-      return production_mode+"_"+"0M"
-    elif Coupling_Dict["ghz4"] != 0:
       return production_mode+"_"+"0PH"
+    elif Coupling_Dict["ghz4"] != 0:
+      return production_mode+"_"+"0M"
     elif Coupling_Dict["ghz1prime2"] != 0:
       return production_mode+"_"+"0L1"
     elif Coupling_Dict["ghza1prime2"] != 0:
       return production_mode+"_"+"0L1Zg"
     elif Coupling_Dict["ghza2"] != 0:
-      return production_mode+"_"+"0MZg"
-    elif Coupling_Dict["ghza4"] != 0:
       return production_mode+"_"+"0PHZg"
+    elif Coupling_Dict["ghza4"] != 0:
+      return production_mode+"_"+"0MZg"
     elif Coupling_Dict["gha2"] != 0:
-      return production_mode+"_"+"0Mgg"
-    elif Coupling_Dict["gha4"] != 0:
       return production_mode+"_"+"0PHgg"
+    elif Coupling_Dict["gha4"] != 0:
+      return production_mode+"_"+"0Mgg"
   else:
-    if production_mode == 'ggH':
+    if any(prod in production_mode for prod in ['ggH',"qqH","VH","bbH"]):
+      coupling_string = ''
+      for key in Coupling_Dict.keys():
+        if Coupling_Dict[key] != 0:
+          print(key)
+          if key == "ghz1":
+            coupling_string += 'g11'
+          elif key == "ghz2":
+            coupling_string += 'g21'
+          elif key == "ghz4" != 0:
+            coupling_string += 'g41'
+          elif key == "ghz1prime2":
+            coupling_string += 'g1prime21'
+          elif key == "ghza1prime2" != 0:
+            coupling_string += 'ghzgs1prime21'
+          elif key == "ghza2":
+            coupling_string += 'g2za1'
+          elif key == "ghza4":
+            coupling_string += 'g4za1'
+          elif key == "gha2":
+            coupling_string += 'g2gg1'
+          elif key == "gha4":
+            coupling_string += 'g4gg1'
+    if production_mode == 'ttH': #Need to include Hff couplings???#
       coupling_string = ''
       for key in Coupling_Dict.keys():
         if Coupling_Dict[key] != 0:
@@ -226,7 +277,7 @@ def FillHistOnShellNoSyst(targetprod,targetcateg,hlist,yeardict,Analysis_Config,
 
   # First We nee to parse the input category which tells us exactly which discriminants are needed #
   category = Parse_Tagged_Mode(targetcateg,Analysis_Config)
-  
+  print("Category ",category)
   if category == 0: #Untagged 
     Discriminants = Analysis_Config.Untagged_Discriminants
   elif category == 1: #VBF1jTagged
@@ -245,6 +296,8 @@ def FillHistOnShellNoSyst(targetprod,targetcateg,hlist,yeardict,Analysis_Config,
     Discriminants = Analysis_Config.VHMETTagged_Discriminants
   elif category == 8: #Boosted
     Discriminants = Analysis_Config.Boosted_Discriminants
+  elif category == 9: #gammaH
+    Discriminants = Analysis_Config.gammaH_Discriminants
   else:
     print("No category found")
   
@@ -259,12 +312,17 @@ def FillHistOnShellNoSyst(targetprod,targetcateg,hlist,yeardict,Analysis_Config,
     Samples_To_Reweight = Samples_To_Reweight[0] 
   lumi = Analysis_Config.lumi[year]
   Coupling_Name = Analysis_Config.Coupling_Name # Returns name of couplings used for analysis (what do we need to reweight to?)  
-  Output_Name = "templates_"+str(targetprod)+"_"+Coupling_Name+"_"+final_state+"_"+Analysis_Config.TreeFile+"_"+year+".root" #NEED to fix decay mode#
+  Output_Name = "templates_"+str(targetprod)+"_"+str(targetcateg)+"_"+Coupling_Name+"_"+final_state+"_"+Analysis_Config.TreeFile+"_"+year+".root" #NEED to fix decay mode#
   Hypothesis_List = Analysis_Config.Hypothesis_List # Returns a list of all the hyptothesis to reweight to 
+  DoMassFilter = Analysis_Config.DoMassFilter
 
+  #Parse the final state to filter at the end#
+  filter_final_state, final_state = Parse_Final_States(final_state)
+
+  print("Samples To Reweight",Samples_To_Reweight)
   # Added a catch to check if the production mode is background #
   # Then this sets the Hypothesis List to only include SM #
-  if any(x in targetprod for x in ["ggZZ","qqZZ","VBF_bkg"]):
+  if any(x in targetprod for x in ["ggZZ","qqZZ","ew_bkg","ZX"]):
     Hypothesis_List = ["bkg"]  
 
   #Get name of discriminants and save them to a list of strings#
@@ -297,26 +355,35 @@ def FillHistOnShellNoSyst(targetprod,targetcateg,hlist,yeardict,Analysis_Config,
       for sample in Samples_To_Reweight: # Loop over all samples with input production mode
         f = ROOT.TFile(sample, 'READ')
         t = f.Get("eventTree") # This name could change but overall processed CJLST trees for this analysis should have eventTree as the name
-        New_Weights = Reweight_Branch_NoHff(t,targetprod,hypothesis,isData,Analysis_Config,lumi,year,DoInterf) # Returns New Weights for each eventa
+        New_Weights = Reweight_Branch_NoHff(t,targetprod,hypothesis,isData,Analysis_Config,lumi,year,DoInterf,DoMassFilter) # Returns New Weights for each event
         for Discriminant in D_Name:
           Discriminant_Values[Discriminant] = tree2array(tree=t,branches=[Discriminant]).astype(float);
         # Fill the histogram with the Discriminants for each template #
         Tag = tree2array(tree=t,branches=["EventTag"]).astype(int); # Need to know what category each event falls into
+        Z1Flav = tree2array(tree=t,branches=["Z1Flav"]).astype(int); # Need to know flavor of Z1
+        Z2Flav = tree2array(tree=t,branches=["Z2Flav"]).astype(int); # Need to know flavor of Z2
         # Make the temporary histogram for this specific sample input
         Temp_Hist = ROOT.TH2F(sample,sample,nx,xbins,ny,ybins)
+        Temp_Hist.Sumw2(True)
+        #print("Category:",category)
         for i in range(len(New_Weights)):
           if Tag[i] == category:
-            Temp_Hist.Fill(Discriminant_Values[D_Name[0]][i],Discriminant_Values[D_Name[1]][i],New_Weights[i])
+            if filter_final_state:
+              if abs(Z1Flav[i] * Z2Flav[i]) == final_state:
+                Temp_Hist.Fill(Discriminant_Values[D_Name[0]][i],Discriminant_Values[D_Name[1]][i],New_Weights[i])
+            else:
+              Temp_Hist.Fill(Discriminant_Values[D_Name[0]][i],Discriminant_Values[D_Name[1]][i],New_Weights[i])
         Temporary_Histogram_List.append(Temp_Hist)
+        print("Saving :",Temp_Hist.GetName(),Temp_Hist.Integral())
       # Apply the logic for filling the combined histogram #
       # Loop over each bin and calculate the weighted average of each bin #
-      for x in range(1,nx):
-        for y in range(1,ny):
+      for x in range(1,nx+1):
+        for y in range(1,ny+1):
           binval=[] # list of bin values
           binerr=[] # list of error on each bin
           for hist in Temporary_Histogram_List:
-             binval.append(hist.GetBin(x,y))
-             binerr.append(hist.GetBinError(x,y))
+            binval.append(hist.GetBinContent(x,y))
+            binerr.append(hist.GetBinError(x,y))
           if "bkg" in Hypothesis_List:
             val = sum(binval)
             err = sum(i*i for i in binerr)
@@ -324,7 +391,7 @@ def FillHistOnShellNoSyst(targetprod,targetcateg,hlist,yeardict,Analysis_Config,
             val, err = Calculate_Average_And_Unc_From_Template_Bins(binval,binerr)
           Histogram_Dict[h].SetBinContent(x,y,val)
           Histogram_Dict[h].SetBinError(x,y,err)
-          
+      print("Saving :",Histogram_Dict[h].GetName(),Histogram_Dict[h].Integral())         
     # Make the Output File and return the output #
     for hist in Histogram_Dict.keys():
       hlist.append(Histogram_Dict[hist])
@@ -358,11 +425,13 @@ def FillHistOnShellNoSyst(targetprod,targetcateg,hlist,yeardict,Analysis_Config,
         f = ROOT.TFile(sample, 'READ')
         t = f.Get("eventTree") # This name could change but overall processed CJLST trees for this analysis should have eventTree as the name
         print(sample)
-        New_Weights = Reweight_Branch_NoHff(t,targetprod,hypothesis,isData,Analysis_Config,lumi,year,DoInterf) # Returns New Weights for each event
+        New_Weights = Reweight_Branch_NoHff(t,targetprod,hypothesis,isData,Analysis_Config,lumi,year,DoInterf,DoMassFilter) # Returns New Weights for each event
         for Discriminant in D_Name:
           Discriminant_Values[Discriminant] = tree2array(tree=t,branches=[Discriminant]).astype(float)
         # Fill the histogram with the Discriminants for each template #
         Tag = tree2array(tree=t,branches=["EventTag"]).astype(int) # Need to know what category each event falls into
+        Z1Flav = tree2array(tree=t,branches=["Z1Flav"]).astype(int); # Need to know flavor of Z1
+        Z2Flav = tree2array(tree=t,branches=["Z2Flav"]).astype(int); # Need to know flavor of Z2
         # Make the temporary histogram for this specific sample input
         Temp_Hist = ROOT.TH3F(sample,sample,nx,xbins,ny,ybins,nz,zbins)
         Temp_Hist.Sumw2(True)
@@ -373,8 +442,13 @@ def FillHistOnShellNoSyst(targetprod,targetcateg,hlist,yeardict,Analysis_Config,
         sum_weight = 0
         for i in range(len(New_Weights)):
           if Tag[i] == category:
-            Temp_Hist.Fill(Discriminant_Values[D_Name[0]][i],Discriminant_Values[D_Name[1]][i],Z_bin[i],New_Weights[i])
-            sum_weight += New_Weights[i]
+            if filter_final_state:
+              if abs(Z1Flav[i] * Z2Flav[i]) == final_state:
+                Temp_Hist.Fill(Discriminant_Values[D_Name[0]][i],Discriminant_Values[D_Name[1]][i],Z_bin[i],New_Weights[i])
+                sum_weight += New_Weights[i]
+            else:
+              Temp_Hist.Fill(Discriminant_Values[D_Name[0]][i],Discriminant_Values[D_Name[1]][i],Z_bin[i],New_Weights[i])
+              sum_weight += New_Weights[i]
         print("Saving :",Temp_Hist.GetName(),Temp_Hist.Integral(),sum_weight)
         Temporary_Histogram_List.append(Temp_Hist)
       # Apply the logic for filling the combined histogram #
