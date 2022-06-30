@@ -38,14 +38,15 @@ def main(argv):
     inputfile = ''
     outputdir = ''
     branchfile = ''
+    isData = False 
     try:
-        opts, args = getopt.getopt(argv,"hi:o:b:",["ifile=","ofile=","bfile="])
+        opts, args = getopt.getopt(argv,"hi:o:b:d:",["ifile=","ofile=","bfile=","dfile="])
     except getopt.GetoptError:
-        print('batchTreeTagger.py -i <inputfile> -o <outputdir> -b <branchfile>')
+        print('batchTreeTagger.py -i <inputfile> -o <outputdir> -b <branchfile> -d <isData>')
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print('batchTreeTagger.py -i <inputfile> -o <outputdir> -b <branchfile>')
+            print('batchTreeTagger.py -i <inputfile> -o <outputdir> -b <branchfile> -d <isData>')
             sys.exit()
         elif opt in ("-i", "--ifile"):
             inputfile = arg
@@ -53,26 +54,31 @@ def main(argv):
             outputdir = arg
         elif opt in ("-b", "--bfile"):
             branchfile = arg
-    
-    if not all([inputfile, outputdir, branchfile]):
-        print('batchTreeTagger.py -i <inputfile> -o <outputdir> -b <branchfile>')
+        elif opt in ("-d", "--dfile"):
+            isData = arg
+    if not all([inputfile, outputdir, branchfile, isData]):
+        print('batchTreeTagger.py -i <inputfile> -o <outputdir> -b <branchfile> -d <isData>')
         sys.exit(2)
 
     if not outputdir.endswith("/"):
         outputdir = outputdir+"/"
-
+    if arg.upper()=="TRUE":
+        isData = True
+    elif arg.upper()=="FALSE":
+        isData = False
     print("\n================ Reading user input ================\n")
 
     print("Input CJLST TTree is '{}'".format(inputfile))
     print("Output directory is '{}'".format(outputdir))
     print("Branch list file is '{}'".format(branchfile))
-
+    print("Treat as data: '{}'".format(isData))
     print("\n================ Processing user input ================\n")
 
     #=============== Load the Analysis Config =================
     cConstants_list = cConstants.init_cConstants()
     gConstants_list = gConstants.init_gConstants()
-    Analysis_Config = Config.Analysis_Config("OnShell_HVV_Photons_2021")
+    #Analysis_Config = Config.Analysis_Config("OnShell_HVV_Photons_2021")
+    Analysis_Config = Config.Analysis_Config("gammaH_Photons_Decay_Only")
 
     #================ Set input file path and output file path ================
     
@@ -125,8 +131,11 @@ def main(argv):
             ftemptree = ROOT.TFile(tagtreefilename.replace(".root", "_subtree"+str(tind)+".root"), "CREATE")
 
             print("\n================ Reading events from '" + tree + "' and calculating new branches ================\n")
-
-            t = f.Get("ZZTree/"+tree)
+            if not isData and "AllData" in tagtreefilename:
+              print("here")
+              t = f.Get("CRZLLTree/"+tree)
+            else:
+              t = f.Get("ZZTree/"+tree)
 
             treebranches = [ x.GetName() for x in t.GetListOfBranches() ]
 
@@ -228,6 +237,9 @@ def main(argv):
                                                    gConstants_list)
                     #================ Saving category tag ================
                         branchdict["EventTag"].append(tag)
+                    elif Analysis_Config.TaggingProcess == "Tag_Untagged_and_gammaH":
+                      tag = OnShell_Category.Tag_Untagged_and_gammaH(t.PhotonPt,t.PhotonIsCutBasedLooseID)
+                      branchdict["EventTag"].append(tag)
                     #============= Save pt_4l discriminants ==============
                     if "Pt4l" in Analysis_Config.Discriminants_To_Calculate:
                       branchdict["Pt4l"].append(t.ZZPt)
@@ -346,7 +358,22 @@ def main(argv):
                     if "D_int_gg_HadVH" in Analysis_Config.Discriminants_To_Calculate:
                       branchdict["D_int_gg_HadVH"].append(Discriminants.D_int_gg_HadVH(t.p_HadZH_SIG_ghz1_1_gha2_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,t.p_HadZH_SIG_gha2_1_JHUGen_JECNominal,WH_scale,ZH_scale,notdijet,t.ZZMass,gConstants_list))
                     #============== Calculating VH Decay Discriminants ============
-
+                    if "D_0minus_HadVHdecay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_0minus_HadVHdecay"].append(Discriminants.D_0minus_HadVHdecay(t.p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_HadWH_SIG_ghw4_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz4_1_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_ghz4_1_JHUGen,WH_scale,ZH_scale,notdijet,t.ZZMass,gConstants_list))
+                    if "D_0hplus_HadVHdecay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_0hplus_HadVHdecay"].append(Discriminants.D_0hplus_HadVHdecay(t.p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_HadWH_SIG_ghw2_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz2_1_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_ghz2_1_JHUGen,WH_scale,ZH_scale,notdijet,t.ZZMass,gConstants_list))
+                    if "D_L1_HadVHdecay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_L1_HadVHdecay"].append(Discriminants.D_L1_HadVHdecay(t.p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_HadWH_SIG_ghw1prime2_1E4_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1prime2_1E4_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_ghz1prime2_1E4_JHUGen,WH_scale,ZH_scale,notdijet,t.ZZMass,gConstants_list))
+                    if "D_L1Zg_HadVHdecay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_L1Zg_HadVHdecay"].append(Discriminants.D_L1Zg_HadVHdecay(t.p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_HadZH_SIG_ghza1prime2_1E4_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_ghza1prime2_1E4_JHUGen,WH_scale,ZH_scale,notdijet,t.ZZMass,gConstants_list))
+                    if "D_0minus_Zg_HadVHdecay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_0minus_Zg_HadVHdecay"].append(Discriminants.D_0minus_Zg_HadVHdecay(t.p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_HadZH_SIG_ghza4_1_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_ghza4_1_JHUGen,WH_scale,ZH_scale,notdijet,t.ZZMass,gConstants_list))
+                    if "D_0hplus_Zg_HadVHdecay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_0hplus_Zg_HadVHdecay"].append(Discriminants.D_0hplus_Zg_HadVHdecay(t.p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_HadZH_SIG_ghza2_1_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_ghza2_1_JHUGen,WH_scale,ZH_scale,notdijet,t.ZZMass,gConstants_list))
+                    if "D_0minus_gg_HadVHdecay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_0minus_gg_HadVHdecay"].append(Discriminants.D_0minus_gg_HadVHdecay(t.p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_HadZH_SIG_gha4_1_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_gha4_1_JHUGen,WH_scale,ZH_scale,notdijet,t.ZZMass,gConstants_list))
+                    if "D_0hplus_gg_HadVHdecay" in Analysis_Config.Discriminants_To_Calculate:
+                      branchdict["D_0hplus_gg_HadVHdecay"].append(Discriminants.D_0hplus_gg_HadVHdecay(t.p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_ghz1_1_JHUGen,t.p_HadZH_SIG_gha2_1_JHUGen_JECNominal,t.p_GG_SIG_ghg2_1_gha2_1_JHUGen,WH_scale,ZH_scale,notdijet,t.ZZMass,gConstants_list))
                     #================ Calculating BKG discriminants ===============
                     ZZFlav=t.Z1Flav*t.Z2Flav
                     if "D_bkg" in Analysis_Config.Discriminants_To_Calculate:

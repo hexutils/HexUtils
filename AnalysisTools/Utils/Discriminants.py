@@ -698,7 +698,7 @@ def D_0minus_Zg_HadVHdecay(p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,p_HadZH_SIG_ghz1
                    (p_HadWH_SIG_ghw1_1_JHUGen_JECNominal * WH_scale + p_HadZH_SIG_ghz1_1_JHUGen_JECNominal * ZH_scale)
                         *p_GG_SIG_ghg2_1_ghz1_1_JHUGen
                  + ( 0  +  p_HadZH_SIG_ghza4_1_JHUGen_JECNominal * ZH_scale )*gCon.getvalue("g4Zg","VH",m4l,gConstants)**2
-                        *p_GG_SIG_ghg2_1_ghza4_1_JHUGen*gCon.getvalue("g4HZg","HZZ2e2mu",m4l,gConstants)**2
+                        *p_GG_SIG_ghg2_1_ghza4_1_JHUGen*gCon.getvalue("g4Zg","HZZ2e2mu",m4l,gConstants)**2
                  )
                )
         except ZeroDivisionError:

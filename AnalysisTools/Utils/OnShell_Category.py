@@ -367,4 +367,31 @@ def Tag_AC_19_Scheme_2_gammaH( nExtraLep,  nExtraZ,  nCleanedJetsPt30,  nCleaned
     if (ZZPt > 120): 
       return Boosted
   return c
-  
+
+def Tag_Untagged_and_gammaH(PhotonPt,PhotonIsCutBasedLooseID):
+
+  ## This is the scheme used for the HIG-19-009 analysis scheme 2 but with a gammaH category on top ##
+
+  Untagged      = 0
+  VBF1jTagged   = 1
+  VBF2jTagged   = 2
+  VHLeptTagged  = 3
+  VHHadrTagged  = 4
+  ttHLeptTagged = 5
+  ttHHadrTagged = 6
+  VHMETTagged   = 7
+  Boosted       = 8
+  gammaHTagged  = 9
+  Failed = -999
+
+  # Apply Hard Gamma H Cut before everything #
+
+  Photon_Pt_Cut=400
+
+  if(len(PhotonIsCutBasedLooseID)!=0 and PhotonPt[0]>Photon_Pt_Cut):
+    return gammaHTagged
+  else:
+    return Untagged
+
+
+
