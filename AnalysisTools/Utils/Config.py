@@ -61,11 +61,13 @@ class Analysis_Config:
                                          "Pt4l"]
       self.lumi = {'2016':35.9,'2017':41.5,'2018':59.7}
       self.gammaH_Discriminants = {"D_bkg":[0,.33,.66,1],"Pt4l":[0,100,200,300,400,500,600,700,1000]}
-      self.Untagged_Discriminants = {"D_bkg":[0,.33,.66,1],"D_CP_decay":[-1,0,.66,1],"D_0hplus_decay":[0,.33,.66,1],"D_0minus_decay":[0,.33,.66,1],"D_L1_decay":[0,.33,.66,1],"D_L1Zg_decay":[0,.33,.66,1],"D_int_decay":[0,.33,.66,1]}
+      #self.Untagged_Discriminants = {"D_bkg":[0,.33,.66,1],"D_CP_decay":[-1,0,.66,1],"D_0hplus_decay":[0,.33,.66,1],"D_0minus_decay":[0,.33,.66,1],"D_L1_decay":[0,.33,.66,1],"D_L1Zg_decay":[0,.33,.66,1],"D_int_decay":[0,.33,.66,1]}
+      self.Untagged_Discriminants = {"D_bkg":[0,.2,.7,1],"D_CP_decay":[-1,0,1],"D_0hplus_decay":[0,.33,.66,1],"D_0minus_decay":[0,.33,.66,1],"D_L1_decay":[0,.55,.8,1],"D_L1Zg_decay":[0,.4,.55,1],"D_int_decay":[-1,.8,1]}
       # This section should be a list of tags and signal types to use to make cards #
       #self.Production_Modes=["ggH","VBF","Wplus","Wminus","ZH","bbH","ttH"]
       self.Production_Modes=["ggH"]
       self.Event_Categories=["Untagged","gammaH"]
+      #self.Event_Categories=["gammaH"]
       self.Final_States=["4e","2e2mu","4mu"]
       #self.Final_States=["4l"]
       self.Years=["2016","2017","2018"]

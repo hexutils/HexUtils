@@ -182,6 +182,7 @@ def Convert_Tuple_To_Bin(Tuples,Discriminants):
     index = 0
     for key in Discriminants.keys():
       bin_edges = Discriminants[key]
+      print(bin_edges)
       tup_list[index] = Get_Bin_Num(t[index],bin_edges)
       #if tup_list[index] < 1:
       #  print(key)
