@@ -91,3 +91,18 @@ def addEWcorr_qqZZ(lines,processes):
     lines.append(line)
 
 
+def addkf_ggZZ_background(lines,processes):
+    line = "kf_ggZZ_back lnN"
+    for pr in processes :
+        if "back_ggZZ" in pr : 
+            line =  line + " 1.1/0.9"
+        elif  "offggH_g11g21" in pr:
+
+            line =  line + " 1.032/0.968"
+        else:     
+            line = line + " -"
+    #line = line + " \n"    
+    lines.append(line)
+
+
+
