@@ -109,7 +109,10 @@ def D_g4(p_GG_SIG_ghg2_1_ghz1_1_JHUGen,p_GG_SIG_ghg2_1_ghz4_1_JHUGen):
 
 def DVBF2j_ME(p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal,p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal,ZZMass,cConstants):
   c_Mela2j = getDVBF2jetsConstant(cConstants,ZZMass)  
-  return 1./(1.+ c_Mela2j*p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal/p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal)
+  if p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal == 0:
+    return 0
+  else:
+    return 1./(1.+ c_Mela2j*p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal/p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal)
 
 
 def DVBF1j_ME(p_JVBF_SIG_ghv1_1_JHUGen_JECNominal,pAux_JVBF_SIG_ghv1_1_JHUGen_JECNominal,p_JQCD_SIG_ghg2_1_JHUGen_JECNominal,ZZMass,cConstants):
@@ -130,7 +133,10 @@ def DWHh_ME(p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,p_JJQCD_SIG_ghg2_1_JHUGen_JECNo
 
 def DZHh_ME(p_HadZH_SIG_ghz1_1_JHUGen_JECNominal,p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal,p_HadZH_mavjj_JECNominal,p_HadZH_mavjj_true_JECNominal,ZZMass,cConstants):
   c_MelaZH = getDZHhConstant(cConstants,ZZMass)
-  return 1./(1.+ c_MelaZH*(p_HadZH_mavjj_true_JECNominal*p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal)/(p_HadZH_mavjj_JECNominal*p_HadZH_SIG_ghz1_1_JHUGen_JECNominal))
+  if p_HadZH_mavjj_JECNominal*p_HadZH_SIG_ghz1_1_JHUGen_JECNominal == 0:
+    return 0
+  else:
+    return 1./(1.+ c_MelaZH*(p_HadZH_mavjj_true_JECNominal*p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal)/(p_HadZH_mavjj_JECNominal*p_HadZH_SIG_ghz1_1_JHUGen_JECNominal))
 
 
 def jetPgOverPq( jetQGLikelihood,  jetPhi):
@@ -751,3 +757,69 @@ def D_0hplus_gg_HadVHdecay(p_HadWH_SIG_ghw1_1_JHUGen_JECNominal,p_HadZH_SIG_ghz1
                )
         except ZeroDivisionError:
           return 0
+
+
+#==============================================================================================================#
+#========================================= Kinematic Disriminants =============================================#
+#==============================================================================================================#
+
+"""
+def D_alt(var, cnt, pro):
+    if pro=="gg":
+    constant = getDbkgConstant(cConstants,ZZFlav,ZZMass)
+    if (checkNanInf(vars) && checkNonNegative(vars) && vars.size()==nvarsreq):
+        float constant = getCval(valReco);
+        val = vars[0]/(vars[0]+constant*vars[1]);
+
+def D_int(var, cnt):
+"""
+
+def D_int_trigphase(var):
+        val=0
+        pA = var[0]/var[3]
+        pB = var[1]/var[4]
+        pAB = var[2]*(1/var[3]+1/var[4])
+        pABInt = pAB-pA-pB
+        d=pA*pB
+        if (d>0): val += pABInt/(2*sqrt(d)) 
+        
+        return val
+
+def D_int_trigphase_avg(var):
+        val=0
+        d1=0
+        d2=0 
+
+        pA = var[0]/var[3];
+        pB = var[1]/var[4];
+        pAB = var[2]*(1/var[3]+1/var[4]);
+        pABInt = pAB-pA-pB;
+        d1=pA*pB;
+        if (d1>0): val += pABInt/(2*sqrt(d1));
+
+        pC = var[5]/var[8];
+        pD = var[6]/var[9];
+        pCD = var[7]*(1/var[8]+1/var[9]);
+        pCDInt = pCD-pC-pD;
+        d2=pC*pD;
+        if (d2>0): val += pCDInt/(2*sqrt(d2))
+
+        if (d1>0) and (d2>0): val /= 2
+        return val
+
+"""
+def D_bsi_ggdec(p_GG_SIG_kappaTopBot_1_ghz1_1_MCFM, p_GG_BKG_MCFM, p_GG_BSI_kappaTopBot_1_ghz1_1_MCFM, pConst_GG_SIG_kappaTopBot_1_ghz1_1_MCFM, pConst_GG_BKG_MCFM):
+        val=0
+        pA = vars[0]/vars[3]
+        pB = vars[1]/vars[4]
+        pAB = vars[2]*(1./vars[3]+1./vars[4])
+        pABInt = pAB-pA-pB
+        d=pA*pB
+        if (d>0.) val += pABInt/(2.*sqrt(d))
+"""
+
+
+
+
+
+
