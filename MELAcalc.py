@@ -66,6 +66,19 @@ def main(argv):
 
     print("\n================ Processing user input ================\n")
 
+    if not os.path.exists(filename):
+        print("ERROR: \t'" + filename + "' does not exist!\n")
+        exit()
+
+    elif os.path.exists(tagtreefilename) or glob.glob(tagtreefilename.replace(".root")):
+        print("ERROR: \t'" + tagtreefilename + "' or parts of it already exist!\n")
+        exit()
+
+    else:
+        print("Pre-existing output PTree not found --- safe to proceed")
+        if not os.path.exists("/".join(tagtreefilename.split("/")[:-1])):
+            Path("/".join(tagtreefilename.split("/")[:-1])).mkdir(True, True)
+
     #================ Set input file path and output file path ================
     
     filename = inputfile
