@@ -297,14 +297,14 @@ def FillHist(targetprod,targetcomp,targetcateg,h_list,shape_syst_list) :
 
                                 if production == "gg" : 
                                     if targetcomp == 0 : wght = event.p_Gen_GG_SIG_kappaTopBot_1_ghz1_1_MCFM*event.KFactor_QCD_ggZZ_Nominal
-                                    if targetcomp == 1 : wght = event.p_Gen_GG_BSI_kappaTopBot_1_ghz1_1_MCFM*event.KFactor_QCD_ggZZ_Nominal
+                                    if targetcomp == 1 : wght = (event.p_Gen_GG_BSI_kappaTopBot_1_ghz1_1_MCFM -event.p_Gen_GG_SIG_kappaTopBot_1_ghz1_1_MCFM - event.p_Gen_GG_BKG_MCFM)*event.KFactor_QCD_ggZZ_Nominal
                                     if targetcomp == 2 : wght = event.p_Gen_GG_BKG_MCFM*event.KFactor_QCD_ggZZ_Nominal
                                     
                                 if production == "ZZTo4l" :
-                                    wght = event.KFactor_EW_qqZZ
+                                    wght = event.KFactor_EW_qqZZ*event.KFactor_QCD_qqZZ_M
                                 if production == "VBF" : 
                                     if targetcomp == 0 : wght = event.p_Gen_JJEW_SIG_ghv1_1_MCFM*0.5
-                                    if targetcomp == 1 : wght = event.p_Gen_JJEW_BSI_ghv1_1_MCFM*0.5
+                                    if targetcomp == 1 : wght = (event.p_Gen_JJEW_BSI_ghv1_1_MCFM - event.p_Gen_JJEW_SIG_ghv1_1_MCFM - event.p_Gen_JJEW_BKG_MCFM )*0.5
                                     if targetcomp == 2 : wght = event.p_Gen_JJEW_BKG_MCFM*0.5
                                     samplew = -1.
                                     samplew = eval( "event."+sampleweight ) 
