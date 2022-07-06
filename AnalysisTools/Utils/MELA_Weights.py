@@ -209,7 +209,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath):
         if parsed_prob_dict["ProdMode"] == "GG":
           ProdExec+="ZZGG"
         else:
-          ProdExec+=parsed_prob_dict["ProbMode"]
+          ProdExec+=parsed_prob_dict["ProdMode"]
         try:
           exec(ProdExec,ns)
         except:
