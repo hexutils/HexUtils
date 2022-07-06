@@ -14,6 +14,7 @@ Z2Pt
 Z2Flav
 ggH_NNLOPS_weight
 ggH_NNLOPS_weight_unc
+p_Gen_CPStoBWPropRewgt
 KFactor_QCD_ggZZ_Nominal
 KFactor_QCD_ggZZ_PDFScaleDn
 KFactor_QCD_ggZZ_PDFScaleUp

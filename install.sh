@@ -56,6 +56,8 @@ git clone git@github.com:hexutils/HexUtils.git
 #git clone git@github.com:JHUGen/JHUGenMELA.git
 #./JHUGenMELA/setup.sh -j
 
+./AnalysisTools/JHUGenMELA/MELA/setup.sh
+
 # MELA Analytics
 #git clone git@github.com:MELALabs/MelaAnalytics.git
 
