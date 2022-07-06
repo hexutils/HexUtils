@@ -21,10 +21,11 @@ def compile(filename, loadMELA=True):
 
 class NamedTemporaryMacro(object):
   def __init__(self):
-    self.f = tempfile.NamedTemporaryFile(suffix=".C", bufsize=0)
+    self.f = tempfile.NamedTemporaryFile(mode="w", suffix=".C")
     self.compiled = False
   def write(self, contents):
     self.f.write(contents)
+    self.f.flush()
     self.compiled = False
   def compile(self):
     if not self.compiled:
@@ -39,6 +40,8 @@ include("TCouplingsBase.hh")
 contents = """
   #include <TCouplingsBase.hh>
   #include <TMCFM.hh>
+
+  namespace pymela {
 """
 with open(os.path.join(os.path.dirname(__file__), "..", "interface", "TCouplingsBase.hh")) as f:
   tcouplingsbasecontents = f.read()
@@ -48,7 +51,10 @@ with open(os.path.join(os.path.dirname(__file__), "..", "interface", "TCouplings
     enumcontents = enumcontents.split("{")[1].split("}")[0]
     for enumitem in enumcontents.split(","):
       enumitem = enumitem.split("=")[0].strip()
-      contents += "\n  auto py_"+enumitem+" = ::"+enumitem+";"
+      contents += "\n  auto "+enumitem+" = ::"+enumitem+";"
+contents += """
+}
+"""
 
 tcouplingsbase = NamedTemporaryMacro()
 tcouplingsbase.write(contents)
