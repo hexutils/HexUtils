@@ -252,7 +252,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath):
           elif key == "ghza4":
             m.ghzgs4 = parsed_prob_dict['coupl_dict'][key]
           elif key == "kappaTopBot":
-            raise ValueError("Can't set attribute '{}' for python Mela as of now".format(key))
+            m.kappa = parse_prob_dict['coupl_dict'][key]
           elif key == "kappa":
             m.kappa = parsed_prob_dict['coupl_dict'][key]
           elif key == "kappatilde":
@@ -261,8 +261,20 @@ def addprobabilities(infile,outfile,probabilities,TreePath):
             m.ghzgs1_prime2 = parsed_prob_dict['coupl_dict'][key]
           elif key == "ghz1prime2":
             m.ghz1_prime2 = parsed_prob_dict['coupl_dict'][key]
+          elif key == "ghv1":
+            m.ghz1 = parsed_prob_dict['coupl_dict'][key]
+            m.ghw1 = parsed_prob_dict['coupl_dict'][key]
+          elif key == "ghv2":
+            m.ghz2 = parsed_prob_dict['coupl_dict'][key]
+            m.ghw2 = parsed_prob_dict['coupl_dict'][key]
+          elif key == "ghv4":
+            m.ghz4 = parsed_prob_dict['coupl_dict'][key]
+            m.ghw4 = parsed_prob_dict['coupl_dict'][key]
+          elif key == "ghv1prime2":
+            m.ghz1prime2 = parsed_prob_dict['coupl_dict'][key]
+            m.ghw1prime2 = parsed_prob_dict['coupl_dict'][key]
           else:
-            raise ValueError("Not a supported coupling!")
+            raise ValueError("{} is not a supported coupling!".format(key))
         if parsed_prob_dict["Prod"] == True and parsed_prob_dict["Dec"] == False:
           probdict[prob][0] = m.computeProdP()
         elif parsed_prob_dict["Prod"] == False and parsed_prob_dict["Dec"] == True:
