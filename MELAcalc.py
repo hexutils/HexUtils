@@ -67,37 +67,40 @@ def main(argv):
     print("Output directory is '{}'".format(outputdir[:-1]))
     print("Branch list file is '{}'".format(branchfile))
 
+
+    #================ Set input file path and output file path ================
+    
+    filename = inputfile
+    branchlistpath = branchfile
+    tagtreepath = outputdir
+
+    ind = filename.split("/").index(pthsubdir)
+
+    tagtreefile = "/".join(filename.split("/")[ind:])
+    outtreefilename = tagtreepath+tagtreefile
+
     print("\n================ Processing user input ================\n")
 
     if not os.path.exists(filename):
         print("ERROR: \t'" + filename + "' does not exist!\n")
         exit()
 
-    elif os.path.exists(tagtreefilename) or glob.glob(tagtreefilename.replace(".root")):
-        print("ERROR: \t'" + tagtreefilename + "' or parts of it already exist!\n")
+    elif os.path.exists(outtreefilename):
+        print("ERROR: \t'" + outtreefilename + "' or parts of it already exist!\n")
         exit()
 
     else:
         print("Pre-existing output PTree not found --- safe to proceed")
-        if not os.path.exists("/".join(tagtreefilename.split("/")[:-1])):
-            Path("/".join(tagtreefilename.split("/")[:-1])).mkdir(True, True)
-
-    #================ Set input file path and output file path ================
-    
-    filename = inputfile
-    branchlistpath = branchfile
-    outtreepath = outputdir
-
-    ind = filename.split("/").index(pthsubdir)
-
-    tagtreefile = "/".join(filename.split("/")[ind:])
-    outtreefilename = outtreepath+tagtreefile
+        if not os.path.exists("/".join(outtreefilename.split("/")[:-1])):
+            Path("/".join(outtreefilename.split("/")[:-1])).mkdir(True, True)
 
     print("Read '"+filename+"'\n")
     print("Write '"+outtreefilename+"'\n")
 
     with open(branchlistpath) as f:
         branchlist = [line.rstrip() for line in f]
+
+    print(branchlist)
 
     from AnalysisTools.Utils.MELA_Weights import addprobabilities
 

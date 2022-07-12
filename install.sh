@@ -50,7 +50,8 @@ git cms-init --upstream-only
 #######################################
 
 # HexUtils
-git clone git@github.com:hexutils/HexUtils.git
+#git clone git@github.com:hexutils/HexUtils.git
+git clone https://github.com/hexutils/HexUtils.git
 
 # MELA
 #git clone git@github.com:JHUGen/JHUGenMELA.git
