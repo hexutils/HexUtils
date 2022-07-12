@@ -1,10 +1,13 @@
 #!/cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/cmssw/CMSSW_12_2_0/external/slc7_amd64_gcc900/bin/python3
 
+import importlib.util
 import sys, getopt
 import os
 import glob
+import time
+from pathlib import Path
+import re
 
-from AnalysisTools.Utils.MELA_Weights import addprobabilities
 
 def main(argv):
     inputfile = ''
@@ -13,7 +16,7 @@ def main(argv):
     branchfile = ''
     removesubtrees = ''
     try:
-        opts, args = getopt.getopt(argv,"hi:s:o:b:c:",["ifile=","subdr=","outdr=","bfile="])
+        opts, args = getopt.getopt(argv,"hi:s:o:b:",["ifile=","subdr=","outdr=","bfile="])
     except getopt.GetoptError:
         print('\nMELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile>\n')
         exit()
@@ -96,7 +99,10 @@ def main(argv):
     with open(branchlistpath) as f:
         branchlist = [line.rstrip() for line in f]
 
-    addprobabilities(filename, outtreefilename, branchlist, "eventTree")
+    from AnalysisTools.Utils.MELA_Weights import addprobabilities
+
+    #addprobabilities(filename, outtreefilename, branchlist, "eventTree")
+    addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree")
 
 if __name__ == "__main__":
     main(sys.argv[1:])

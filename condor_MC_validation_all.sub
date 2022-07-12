@@ -1,9 +1,9 @@
 executable              = condorbatchscript_MC_validation_all.sh
 arguments               = $(Item)
 
-output                  = TaggerOutput_20220614_MC_validation_all/Out_$(Item).out
-error                   = TaggerOutput_20220614_MC_validation_all/Out_$(Item).err
-log                     = TaggerOutput_20220614_MC_validation_all/Out_$(Item).log
+output                  = TaggerOutput_20220708_MC_validation_all/Out_$(Item).out
+error                   = TaggerOutput_20220708_MC_validation_all/Out_$(Item).err
+log                     = TaggerOutput_20220708_MC_validation_all/Out_$(Item).log
 
 request_memory          = 4000M
 +JobFlavour             = "nextweek"
@@ -12,5 +12,5 @@ request_memory          = 4000M
 periodic_remove         = JobStatus == 5
 WhenToTransferOutput    = ON_EXIT_OR_EVICT
 
-queue from seq 155 244 |
+queue from seq 1 225 |
 

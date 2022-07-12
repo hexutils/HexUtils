@@ -42,11 +42,11 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv,"hi:s:o:b:c:",["ifile=","subdr=","outdr=","bfile=","clean="])
     except getopt.GetoptError:
-        print('\nbatchTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
+        print('\nOffShellTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
         exit()
     for opt, arg in opts:
         if opt == '-h' or opt == '--help':
-            print('\nbatchTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
+            print('\nOffShellTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
             exit()
         elif opt in ("-i", "--ifile"):
             inputfile = arg
@@ -60,7 +60,7 @@ def main(argv):
             removesubtrees = arg
 
     if not all([inputfile, pthsubdir, outputdir, branchfile]):
-        print('\nbatchTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
+        print('\nOffShellTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
         exit()
 
     if not outputdir.endswith("/"):
@@ -75,23 +75,23 @@ def main(argv):
 
     if not os.path.exists(inputfile):
         print("\nERROR: \tROOT file '" + inputfile + "' cannot be located. Please try again with valid input.\n")
-        print('batchTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
+        print('OffShellTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
         exit()
 
     if not os.path.exists(branchfile):
         print("\nERROR: \tBranches list '" + branchfile + "' cannot be located. Please try again with valid input.\n")
-        print('batchTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
+        print('OffShellTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
         exit()
 
     if pthsubdir not in inputfile:
         print("\nERROR: \tSubdirectory '" + pthsubdir + "' is not in the input path. Please try again with valid input.\n")
-        print('batchTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
+        print('OffShellTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
         exit()
 
     if len(removesubtrees) > 0:
         if removesubtrees not in ["True", "False"]:
             print("\nERROR: \tOption '-c' is expected to be True or False. Please try again with valid input.\n")
-            print('batchTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
+            print('OffShellTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
             exit()
     else: removesubtrees = "True"
 
@@ -122,35 +122,12 @@ def main(argv):
     print("Read '"+filename+"'\n")
     print("Write '"+tagtreefilename+"'\n")
 
-    D2jetZHSpline = ROOT.TFile("AnalysisTools/data/cconstants/SmoothKDConstant_m4l_DjjZH_13TeV.root").Get("sp_gr_varReco_Constant_Smooth")
-    D2jetWHSpline = ROOT.TFile("AnalysisTools/data/cconstants/SmoothKDConstant_m4l_DjjWH_13TeV.root").Get("sp_gr_varReco_Constant_Smooth")
-    D2jetVBFSpline = ROOT.TFile("AnalysisTools/data/cconstants/SmoothKDConstant_m4l_DjjVBF_13TeV.root").Get("sp_gr_varReco_Constant_Smooth")
-
-    DbkgkinSpline4e = ROOT.TFile("AnalysisTools/data/cconstants/SmoothKDConstant_m4l_Dbkgkin_4e_13TeV.root").Get("sp_gr_varReco_Constant_Smooth")
-    DbkgkinSpline4mu = ROOT.TFile("AnalysisTools/data/cconstants/SmoothKDConstant_m4l_Dbkgkin_4mu_13TeV.root").Get("sp_gr_varReco_Constant_Smooth")
-    DbkgkinSpline2e2mu = ROOT.TFile("AnalysisTools/data/cconstants/SmoothKDConstant_m4l_Dbkgkin_2e2mu_13TeV.root").Get("sp_gr_varReco_Constant_Smooth")
-
-    DggbkgkinSpline4e = ROOT.TFile("AnalysisTools/data/cconstants/SmoothKDConstant_m4l_Dggbkgkin_4e_13TeV.root").Get("sp_gr_varReco_Constant_Smooth")
-    DggbkgkinSpline4mu = ROOT.TFile("AnalysisTools/data/cconstants/SmoothKDConstant_m4l_Dggbkgkin_4mu_13TeV.root").Get("sp_gr_varReco_Constant_Smooth")
-    DggbkgkinSpline2e2mu = ROOT.TFile("AnalysisTools/data/cconstants/SmoothKDConstant_m4l_Dggbkgkin_2e2mu_13TeV.root").Get("sp_gr_varReco_Constant_Smooth")
-
-    DbkgjjEWQCDSpline4lHadVH = ROOT.TFile("AnalysisTools/data/cconstants/SmoothKDConstant_m4l_DbkgjjEWQCD_4l_HadVHTagged_13TeV.root").Get("sp_gr_varReco_Constant_Smooth")
-    DbkgjjEWQCDSpline2l2lHadVH = ROOT.TFile("AnalysisTools/data/cconstants/SmoothKDConstant_m4l_DbkgjjEWQCD_2l2l_HadVHTagged_13TeV.root").Get("sp_gr_varReco_Constant_Smooth")
-
-    DbkgjjEWQCDSpline4lJJVBF = ROOT.TFile("AnalysisTools/data/cconstants/SmoothKDConstant_m4l_DbkgjjEWQCD_4l_JJVBFTagged_13TeV.root").Get("sp_gr_varReco_Constant_Smooth")
-    DbkgjjEWQCDSpline2l2lJJVBF = ROOT.TFile("AnalysisTools/data/cconstants/SmoothKDConstant_m4l_DbkgjjEWQCD_2l2l_JJVBFTagged_13TeV.root").Get("sp_gr_varReco_Constant_Smooth")
-
-    #WPCshift = 1
-    WPCshift2jv = 0.46386/(1. - 0.46386)
-    WPCshift2jz = 0.91315/(1. - 0.91315)
-    WPCshift2jw = 0.88384/(1. - 0.88384)
+    #================ Check existence of output and set up target branches ================
 
     cConstants_list = cConstants.init_cConstants()
     gConstants_list = gConstants.init_gConstants()
 
     useQGTagging = False
-
-    #================ Check existence of output and set up target branches ================
 
     print("================ Check output location and set up branches ================\n")
 
@@ -234,36 +211,47 @@ def main(argv):
                     #================ Tagging event by category ================
 
                     ZZMass = t.ZZMass
+                    ZZFlav = t.Z1Flav * t.Z2Flav
 
                     tag = "none"
- 
-                    D_VBF2j = DVBF2j_ME(t.p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal, t.p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal, ZZMass, cConstants_list)
-                    branchdict["D2jVBF"].append(D_VBF2j)
-                    WP_VBF2j = getDVBF2jetsWP(ZZMass, useQGTagging)
 
-                    D_WHh = DWHh_ME(t.p_HadWH_SIG_ghw1_1_JHUGen_JECNominal, t.p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal, t.p_HadWH_mavjj_JECNominal, t.p_HadWH_mavjj_true_JECNominal, ZZMass, cConstants_list)
-                    branchdict["D2jWH"].append(D_WHh)
-                    WP_WHh = getDWHhWP(ZZMass, useQGTagging)
+                    if( t.nCleanedJetsPt30 < 2 ):
+                    
+                        tag = "non2j"
 
-                    D_ZHh = DZHh_ME(t.p_HadWH_SIG_ghw1_1_JHUGen_JECNominal, t.p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal, t.p_HadWH_mavjj_JECNominal, t.p_HadWH_mavjj_true_JECNominal, ZZMass, cConstants_list)
-                    branchdict["D2jZH"].append(D_ZHh)
-                    WP_ZHh = getDZHhWP(ZZMass, useQGTagging)
+                        branchdict["D2jVBF"].append(-1)
+                        branchdict["D2jWH"].append(-1)
+                        branchdict["D2jZH"].append(-1)
 
-                    if( t.nExtraLep==0 and (((t.nCleanedJetsPt30==2 or t.nCleanedJetsPt30==3) and t.nCleanedJetsPt30BTagged_bTagSF<=1) or (t.nCleanedJetsPt30>=4 and t.nCleanedJetsPt30BTagged_bTagSF==0)) and D_VBF2j>WP_VBF2j ):
-                        tag = "VBF"
+                    else:
 
-                    elif( t.nExtraLep==0 and (t.nCleanedJetsPt30==2 or t.nCleanedJetsPt30==3 or (t.nCleanedJetsPt30>=4 and t.nCleanedJetsPt30BTagged_bTagSF==0)) and (D_WHh>WP_WHh or D_ZHh>WP_ZHh)):
-                        tag = "VH"
+                        D_VBF2j = DVBF2j_ME(t.p_JJVBF_SIG_ghv1_1_JHUGen_JECNominal, t.p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal, ZZMass, cConstants_list)
+                        WP_VBF2j = getDVBF2jetsWP(ZZMass, useQGTagging)
+
+                        D_WHh = DWHh_ME(t.p_HadWH_SIG_ghw1_1_JHUGen_JECNominal, t.p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal, t.p_HadWH_mavjj_JECNominal, t.p_HadWH_mavjj_true_JECNominal, ZZMass, cConstants_list)
+                        WP_WHh = getDWHhWP(ZZMass, useQGTagging)
+
+                        D_ZHh = DZHh_ME(t.p_HadWH_SIG_ghw1_1_JHUGen_JECNominal, t.p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal, t.p_HadWH_mavjj_JECNominal, t.p_HadWH_mavjj_true_JECNominal, ZZMass, cConstants_list)
+                        WP_ZHh = getDZHhWP(ZZMass, useQGTagging)
+                    
+                        if( t.nExtraLep==0 and (((t.nCleanedJetsPt30==2 or t.nCleanedJetsPt30==3) and t.nCleanedJetsPt30BTagged_bTagSF<=1) or (t.nCleanedJetsPt30>=4 and t.nCleanedJetsPt30BTagged_bTagSF==0)) and D_VBF2j>WP_VBF2j ):
+                            tag = "VBF"
+                        
+                        elif( t.nExtraLep==0 and (t.nCleanedJetsPt30==2 or t.nCleanedJetsPt30==3 or (t.nCleanedJetsPt30>=4 and t.nCleanedJetsPt30BTagged_bTagSF==0)) and (D_WHh>WP_WHh or D_ZHh>WP_ZHh) ):
+                            tag = "VH"
+
+                        branchdict["D2jVBF"].append(D_VBF2j)
+                        branchdict["D2jWH"].append(D_WHh)
+                        branchdict["D2jZH"].append(D_ZHh)
 
                     #================ Saving category tag ================
 
+                    #if tag == "non2j": branchdict["EventTag"].append(-1)
                     if tag == "VBF": branchdict["EventTag"].append(1)
                     elif tag == "VH": branchdict["EventTag"].append(2)
                     else: branchdict["EventTag"].append(0)
 
                     #================ Calculating EW discriminants ================
-
-                    ZZFlav = t.Z1Flav * t.Z2Flav
 
                     if tag == "VBF":
 

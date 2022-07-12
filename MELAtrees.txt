@@ -1,0 +1,1 @@
+/eos/cms/store/group/phys_higgs/cmshzz4l/cjlst/RunIILegacy/200205_CutBased/MC_2017/OffshellAC/VBF/VBFToHiggs0PMToZZTo4l_M125_GaSM/ZZ4lAnalysis.root
