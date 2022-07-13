@@ -189,7 +189,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath):
         # Setup event information depending on RECO or LHE level #
         if parsed_prob_dict["isReco"]:
           leptons = SimpleParticleCollection_t(SimpleParticle_t(id, tlv(pt, eta, phi, 0)) for id, pt, eta, phi in zip(t.LepLepId, t.LepPt, t.LepEta, t.LepPhi))
-          jets = SimpleParticleCollection_t(SimpleParticle_t(0, tlv(pt, eta, phi, m)) for pt, eta, phi, m in zip(ns['JetPt'], t.JetEta, t.JetPhi, t.JetMass))
+          jets = SimpleParticleCollection_t(SimpleParticle_t(0, tlv(pt, eta, phi, m)) for pt, eta, phi, m in zip(t.JetPt, t.JetEta, t.JetPhi, t.JetMass))
           mothers = 0
           m.setInputEvent(leptons, jets, mothers, 0)
         else:
