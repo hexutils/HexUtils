@@ -11,6 +11,7 @@ if __name__ == "__main__":
   g = parser.add_mutually_exclusive_group(required=True)
   g.add_argument("--vbf", action="store_true")
   g.add_argument("--vbf_withdecay", action="store_true")
+  g.add_argument("--vbf_withdecay_weight", action='store_true') #vbfwithdecay but for reweighting
   g.add_argument("--zh", action="store_true")
   g.add_argument("--zh_withdecay", action="store_true")
   g.add_argument("--zh_lep", action="store_true")
@@ -157,7 +158,7 @@ try:
   if args.ggH4lMG:
     branchnames_float_array=("weights",)
     num_weights=30
-  if args.vbf or args.vbf_withdecay:
+  if args.vbf or args.vbf_withdecay or args.vbf_withdecay_weight:
     branchnames_float += ("q2V1", "q2V2","Dphijj")
   branchnames_float += (
     
@@ -240,7 +241,7 @@ try:
             process = TVar.Lep_ZH
           elif args.wh or args.wh_withdecay:
             process = TVar.Lep_WH
-        if args.vbf or args.vbf_withdecay:
+        if args.vbf or args.vbf_withdecay or args.vbf_withdecay_weight:
           process = TVar.JJVBF
         if args.zh_lep or args.zh_lep_hawk :
           process = TVar.Lep_ZH
@@ -513,11 +514,36 @@ try:
             branches["Dphijj"][0] = pj1.DeltaPhi(pj2)
           else:
             branches["Dphijj"][0] = pj2.DeltaPhi(pj1)
-        elif args.vbf_withdecay:
+        elif args.vbf_withdecay or args.vbf_withdecay_weight:
           branches["q2V1"][0], branches["q2V2"][0], branches["costheta1"][0], branches["costheta2"][0], branches["Phi"][0], branches["costhetastar"][0], branches["Phi1"][0]= event.computeVBFAngles()
           branches["HJJpz"][0] = sum((particle.second for particle in itertools.chain(event.daughters, event.associated)), ROOT.TLorentzVector()).Pz()
           branches["M4L"][0], branches["MZ1"][0], branches["MZ2"][0], branches["costheta1d"][0],branches["costheta2d"][0], branches["Phid"][0], branches["costhetastard"][0], branches["Phi1d"][0]= event.computeDecayAngles()
-
+	  JetVecPt = []
+          for i in range(len(event.associated)):
+            JetVecPt.append(event.associated[i].second.Pt())
+          Index_of_Largest_Pt = heapq.nlargest(2, xrange(len(JetVecPt)), key=JetVecPt.__getitem__)
+          pj1 = event.associated[Index_of_Largest_Pt[0]].second
+          pj2 = event.associated[Index_of_Largest_Pt[1]].second
+	  if pj1.Pz() > pj2.Pz() :
+            branches["Dphijj"][0] = pj1.DeltaPhi(pj2)
+            branches["Ej1"][0] = pj1.Energy()
+            branches['Ej2'][0] = pj2.Energy()
+            branches["pxj1"][0] = pj1.Px()
+            branches["pxj2"][0] = pj2.Px()
+            branches["pyj1"][0] = pj1.Py()
+            branches['pyj2'][0] = pj2.Py()
+            branches['pzj1'][0] = pj1.Pz()
+            branches['pzj2'][0] = pj2.Pz()
+          else:
+            branches["Dphijj"][0] = pj2.DeltaPhi(pj1)
+            branches["Ej1"][0] = pj2.Energy()
+            branches['Ej2'][0] = pj1.Energy()
+            branches["pxj1"][0] = pj2.Px()
+            branches["pxj2"][0] = pj1.Px()
+            branches["pyj1"][0] = pj2.Py()
+            branches['pyj2'][0] = pj1.Py()
+            branches['pzj1'][0] = pj2.Pz()
+            branches['pzj2'][0] = pj1.Pz()
 	
 	elif args.ggH4l or args.ggH4lMG:
 	  branches["M4L"][0], branches["MZ1"][0], branches["MZ2"][0], branches["costheta1d"][0],branches["costheta2d"][0], branches["Phid"][0], branches["costhetastard"][0], branches["Phi1d"][0]= event.computeDecayAngles()
@@ -603,7 +629,7 @@ try:
         if args.zh or args.wh or args.zh_lep_hawk:
           branches["ptV"][0] = np.sqrt((pj1.Px()+pj2.Px())**2+(pj1.Py()+pj2.Py())**2)
         
-	if args.ggH4lMG:
+	if args.ggH4lMG or args.vbf_withdecay_weight:
           key_sorted=sorted(event.weights)
           list_weights=[]
           for key in key_sorted:
