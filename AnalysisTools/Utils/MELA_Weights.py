@@ -252,7 +252,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath):
           elif key == "ghza4":
             m.ghzgs4 = parsed_prob_dict['coupl_dict'][key]
           elif key == "kappaTopBot":
-            m.kappa = parse_prob_dict['coupl_dict'][key]
+            m.kappa = parsed_prob_dict['coupl_dict'][key]
           elif key == "kappa":
             m.kappa = parsed_prob_dict['coupl_dict'][key]
           elif key == "kappatilde":

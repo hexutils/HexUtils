@@ -42,11 +42,11 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv,"hi:s:o:b:c:",["ifile=","subdr=","outdr=","bfile=","clean="])
     except getopt.GetoptError:
-        print('\nOffShellTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
+        print('\nPTreeMaker.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
         exit()
     for opt, arg in opts:
         if opt == '-h' or opt == '--help':
-            print('\nOffShellTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
+            print('\nPTreeMaker.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
             exit()
         elif opt in ("-i", "--ifile"):
             inputfile = arg
@@ -60,7 +60,7 @@ def main(argv):
             removesubtrees = arg
 
     if not all([inputfile, pthsubdir, outputdir, branchfile]):
-        print('\nOffShellTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
+        print('\nPTreeMaker.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
         exit()
 
     if not outputdir.endswith("/"):
@@ -75,23 +75,23 @@ def main(argv):
 
     if not os.path.exists(inputfile):
         print("\nERROR: \tROOT file '" + inputfile + "' cannot be located. Please try again with valid input.\n")
-        print('OffShellTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
+        print('PTreeMaker.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
         exit()
 
     if not os.path.exists(branchfile):
         print("\nERROR: \tBranches list '" + branchfile + "' cannot be located. Please try again with valid input.\n")
-        print('OffShellTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
+        print('PTreeMaker.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
         exit()
 
     if pthsubdir not in inputfile:
         print("\nERROR: \tSubdirectory '" + pthsubdir + "' is not in the input path. Please try again with valid input.\n")
-        print('OffShellTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
+        print('PTreeMaker.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
         exit()
 
     if len(removesubtrees) > 0:
         if removesubtrees not in ["True", "False"]:
             print("\nERROR: \tOption '-c' is expected to be True or False. Please try again with valid input.\n")
-            print('OffShellTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
+            print('PTreeMaker.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
             exit()
     else: removesubtrees = "True"
 
