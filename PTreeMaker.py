@@ -29,9 +29,10 @@ import root_numpy
 from root_numpy import array2tree, tree2array
 import subprocess
 
+from AnalysisTools.Utils.Helpers import *
+from AnalysisTools.Utils.Discriminants import *
 from AnalysisTools.data import gConstants as gConstants
 from AnalysisTools.data import cConstants as cConstants
-from AnalysisTools.Utils.Discriminants import *
 
 def main(argv):
     inputfile = ''

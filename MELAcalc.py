@@ -16,13 +16,13 @@ def main(argv):
     branchfile = ''
     removesubtrees = ''
     try:
-        opts, args = getopt.getopt(argv,"hi:s:o:b:",["ifile=","subdr=","outdr=","bfile="])
+        opts, args = getopt.getopt(argv,"hi:s:o:b:l:",["ifile=","subdr=","outdr=","bfile=","lhe2root="])
     except getopt.GetoptError:
-        print('\nMELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile>\n')
+        print('\nMELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-l <lhe2root>)\n')
         exit()
     for opt, arg in opts:
         if opt == '-h' or opt == '--help':
-            print('\nMELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile>\n')
+            print('\nMELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-l <lhe2root>)\n')
             exit()
         elif opt in ("-i", "--ifile"):
             inputfile = arg
@@ -32,9 +32,11 @@ def main(argv):
             outputdir = arg
         elif opt in ("-b", "--bfile"):
             branchfile = arg
+        elif opt in ("-l", "--lhe2root"):
+            lh2root = arg
 
     if not all([inputfile, pthsubdir, outputdir, branchfile]):
-        print('\nMELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile>\n')
+        print('\nMELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-l <lhe2root>)\n')
         exit()
 
     if not outputdir.endswith("/"):
@@ -44,6 +46,8 @@ def main(argv):
         pthsubdir = pthsubdir+"/"
 
     pthsubdir = pthsubdir.split("/")[-2]
+
+    lhe2root = lhe2root.replace(" ", "").capitalize()
 
     if not os.path.exists(inputfile):
         print("\nERROR: \tROOT file '" + inputfile + "' cannot be located. Please try again with valid input.\n")
@@ -60,13 +64,23 @@ def main(argv):
         print('MELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile>\n')
         exit()
 
+    if len(lhe2root) > 0:
+        if lhe2root not in ["True", "False"]:
+            print("\nERROR: \tOption '-l' is expected to be True or False. Please try again with valid input.\n")
+            print('PTreeMaker.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-l <lhe2root>)\n')
+            exit()
+    else: lhe2root = "True"
+
+    lhe2root = eval(lhe2root)
+
     print("\n================ Reading user input ================\n")
 
     print("Input PTree is '{}'".format(inputfile))
     print("Path subdirectory is '{}'".format(pthsubdir))
     print("Output directory is '{}'".format(outputdir[:-1]))
     print("Branch list file is '{}'".format(branchfile))
-
+    if lhe2root: print("MELA parser expecting lhe2root branch names")
+    else: print("MELA parser expecting CJLST branch names")
 
     #================ Set input file path and output file path ================
     
@@ -102,7 +116,8 @@ def main(argv):
 
     print(branchlist)
 
-    from AnalysisTools.Utils.MELA_Weights import addprobabilities
+    if lhe2root: from AnalysisTools.Utils.MELA_Weights import addprobabilities
+    else: from AnalysisTools.Utils.MELA_Weights_lhe2root import addprobabilities
 
     #addprobabilities(filename, outtreefilename, branchlist, "eventTree")
     addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree")
