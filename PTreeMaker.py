@@ -231,7 +231,7 @@ def main(argv):
                         D_WHh = DWHh_ME(t.p_HadWH_SIG_ghw1_1_JHUGen_JECNominal, t.p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal, t.p_HadWH_mavjj_JECNominal, t.p_HadWH_mavjj_true_JECNominal, ZZMass, cConstants_list)
                         WP_WHh = getDWHhWP(ZZMass, useQGTagging)
 
-                        D_ZHh = DZHh_ME(t.p_HadWH_SIG_ghw1_1_JHUGen_JECNominal, t.p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal, t.p_HadWH_mavjj_JECNominal, t.p_HadWH_mavjj_true_JECNominal, ZZMass, cConstants_list)
+                        D_ZHh = DZHh_ME(t.p_HadZH_SIG_ghz1_1_JHUGen_JECNominal, t.p_JJQCD_SIG_ghg2_1_JHUGen_JECNominal, t.p_HadZH_mavjj_JECNominal, t.p_HadZH_mavjj_true_JECNominal, ZZMass, cConstants_list)
                         WP_ZHh = getDZHhWP(ZZMass, useQGTagging)
                     
                         if( t.nExtraLep==0 and (((t.nCleanedJetsPt30==2 or t.nCleanedJetsPt30==3) and t.nCleanedJetsPt30BTagged_bTagSF<=1) or (t.nCleanedJetsPt30>=4 and t.nCleanedJetsPt30BTagged_bTagSF==0)) and D_VBF2j>WP_VBF2j ):

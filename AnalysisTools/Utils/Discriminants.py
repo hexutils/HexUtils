@@ -1,5 +1,6 @@
 import os
 from .Eval_cConstants import *
+from .Helpers import *
 from ..data import gConstants as gCon
 from numpy import sqrt as sqrt
 #======================================================================================================#
@@ -775,35 +776,51 @@ def D_int(var, cnt):
 """
 
 def D_int_trigphase(var):
+    if checkNanInf(var) or checkNegative(var): return -999
+    else:
         val=0
-        pA = var[0]/var[3]
-        pB = var[1]/var[4]
-        pAB = var[2]*(1/var[3]+1/var[4])
-        pABInt = pAB-pA-pB
-        d=pA*pB
-        if (d>0): val += pABInt/(2*sqrt(d)) 
-        
+        if len(var) == 3:
+            d=var[0]*var[1]
+            if (d>0): val += var[2]/(2*sqrt(d))
+        elif len(var) == 5:
+            if checkZero([var[3], var[4]]): return val
+            pA = var[0]/var[3]
+            pB = var[1]/var[4]
+            pAB = var[2]*(1/var[3]+1/var[4])
+            pABInt = pAB-pA-pB
+            d=pA*pB
+            if (d>0): val += pABInt/(2*sqrt(d))
+        else:
+            return -999
         return val
 
 def D_int_trigphase_avg(var):
+    if checkNanInf(var) or checkNegative(var): return -999
+    else:
         val=0
         d1=0
         d2=0 
-
-        pA = var[0]/var[3];
-        pB = var[1]/var[4];
-        pAB = var[2]*(1/var[3]+1/var[4]);
-        pABInt = pAB-pA-pB;
-        d1=pA*pB;
-        if (d1>0): val += pABInt/(2*sqrt(d1));
-
-        pC = var[5]/var[8];
-        pD = var[6]/var[9];
-        pCD = var[7]*(1/var[8]+1/var[9]);
-        pCDInt = pCD-pC-pD;
-        d2=pC*pD;
-        if (d2>0): val += pCDInt/(2*sqrt(d2))
-
+        if len(var) == 6:
+            d1=var[0]*var[1]
+            d2=var[3]*var[4]
+            if (d1>0): val += var[2]/(2*sqrt(d1))
+            if (d2>0): val += var[5]/(2*sqrt(d2))
+        elif len(var) == 10:
+            if checkZero([var[3], var[4], var[8], var[9]]): return val
+            pA = var[0]/var[3]
+            pB = var[1]/var[4]
+            pAB = var[2]*(1/var[3]+1/var[4])
+            pABInt = pAB-pA-pB
+            d1=pA*pB
+            if (d1>0): val += pABInt/(2*sqrt(d1))
+            pC = var[5]/var[8]
+            pD = var[6]/var[9]
+            pCD = var[7]*(1/var[8]+1/var[9])
+            pCDInt = pCD-pC-pD
+            d2=pC*pD
+            if (d2>0): val += pCDInt/(2*sqrt(d2))
+        else:
+            return -999
         if (d1>0) and (d2>0): val /= 2
         return val
 
