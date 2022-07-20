@@ -272,8 +272,8 @@ def addprobabilities(infile,outfile,probabilities,TreePath):
             m.ghz4 = parsed_prob_dict['coupl_dict'][key]
             m.ghw4 = parsed_prob_dict['coupl_dict'][key]
           elif key == "ghv1prime2":
-            m.ghz1prime2 = parsed_prob_dict['coupl_dict'][key]
-            m.ghw1prime2 = parsed_prob_dict['coupl_dict'][key]
+            m.ghz1_prime2 = parsed_prob_dict['coupl_dict'][key]
+            m.ghw1_prime2 = parsed_prob_dict['coupl_dict'][key]
           else:
             raise ValueError("{} is not a supported coupling!".format(key))
         if parsed_prob_dict["Prod"] == True and parsed_prob_dict["Dec"] == False:
