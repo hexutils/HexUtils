@@ -227,7 +227,21 @@ def Valid_Hypothesis(hypothesis):
                  "fg2ggproddec-0.5", "fa2ggproddec-0.5",
                  "fg4ggproddec-0.5", "fa3ggproddec-0.5",
                 )
-    valid = valid + mixturepermutations_4d(valid) + mixturepermutationsEFT(valid)
+    valid_pure = ["0+", "SM", "scalar", "0PM", "a1", "g1",
+                 "a2", "0h+", "0PH", "g2",
+                 "0-", "a3", "PS", "pseudoscalar", "0M", "g4",
+                 "L1", "Lambda1", "0L1",
+                 "L1Zg", "0L1Zg", "L1Zgs",
+                 "g2Zg", "g2Zgs", "a2Zg", "ghzgs2", "0PHZg",
+                 "g4Zg", "g4Zgs", "a3Zg", "ghzgs4", "0MZg",
+                 "g2gg", "g2gsgs", "a2gg", "ghgsgs2", "0PHgg",
+                 "g4gg", "g4gsgs", "a3gg", "ghgsgs4", "0Mgg"]
+    valid_pure_perm = []
+    valid_pure.extend(list(permutations(valid_pure, 2)))
+    for vp in valid_pure:
+      valid_pure_perm.append("".join(vp))
+    valid = valid + tuple(valid_pure_perm) + mixturepermutations_4d(valid) + mixturepermutationsEFT(valid)
+    
     if hypothesis in valid:
       return True
     return False
@@ -272,6 +286,7 @@ def Check_Input(ProductionMode,Hypothesis,HffHypothesis):
 # This function will parse the couplings from the Hypothesis and return them separately #
 def ParseHypothesis(Hypothesis):
   Coupling_Dict = dict({'ghz1': 0, 'ghz2': 0, 'ghz4': 0, 'ghz1prime2': 0, 'ghza1prime2': 0, 'ghza2': 0, 'ghza4': 0, 'gha2': 0, 'gha4': 0})
+  parsed = False
   print("Hypothesis being parsed: ", Hypothesis)
   if "interf" in Hypothesis:
     print("Interference in hypotheses... stripping from string")
@@ -279,47 +294,86 @@ def ParseHypothesis(Hypothesis):
   #============ Check if there is a single hypothesis ============#
   if Hypothesis in ("0+", "SM", "scalar", "0PM", "a1", "g1"):
     Coupling_Dict["ghz1"]=1 
+    parsed = True
   elif Hypothesis in ("a2", "0h+", "0PH", "g2"):
     Coupling_Dict["ghz2"]=1
+    parsed = True
   elif Hypothesis in ("0-", "a3", "PS", "pseudoscalar", "0M", "g4"):
     Coupling_Dict["ghz4"]=1
+    parsed = True
   elif Hypothesis in ("L1", "Lambda1", "0L1"):
     Coupling_Dict["ghz1prime2"]=1
+    parsed = True
   elif Hypothesis in ("L1Zg", "0L1Zg", "L1Zgs"):
     Coupling_Dict["ghza1prime2"]=1
+    parsed = True
   elif Hypothesis in ("g2Zg", "g2Zgs", "a2Zg", "ghzgs2", "0PHZg"):
     Coupling_Dict["ghza2"]=1
+    parsed = True
   elif Hypothesis in ("g4Zg", "g4Zgs", "a3Zg", "ghzgs4", "0MZg"):
     Coupling_Dict["ghza4"]=1
+    parsed = True
   elif Hypothesis in ("g2gg", "g2gsgs", "a2gg", "ghgsgs2", "0PHgg"):
     Coupling_Dict["gha2"]=1
+    parsed = True
   elif Hypothesis in ("g4gg", "g4gsgs", "a3gg", "ghgsgs4", "0Mgg"):
     Coupling_Dict["gha4"]=1
+    parsed = True
   # ========= Check of there is a mixed hypothesis ============
   elif Hypothesis in ("fa20.5", "fa2dec0.5", "fa2+0.5", "fa2dec+0.5"):
     Coupling_Dict["ghz1"] = 1
     Coupling_Dict["ghz2"] = 1
+    parsed = True
   elif Hypothesis in ("fa30.5", "fa3dec0.5", "fa3+0.5", "fa3dec+0.5"):
     Coupling_Dict["ghz1"] = 1
     Coupling_Dict["ghz4"] = 1
+    parsed = True
   elif Hypothesis in ("fL10.5", "fL1dec0.5", "fL1+0.5", "fL1dec+0.5"):
     Coupling_Dict["ghz1"] = 1
     Coupling_Dict["ghz1prime2"] = 1
+    parsed = True
   elif Hypothesis in ("fL1Zg0.5", "fL1Zgdec0.5", "fL1Zg+0.5", "fL1Zgdec+0.5"):
     Coupling_Dict["ghz1"] = 1
     Coupling_Dict["ghza1prime2"] = 1
+    parsed = True
   elif Hypothesis in ("fa2Zg0.5", "fa2Zgdec0.5", "fa2Zg+0.5", "fa2dec+0.5"):
     Coupling_Dict["ghz1"] = 1
     Coupling_Dict["ghza2"] = 1
+    parsed = True
   elif Hypothesis in ("fa2gg0.5", "fa2ggdec0.5", "fa2gg+0.5", "fa2ggdec+0.5"):
     Coupling_Dict["ghz1"] = 1
     Coupling_Dict["gha2"] = 1
+    parsed = True
   elif Hypothesis in ("fa3Zg0.5", "fa3Zgdec0.5", "fa3Zg+0.5", "fa3Zgdec+0.5"):
     Coupling_Dict["ghz1"] = 1
     Coupling_Dict["ghza4"] = 1
+    parsed = True
   elif Hypothesis in ("fa3gg0.5", "fa3ggdec0.5", "fa3gg+0.5", "fa3ggdec+0.5"):
     Coupling_Dict["ghz1"] = 1
     Coupling_Dict["gha4"] = 1
+    parsed = True
+  # ========== Sort out if the coupling is not mixed for fai ========= 
+  if parsed == True:
+    return Coupling_Dict
+  elif parsed == False:
+    if any(s in Hypothesis for s in ["0+", "SM", "scalar", "0PM", "a1", "g1"]):
+      Coupling_Dict["ghz1"]=1 
+    if any(s in Hypothesis for s in ["a2", "0h+", "0PH", "g2"]):
+      Coupling_Dict["ghz2"]=1
+    if any(s in Hypothesis for s in ["0-", "a3", "PS", "pseudoscalar", "0M", "g4"]):
+      Coupling_Dict["ghz4"]=1
+    if any(s in Hypothesis for s in ["L1Zg", "0L1Zg", "L1Zgs"]):
+      Coupling_Dict["ghza1prime2"]=1
+    if any(re.match("(^[^.]*)L1(?!Z)", Hypothesis) for s in ["L1", "Lambda1", "0L1"]):
+      Coupling_Dict["ghz1prime2"]=1
+    if any(s in Hypothesis for s in ["g2Zg", "g2Zgs", "a2Zg", "ghzgs2", "0PHZg"]):
+      Coupling_Dict["ghza2"]=1
+    if any(s in Hypothesis for s in ["g4Zg", "g4Zgs", "a3Zg", "ghzgs4", "0MZg"]):
+      Coupling_Dict["ghza4"]=1
+    if any(s in Hypothesis for s in ["g2gg", "g2gsgs", "a2gg", "ghgsgs2", "0PHgg"]):
+      Coupling_Dict["gha2"]=1
+    if any(s in Hypothesis for s in ["g4gg", "g4gsgs", "a3gg", "ghgsgs4", "0Mgg"]):
+      Coupling_Dict["gha4"]=1
   return Coupling_Dict
 
 def CheckIsIso(Coupling_Dict):
@@ -391,28 +445,50 @@ def GetIsoMelaConstants(Coupling_Dict,ProductionMode,isData):
     MelaIsoConstants.append(string)  
   return MelaIsoConstants 
 
+def Sort_Name_Order(List_of_Names):
+  def user_sorter(x):
+    if x == 'ghz1':
+      return 1
+    elif x == 'ghz2':
+      return 2
+    elif x == 'ghz4':
+      return 3
+    elif x == 'gha2':
+      return 4
+    elif x == 'gha4':
+      return 5
+    elif x == 'ghza2':
+      return 6
+    elif x == 'ghza4':
+      return 7
+    elif x == 'ghz1prime2':
+      return 8
+    elif x == 'ghza1prime2':
+      return 9 
+  return sorted(List_of_Names, key=user_sorter)
+
 def GetMixedMelaConstants(Coupling_Dict,ProductionMode,isData):
-  prodName=[]
-  couplname_plus_value=[]
-  Generator=[]
+  prodName=''
+  couplname_plus_value=''
+  Generator=''
   CouplingValuesDict=GetCouplingValues()
   MelaMixedConstants = []
   if not isData:
     if ProductionMode == 'ggH':
-          prodName.append('GG')        
-          Generator.append("MCFM")
+          prodName='GG'        
+          Generator="MCFM"
     elif ProductionMode in ('VBF'):
-          prodName.append('JJEW')
-          Generator.append('MCFM')
+          prodName = 'JJEW'
+          Generator = 'MCFM'
     elif ProductionMode in ('WplusH','WminusH','ZH','VH'):
-          prodName.append('JJEW')
-          Generator.append('MCFM')
+          prodName = 'JJEW'
+          Generator = 'MCFM'
     elif ProductionMode in('bbH'):
-          prodName.append('Dec')
-          Generator.append('JHUGen')
+          prodName = 'Dec'
+          Generator = 'JHUGen'
     elif ProductionMode in('ttH'):
-          prodName.append('Dec')
-          Generator.append('JHUGen')
+          prodName ='Dec'
+          Generator = 'JHUGen'
   #====== Not Implemented Right Now ======
     elif ProductionMode == 'tH':
       return null
@@ -421,47 +497,129 @@ def GetMixedMelaConstants(Coupling_Dict,ProductionMode,isData):
   for Coupling in Coupling_Dict.keys():
     if Coupling_Dict[Coupling] != 0:
         Non_Zero_Coupling_String.append(Coupling)
-      
-  Mixed_Combos = list(combinations(Non_Zero_Coupling_String, 2))
-  #====== Make coupling names plus values string =======#
-  for combo in Mixed_Combos:
-    name_1 = combo[0]
-    name_2 = combo[1]
-    first = 0
-    second = 1
-    if "ghz1" in name_1 and not "prime" in name_1:
-      first = 0
-      second = 1
-    else:
-      first = 1
-      second = 0
-    if ProductionMode == 'ggH':
-      couplname_plus_value.append("kappaTopBot_1_"+name_1+"_"+CouplingValuesDict[name_1]+"_"+name_2+"_"+CouplingValuesDict[name_2])
-    elif ProductionMode in('VBF','WplusH','WminusH','ZH','VH'):
-      couplname_plus_value.append(ConvertKeyToEWKey(name_1)+"_"+CouplingValuesDict[name_1]+"_"+ConvertKeyToEWKey(name_2)+"_"+CouplingValuesDict[name_2])
-    elif ProductionMode in('bbH','ttH'):
-      couplname_plus_value.append(name_1+"_"+CouplingValuesDict[name_1]+"_"+name_2+"_"+CouplingValuesDict[name_2])
+  Sorted_Names = Sort_Name_Order(Non_Zero_Coupling_String)
+  #====== Make coupling names plus values string for 2 term interference =======#
+  MELA_Name_String = ''
+  for name in Sorted_Names:
+    MELA_Name_String += name+"_"+CouplingValuesDict[name]+"_"
+  if ProductionMode == 'ggH':
+    couplname_plus_value+="kappaTopBot_1_"+MELA_Name_String
+  elif ProductionMode in('VBF','WplusH','WminusH','ZH','VH'):
+    couplname_plus_value+=MELA_Name_String
+  elif ProductionMode in('bbH','ttH'):
+    couplname_plus_value+=MELA_Name_String
   #====== Make the Strings to pull from the Trees ======#
-  for i in range(len(couplname_plus_value)):
-    if ProductionMode in 'ggH':
-      string = "p_Gen_"+prodName[i]+"_SIG_"+couplname_plus_value[i]+"_"+Generator[i]
-      MelaMixedConstants.append(string)
-    elif ProductionMode in('VBF','WplusH','WminusH','ZH','VH'):
-      string = "p_Gen_"+prodName[i]+"_BSI_"+couplname_plus_value[i]+"_"+Generator[i]
-      MelaMixedConstants.append(string)
-    elif ProductionMode in('bbH','ttH'):
-      string = "p_Gen_"+prodName[i]+"_SIG_"+couplname_plus_value[i]+"_"+Generator[i]
-      MelaMixedConstants.append(string)
+  if ProductionMode in 'ggH':
+    string = "p_Gen_"+prodName+"_SIG_"+couplname_plus_value+Generator
+    MelaMixedConstants.append(string)
+  elif ProductionMode in('VBF','WplusH','WminusH','ZH','VH'):
+    string = "p_Gen_"+prodName+"_BSI_"+couplname_plus_value+Generator
+    MelaMixedConstants.append(string)
+  elif ProductionMode in('bbH','ttH'):
+    string = "p_Gen_"+prodName+"_SIG_"+couplname_plus_value+Generator
+    MelaMixedConstants.append(string)
   return MelaMixedConstants 
+
+def GetIsoHVVCouplingName(IsoTemplateName):
+  if "0PM" == IsoTemplateName:
+    return "ghz1"
+  if "0PH" == IsoTemplateName:
+    return "ghz2"
+  if "0M" == IsoTemplateName:
+    return "ghz4"
+  if "0L1Zg" == IsoTemplateName:
+    return "ghza1prime2"
+  if "0L1" == IsoTemplateName:
+    return "ghz1prime2"
+  if "0PHZg" == IsoTemplateName:
+    return "ghza2"
+  if "0MZg" == IsoTemplateName:
+    return "ghza4"
+  if "0PHgg" == IsoTemplateName:
+    return "gha2"
+  if "0Mgg" == IsoTemplateName:
+    return "gha4"
+  raise ValueError("Invalid Iso Template Name")
+
+def GetIntFromTemplateName(IntTemplateName,ProductionMode,isData):
+  CouplingDict={} #Stores Coupling Orders  
+  CouplingValuesDict=GetCouplingValues()
+  print("IntTemplate",IntTemplateName)
+  #sort out order of each coupling#
+  if re.search("(g1(?P<Order>[1234]))",IntTemplateName):
+    CouplingDict["ghz1"] = re.search("(g1(?P<Order>[1234]))",IntTemplateName)["Order"]
+  if re.search("(g2(?P<Order>[1234]))",IntTemplateName):
+    CouplingDict["ghz2"] = re.search("(g2(?P<Order>[1234]))",IntTemplateName)["Order"]
+  if re.search("(g4(?P<Order>[1234]))",IntTemplateName):
+    CouplingDict["ghz4"] = re.search("(g4(?P<Order>[1234]))",IntTemplateName)["Order"]
+  if re.search("(g1prime2(?P<Order>[1234]))",IntTemplateName):
+    CouplingDict["ghz1prime2"] = re.search("(g1prime2(?P<Order>[1234]))",IntTemplateName)["Order"]
+  if re.search("(ghzgs1prime2(?P<Order>[1234]))",IntTemplateName):
+    CouplingDict["ghza1prime2"] = re.search("(ghzgs1prime2(?P<Order>[1234]))",IntTemplateName)["Order"]
+  if re.search("(g2Zg(?P<Order>[1234]))",IntTemplateName):
+    CouplingDict["ghza2"] = re.search("(g2Zg(?P<Order>[1234]))",IntTemplateName)["Order"]
+  if re.search("(g4Zg(?P<Order>[1234]))",IntTemplateName):
+    CouplingDict["ghza4"] = re.search("(g4Zg(?P<Order>[1234]))",IntTemplateName)["Order"]
+  if re.search("(g2gg(?P<Order>[1234]))",IntTemplateName):
+    CouplingDict["gha2"] = re.search("(g2gg(?P<Order>[1234]))",IntTemplateName)["Order"]
+  if re.search("(g4gg(?P<Order>[1234]))",IntTemplateName):
+    CouplingDict["gha4"] = re.search("(g4gg(?P<Order>[1234]))",IntTemplateName)["Order"]
+  # See how to parse all of the orders #
+  print("Parsed Coupling Dict",CouplingDict)
+  SumOfOrders = sum(float(CouplingDict[Coupling]) for Coupling in CouplingDict)
+  if SumOfOrders == 2:
+    Pure_Couplings = []
+    Mixed_Couplings = []
+    for coupling in CouplingDict:
+      # Need to get the pure Couplings 
+      if 'gg' in ProductionMode:
+        coupl_string = "kappaTopBot_1_"+coupling+"_"+CouplingValuesDict[coupling]
+        Pure_Couplings.append("p_Gen_GG_SIG_"+coupl_string+"_MCFM")
+    # We need to calculate mixed couplings
+    sorted_couplings = Sort_Name_Order(CouplingDict.keys())
+    coupl_string = "kappaTopBot_1_"
+    for coupling in sorted_couplings:
+      coupl_string += coupling+"_"+CouplingValuesDict[coupling]+"_"
+    Mixed_Couplings.append("p_Gen_GG_SIG_"+coupl_string+"MCFM")
+    # Now make the correct combination of coupling strings # 
+    return Mixed_Couplings[0] +"-"+Pure_Couplings[0]+"-"+Pure_Couplings[1]
+  elif SumOfOrders == 4: #Not Supported Yet
+    raise ValueError("Not supported yet")
+  raise ValueError("Invalid Iso Template Name")
+
+def GetPureFromTemplateName(OutputHypothesis,ProductionMode,isData):
+  IsoBranchName = ''
+  prodName = ''
+  coupl_string = ''
+  coupling_name= GetIsoHVVCouplingName(OutputHypothesis)
+  CouplingValuesDict=GetCouplingValues()
+  if not isData:
+    if 'gg' in ProductionMode:
+      prodName = 'GG'
+      coupl_string = 'kappaTopBot_1_'+coupling_name+"_"+CouplingValuesDict[coupling_name]
+      Generator = "MCFM"
+  return "p_Gen_"+prodName+"_SIG_"+coupl_string+"_"+Generator
 
 # This function will interptret what the hypothesis means and what constants are needed #
 def GetConstantsAndMELA(Hypothesis,ProductionMode,isData):
   MelaConstantNames={}
   Coupling_Dict = ParseHypothesis(Hypothesis)
-  # This list of tuples will include the names of the branches needed to reweight the event # 
+  # This list of tuples will include the names of the branches needed to reweight the event #
   MelaConstantNames["Iso"]=(GetIsoMelaConstants(Coupling_Dict,ProductionMode,isData))
   MelaConstantNames["Mixed"]=(GetMixedMelaConstants(Coupling_Dict,ProductionMode,isData))
   return MelaConstantNames
+
+def GetConstantsAndMELA_From_Template_Name(Template_Name,ProductionMode,isData):
+  Branch_Names_String = ''  
+  print("Template Names",Template_Name)
+  Grouped = re.match("(?:(?P<Hffpure>0(?:PM|M)ff)_)?(?:(?P<HVVpure>0(?:PM|M|PH|L1|L1Zg|Mgg|PHgg|MZg|PHZg))|(?P<HVVint>(?:g(?:1|2|4|1prime2|hzgs1prime2|2gg|4gg|2Zg|4Zg)[1234])*))$",Template_Name)
+  grouped_names = Grouped.groupdict()
+  print("Grouped names", grouped_names)
+  if (grouped_names["HVVpure"] != None):
+    Branch_Names_String = GetPureFromTemplateName(grouped_names["HVVpure"],ProductionMode,isData)
+  if (grouped_names["HVVint"] != None):
+    Branch_Names_String = GetIntFromTemplateName(grouped_names["HVVint"],ProductionMode,isData)
+  return Branch_Names_String
 
 def Reweight_Event(InputEvent,ProductionMode,InputHypothesis,OutputHypothesis,HffHypothesis,isData,Analysis_Config,lumi,year):
   # Check the input for Input Hypothesis and Output Hypothesis #
@@ -545,12 +703,67 @@ def Reweight_Branch_NoHff(InputTree,ProductionMode,OutputHypothesis,isData,Analy
       Branch_Names += MelaConstantNames["Iso"][0]
     elif len(MelaConstantNames["Mixed"]) != 0: # If there are Mixed Couplings this means we reweight with the Mixed Coupling
       Branch_Names += MelaConstantNames["Mixed"][0]
-    # Note that there is no option right now to support reweighting to non isolated hypothesis
-    #print(tree2array(tree=InputTree,branches=[Branch_Names]).astype(float))
-    #print(eventweight)
     print(Branch_Names)
     return eventweight * tree2array(tree=InputTree,branches=[Branch_Names]).astype(float) * lumi
   if "ZX" in ProductionMode: 
     return np.array(eventweight) 
   else:
     return np.array(eventweight) * lumi 
+
+def Reweight_Branch_NoHff_From_Template_Name(InputTree,template_name,isData,Analysis_Config,lumi,year,DoMassFilter):
+  # Check the input for Input Hypothesis and Output Hypothesis #
+  print ("InputTree:",InputTree)
+  print ("Template:", template_name)
+  # Sort out the production mode #
+  ProductionMode = template_name
+  OutputHypothesis = None
+  Grouped = re.match("(?P<production>gg|tt|bb|qq|Z|W|V|gamma)H_(?:(?P<Hffpure>0(?:PM|M)ff)_)?(?:(?P<HVVpure>0(?:PM|M|PH|L1|L1Zg|Mgg|PHgg|MZg|PHZg))|(?P<HVVint>(?:g(?:1|2|4|1prime2|hzgs1prime2|2gg|4gg|2Zg|4Zg)[1234])*))$",template_name)
+  if Grouped != None:
+    grouped_names = Grouped.groupdict()
+    ProductionMode = grouped_names["production"]+"H"
+    if (grouped_names["HVVint"] != None):
+      OutputHypothesis = grouped_names["HVVint"]
+    if (grouped_names["HVVpure"] != None):
+      OutputHypothesis = grouped_names["HVVpure"]
+  elif "bkg" in template_name:
+    OutputHypothesis = "bkg"
+  elif "zjets" in template_name:
+    OutputHypothesis = "bkg"
+  else:
+    raise ValueError("Invalid template name")
+  print ("Production Mode:",ProductionMode)
+  print ("OutHypothesis:",OutputHypothesis)
+  # ================== #
+  doMELA_Reweight = None
+  if OutputHypothesis == "bkg":
+    #Check_Input(ProductionMode,None,None)
+    doMELA_Reweight = False
+  else:
+    #if any(prod in ProductionMode for prod in ['VBF','VH','ZH','WplusH','WminusH','bbH','gammaH']):
+    #  Check_Input(ProductionMode,OutputHypothesis,None)
+    #else:
+    #  Check_Input(ProductionMode,OutputHypothesis,"Hff0+")
+    doMELA_Reweight = True
+  if doMELA_Reweight is None:
+    raise ValueError('Choose MELA reweight option in reweight failed!')
+  # After Checking the validity of request calulate the per event weight for the sample
+  eventweight = []
+  if Analysis_Config.ReweightProcess == "Calc_Event_Weight_2021_gammaH":
+    if 'WH' in InputTree:
+      eventweight = Calc_Tree_Weight_2021_gammaH(InputTree,"WH"+"_"+str(year),DoMassFilter)
+    elif 'ZH' in InputTree:
+      eventweight = Calc_Tree_Weight_2021_gammaH(InputTree,"ZH"+"_"+str(year),DoMassFilter)
+    else:
+      eventweight = Calc_Tree_Weight_2021_gammaH(InputTree,ProductionMode+"_"+str(year),DoMassFilter)
+  else:
+    raise ValueError('Choose Valid Reweighting procedure in Analysis.Config')
+  # Get List of Hypothesis to Reweight By #
+  if doMELA_Reweight:
+    MelaConstantNames = GetConstantsAndMELA_From_Template_Name(OutputHypothesis,ProductionMode,isData)
+    print(MelaConstantNames)
+    return eventweight * tree2array(tree=InputTree,branches=[MelaConstantNames]).astype(float) * lumi
+  if "zjets" in ProductionMode or "ZX" in ProductionMode:
+    return np.array(eventweight)
+  else:
+    return np.array(eventweight) * lumi
+

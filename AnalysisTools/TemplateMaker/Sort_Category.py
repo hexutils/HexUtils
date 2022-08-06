@@ -1,5 +1,5 @@
 def sort_category(Analysis_Config,prod):
-   if Analysis_Config.name in("OnShell_HVV_Photons_2021","gammaH_Photons_Decay_Only"):
+   if Analysis_Config.name in("OnShell_HVV_Photons_2021","gammaH_Photons_Decay_Only","gammaH_Photons_Decay_Only_Optimal_Binning"):
      p_sorted = False
      print(prod)
      if "ZZTo4l" in prod: 

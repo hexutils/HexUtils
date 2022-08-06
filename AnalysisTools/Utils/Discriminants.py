@@ -190,9 +190,9 @@ def D_CP_decay(p_GG_SIG_ghg2_1_ghz1_1_ghz4_1_JHUGen,p_GG_SIG_ghg2_1_ghz1_1_JHUGe
         except ZeroDivisionError:
           return 0
 
-def D_0hplus_decay(p_GG_SIG_ghg2_1_ghz1_1_JHUGen,p_GG_SIG_ghg2_1_ghz1_1_ghz2_1_JHUGen,m4l,gConstants):
+def D_0hplus_decay(p_GG_SIG_ghg2_1_ghz1_1_JHUGen,p_GG_SIG_ghg2_1_ghz2_1_JHUGen,m4l,gConstants):
         try:
-          return p_GG_SIG_ghg2_1_ghz1_1_JHUGen / (p_GG_SIG_ghg2_1_ghz1_1_JHUGen + p_GG_SIG_ghg2_1_ghz1_1_ghz2_1_JHUGen*gCon.getvalue("g2","HZZ2e2mu",m4l,gConstants)**2)
+          return p_GG_SIG_ghg2_1_ghz1_1_JHUGen / (p_GG_SIG_ghg2_1_ghz1_1_JHUGen + p_GG_SIG_ghg2_1_ghz2_1_JHUGen*gCon.getvalue("g2","HZZ2e2mu",m4l,gConstants)**2)
         except ZeroDivisionError:
           return 0
 
