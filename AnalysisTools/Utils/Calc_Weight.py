@@ -105,10 +105,10 @@ def Calc_Tree_Weight_2021_gammaH(t,name,DoMassFilter): #Tree input as t and the 
               KFactor_EW_qqZZ = tree2array(tree=t,branches=["KFactor_EW_qqZZ"]).astype(float)
               KFactor_QCD_qqZZ_M = tree2array(tree=t,branches=["KFactor_QCD_qqZZ_M"]).astype(float)
               scale = scale * KFactor_EW_qqZZ * KFactor_QCD_qqZZ_M
-        elif "ZX" in name or "data" in name:
+        elif "ZX" in name or "zjets" in name or "data" in name:
           if "data" in name:
             return np.ones(nEntries)
-          elif "ZX" in name:
+          elif "ZX" in name or "zjets" in name:
             # Load up the ZX dictionaries #
             SSFR = init_FakeRates_SS()
             OSFR = init_FakeRates_OS()
@@ -196,7 +196,7 @@ def Calc_Event_Weight_2021_gammaH(event,name): #Tree input as t and the name of 
               KFactor_EW_qqZZ = event.KFactor_EW_qqZZ
               KFactor_EW_qqZZ = event.KFactor_QCD_qqZZ_M
               scale = scale * KFactor_EW_qqZZ * KFactor_QCD_qqZZ_M
-        elif "ZX" in name or "data" in name:
+        elif "ZX" in name or "zjets" in name or "data" in name:
           if "data" in name:
             return 1
           elif "ZX" in name:
