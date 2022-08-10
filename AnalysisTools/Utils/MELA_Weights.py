@@ -1,6 +1,6 @@
 from __future__ import print_function
 from ..JHUGenMELA.MELA.python.mela import Mela, TVar, SimpleParticle_t, SimpleParticleCollection_t
-import ROOT, os, re, numpy as np
+import ROOT, os, sys, re, numpy as np
 
 def tlv(pt, eta, phi, m):
   result = ROOT.TLorentzVector()
@@ -92,7 +92,7 @@ def parse_prob(probability):
     else:
       raise ValueError("Choose correct Matrix element for JJVBF")
   elif "JVBF" in probability:
-    parsed_dict["ProdMode"] = "JVBF"
+    parsed_dict["ProdMode"] = "JJEWQCD"
     parsed_dict["Prod"] = True
     parsed_dict["Dec"] = False
   elif "JJQCD" in probability:
@@ -146,7 +146,16 @@ def exportPath():
 
 def addprobabilities(infile,outfile,probabilities,TreePath):
   assert os.path.exists(infile)
-  assert not os.path.exists(outfile)
+  #assert not os.path.exists(outfile)
+
+  if os.path.exists(outfile):
+    for i in range(1000):
+      if not os.path.exists(outfile.replace(".root", "_{}.root".format(i))): 
+        outfile = outfile.replace(".root", "_{}.root".format(i))
+        break
+
+  print(outfile)
+
   exportPath()
   m = Mela(13, 125)
   f = ROOT.TFile(infile)
@@ -154,10 +163,32 @@ def addprobabilities(infile,outfile,probabilities,TreePath):
   try:
     newf = ROOT.TFile(outfile, "RECREATE")
     newt = t.CloneTree(0)
+    newtbranches = newt.GetListOfBranches()
     probdict = {}
+
+    """
     for prob in probabilities:
-      probdict[prob]=np.array([0],dtype=np.float)
-      newt.Branch(prob,probdict[prob],prob+"/D")
+      probdict[prob]=np.array([0],dtype=np.float32)
+      newt.Branch(prob,probdict[prob],prob+"/F")
+    """
+    for prob in probabilities: 
+      probname = prob
+      print(probname)
+      if probname in newtbranches:
+        for i in range(1000):
+            probname = prob+"_{}".format(i)
+            print(probname)
+            if not probname in newtbranches: break
+      print(probname, prob)
+      probdict[prob]=np.array([0],dtype=np.float32)
+      newt.Branch(probname,probdict[prob],probname+"/F")
+      print(probdict)
+    print(probdict)
+
+    print(parse_prob(prob))
+    
+    #sys.exit()
+
     for i, entry in enumerate(t, start=1):
       #####################################################
       # RECO probabilities, for reweighting Discriminants #
@@ -189,15 +220,15 @@ def addprobabilities(infile,outfile,probabilities,TreePath):
           print("Error in choosing JetPt Uncertainty")
         # Setup event information depending on RECO or LHE level #
         if parsed_prob_dict["isReco"]:
-          leptons = SimpleParticleCollection_t(SimpleParticle_t(id, tlv(pt, eta, phi, 0)) for id, pt, eta, phi in zip(t.LepLepId, t.LepPt, t.LepEta, t.LepPhi))
+          leptons = SimpleParticleCollection_t(SimpleParticle_t(pid, tlv(pt, eta, phi, 0)) for pid, pt, eta, phi in zip(t.LepLepId, t.LepPt, t.LepEta, t.LepPhi))
           jets = SimpleParticleCollection_t(SimpleParticle_t(0, tlv(pt, eta, phi, m)) for pt, eta, phi, m in zip(t.JetPt, t.JetEta, t.JetPhi, t.JetMass))
           mothers = 0
           m.setInputEvent(leptons, jets, mothers, 0)
         else:
-          leptons = SimpleParticleCollection_t(SimpleParticle_t(id, tlv(pt, eta, phi, m)) for id, pt, eta, phi, m in zip(t.LHEDaughterId, t.LHEDaughterPt, t.LHEDaughterEta, t.LHEDaughterPhi, t.LHEDaughterMass))
-          jets = SimpleParticleCollection_t(SimpleParticle_t(id, tlv(pt, eta, phi, m)) for id, pt, eta, phi, m in zip(t.LHEAssociatedParticleId, t.LHEAssociatedParticlePt, t.LHEAssociatedParticleEta, t.LHEAssociatedParticlePhi, t.LHEAssociatedParticleMass))
-          mothers = SimpleParticleCollection_t(SimpleParticle_t(id, ROOT.TLorentzVector(0, 0, pz, e)) for id, pz, e in zip(t.LHEMotherId, t.LHEMotherPz, t.LHEMotherE))
-          m.setInputEvent(leptons, jets, mothers, 1)        
+          leptons = SimpleParticleCollection_t(SimpleParticle_t(pid, tlv(pt, eta, phi, m)) for pid, pt, eta, phi, m in zip(t.LHEDaughterId, t.LHEDaughterPt, t.LHEDaughterEta, t.LHEDaughterPhi, t.LHEDaughterMass))
+          jets = SimpleParticleCollection_t(SimpleParticle_t(pid, tlv(pt, eta, phi, m)) for pid, pt, eta, phi, m in zip(t.LHEAssociatedParticleId, t.LHEAssociatedParticlePt, t.LHEAssociatedParticleEta, t.LHEAssociatedParticlePhi, t.LHEAssociatedParticleMass))
+          mothers = SimpleParticleCollection_t(SimpleParticle_t(pid, ROOT.TLorentzVector(0, 0, pz, e)) for pid, pz, e in zip(t.LHEMotherId, t.LHEMotherPz, t.LHEMotherE))
+          m.setInputEvent(leptons, jets, mothers, 1) 
         # Sort the MatrixElement #
         MatrixExec = "MatrixElement = TVar."+parsed_prob_dict["MatrixElement"]
         exec(MatrixExec,ns)
@@ -211,26 +242,78 @@ def addprobabilities(infile,outfile,probabilities,TreePath):
           ProdExec+="ZZGG"
         else:
           ProdExec+=parsed_prob_dict["ProdMode"]
+        #print("\n\n", ProdExec, "\n\n")
         try:
+          #print("\n\n", ProdExec, "\n\n")
           exec(ProdExec,ns)
         except:
           print("Choose Valid Production Mode")
         #Sort out the process
         ProcExec = "Process = TVar."
+
         if parsed_prob_dict["MatrixElement"] == "MCFM":
-          if parsed_prob_dict["ProdMode"] == "BKG" or parsed_prob_dict["ProdMode"] == "BSI" and len(parsed_prob_dict["coupl_dict"]) != 0:
+            '''
             ProcExec += "bkgZZ_SMHiggs"
-            #May need to be fixed#
-          elif parsed_prob_dict["ProdMode"] == "BKG" or parsed_prob_dict["ProdMode"] == "BSI" and len(parsed_prob_dict["coupl_dict"]) == 0:
-            ProcExec += "bkgZZ_SMHiggs"
-          else:
-            ProcExec += "SelfDefine_spin0"
+            '''
+            if parsed_prob_dict["ProdMode"] == "GG":
+                if parsed_prob_dict["Process"] == "BKG":
+                    if len(parsed_prob_dict["coupl_dict"]) == 0:
+                        ProcExec += "bkgZZ"
+                    else:
+                        ProcExec += "bkgZZ"
+                elif parsed_prob_dict["Process"] == "BSI":
+                    if len(parsed_prob_dict["coupl_dict"]) == 0:
+                        ProcExec += "bkgZZ_SMHiggs"
+                    else:
+                        ProcExec += "bkgZZ_SMHiggs"
+                elif parsed_prob_dict["Process"] == "SIG":
+                    if len(parsed_prob_dict["coupl_dict"]) == 0:
+                        ProcExec += "HSMHiggs"
+                    else:
+                        ProcExec += "HSMHiggs"
+                else:
+                    ProcExec += "SelfDefine_spin0"
+            elif parsed_prob_dict["ProdMode"] == "JVBF":
+                if parsed_prob_dict["Process"] == "BKG":
+                    if len(parsed_prob_dict["coupl_dict"]) == 0:
+                        ProcExec += "bkgZZ"
+                    else:
+                        ProcExec += "bkgZZ"
+                elif parsed_prob_dict["Process"] == "BSI":
+                    if len(parsed_prob_dict["coupl_dict"]) == 0:
+                        ProcExec += "bkgZZ_SMHiggs"
+                    else:
+                        ProcExec += "bkgZZ_SMHiggs"
+                elif parsed_prob_dict["Process"] == "SIG":
+                    if len(parsed_prob_dict["coupl_dict"]) == 0:
+                        ProcExec += "HSMHiggs"
+                    else:
+                        ProcExec += "HSMHiggs"
+                else:
+                    ProcExec += "SelfDefine_spin0"
+            
         elif parsed_prob_dict["MatrixElement"] == "JHUGen":
-          ProcExec += "SelfDefine_spin0"
+            ProcExec += "SelfDefine_spin0"
+        
         try:
-          exec(ProcExec,ns)
+            exec(ProcExec,ns)
         except:
-          print("Current Process Not Supported")
+            print("Current Process Not Supported")
+        
+        #print("\n\n", parsed_prob_dict, "\n\n")
+
+        #print("\n\n", parsed_prob_dict["ProdMode"], "\n\n")
+
+        #print("\n\n", ns, "\n\n")
+
+        #print("\n\n", ns['Process'],ns['MatrixElement'],ns['Production'], "\n\n")
+
+        #print("\n\n", ns, "\n\n")
+
+        #print("\n\n===========================================================================================================================================================\n\n")
+
+
+
         m.setProcess(ns['Process'],ns['MatrixElement'],ns['Production'])
         # Sort Couplings 
         for key in parsed_prob_dict['coupl_dict']:
