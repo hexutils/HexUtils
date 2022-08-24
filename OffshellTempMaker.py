@@ -148,7 +148,7 @@ def FillHist(targetprod,targetcomp,targetcateg,h_list,shape_syst_list,iffile,tar
     ew_fparams  = []
     if ( targetprod == "VBF" ) : 
         #read textfile for EW cor parameters
-        ffun_par = open("./AnalysisTools/offshellcatcorr/data/f"+targetyear[-2]+targetyear[-1]+".txt",'r')
+        ffun_par = open("./AnalysisTools/data/offshellcatcorr/f"+targetyear[-2]+targetyear[-1]+".txt",'r')
         ffun_parlines = ffun_par.readlines() 
         ew_fparmsvh  = []
         ew_fparmsvbf  = []

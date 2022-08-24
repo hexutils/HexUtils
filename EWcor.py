@@ -21,7 +21,7 @@ def EWcor(category,m4l,parvh,parvbf,parevh,parevbf):
         correction  = fvbf
     if int(category) == 2 : 
         fvh   = parvh[0] + parvh[1]*m4l + parvh[2]*m4l*m4l + parvh[3]*m4l*m4l*m4l + parvh[4]*m4l*m4l*m4l*m4l    
-        correction  = fvbf
+        correction  = fvh
 
     return correction
 
