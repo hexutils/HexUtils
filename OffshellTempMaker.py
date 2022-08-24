@@ -323,7 +323,7 @@ def FillHist(targetprod,targetcomp,targetcateg,h_list,shape_syst_list,iffile,tar
                                     
 
                                 
-                                wght = 0
+                                wght = 1
                                 #targetreweight = {"gg": ["p_Gen_GG_SIG_kappaTopBot_1_ghz1_1_MCFM*KFactor_QCD_ggZZ_Nominal", "p_Gen_GG_BSI_kappaTopBot_1_ghz1_1_MCFM*KFactor_QCD_ggZZ_Nominal", "p_Gen_GG_BKG_MCFM*KFactor_QCD_ggZZ_Nominal"],
                  #"VBF": ["p_Gen_JJEW_SIG_ghv1_1_MCFM*0.5", "p_Gen_JJEW_BSI_ghv1_1_MCFM*0.5", "p_Gen_JJEW_BKG_MCFM*0.5"],
                   #                                "ZZTo4l": ["1"]}
@@ -349,7 +349,7 @@ def FillHist(targetprod,targetcomp,targetcateg,h_list,shape_syst_list,iffile,tar
                                 if production == "ZZTo4l" :
                                     wght = event.KFactor_EW_qqZZ 
                                     
-                                if production == "VBF" and int(targetcomp) == 0 and correctionsOn : 
+                                if production == "VBF" :  
                                     if targetcomp == 0 : wght = event.p_Gen_JJEW_SIG_ghv1_1_MCFM*0.5
                                     if targetcomp == 1 : wght = (event.p_Gen_JJEW_BSI_ghv1_1_MCFM - event.p_Gen_JJEW_SIG_ghv1_1_MCFM - event.p_Gen_JJEW_BKG_MCFM )*0.5
                                     if targetcomp == 2 : wght = event.p_Gen_JJEW_BKG_MCFM*0.5
@@ -360,7 +360,7 @@ def FillHist(targetprod,targetcomp,targetcateg,h_list,shape_syst_list,iffile,tar
 
                                     #categorization corrections only for pure signal
                                     wewcatcor = 1
-                                    if (event.ZZMass < 600): 
+                                    if (event.ZZMass < 600)  and int(targetcomp) == 0 and correctionsOn : 
                                         wewcatcor = EWcor(targetcateg,event.ZZMass,ew_fparams[0],ew_fparams[1],ew_fparams[2],ew_fparams[3])                                        
                                     wght = wght*wewcatcor
                                    
