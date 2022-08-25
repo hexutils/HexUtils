@@ -46,7 +46,9 @@ d2edges = np.arange(21, dtype='float64') / 10 - 1
 
 
 #treelistpath = "./background_updatedcat.txt"
-treelistpath = "./gg_updatedcat.txt"
+#treelistpath = "./gg_updatedcat.txt"
+#treelistpath = "./zh125_updatedcat.txt"
+treelistpath = "./vbf_updatedcat.txt"
 
 if not  procsystfile == "": 
     treelistpath = "./syst_"+procsystfile+".txt"
@@ -74,9 +76,15 @@ for numfile in range(0,len(treelist)):
     if year not in yeardict.keys():
         yeardict[year] = {}
     if year in yeardict.keys():   
-        if "ZZTo4l" in filename.split("/")[ind:][2]: prod = "ZZTo4l"
-        else: prod = filename.split("/")[ind:][3]
-        print (prod)    
+
+        if "ZZTo4l" in filename.split("/")[ind:][2]:
+            prod = "ZZTo4l"
+        elif "ZH125" in filename.split("/") :
+            prod = "ZH125"
+        else: 
+            prod = filename.split("/")[ind:][3]
+
+        print ("prod :",prod,year)    
         if prod not in yeardict[year]:
             if 'gg' in prod:
                 yeardict[year][prod] = [[]]   #, [], []]
@@ -93,6 +101,9 @@ for numfile in range(0,len(treelist)):
         elif prod == "VBF":
             yeardict[year][prod][0].append(filename)
         elif prod == "ZZTo4l":
+            print ("appended", filename)
+            yeardict[year][prod][0].append(filename)
+        elif prod == "ZH125":
             print ("appended", filename)
             yeardict[year][prod][0].append(filename)
         else:
@@ -129,7 +140,7 @@ ltargetyear = ["MC_2017","MC_2016_CorrectBTag","MC_2018"]
 ltargetprod = ["gg","VBF","ZZTo4l"]
 ltargetstate = ["4mu","4e","2e2mu"]
 ltargetcomp = [0,1,2]    # SIG=0 BSI=1 BKG=2    (for the qqbar bkg events in 'ZZTo4l' this choice does not matter as you can see above)
-if production == "ZZTo4l" : 
+if production == "ZZTo4l" or production == "ZH125"  : 
     ltargetcomp = [0]
 ltargetcateg = [0,1,2]  # Untag=0 VBF=1 VH=2
 
@@ -148,7 +159,7 @@ def FillHist(targetprod,targetcomp,targetcateg,h_list,shape_syst_list,iffile,tar
     ew_fparams  = []
     if ( targetprod == "VBF" ) : 
         #read textfile for EW cor parameters
-        ffun_par = open("./AnalysisTools/offshellcatcorr/data/f"+targetyear[-2]+targetyear[-1]+".txt",'r')
+        ffun_par = open("./AnalysisTools/data/offshellcatcorr/f"+targetyear[-2]+targetyear[-1]+".txt",'r')
         ffun_parlines = ffun_par.readlines() 
         ew_fparmsvh  = []
         ew_fparmsvbf  = []
@@ -158,7 +169,7 @@ def FillHist(targetprod,targetcomp,targetcateg,h_list,shape_syst_list,iffile,tar
         splittedffunparlines = [ill.split() for ill in ffun_parlines ]
         for iline,line in enumerate(ffun_parlines): 
             lwords = line.split()
-            print (lwords)
+            #print (lwords)
             if (len(lwords) > 1 ): 
                 if lwords[1] == "vbftagged" :
                     for iadd in range(5,10): 
@@ -263,11 +274,11 @@ def FillHist(targetprod,targetcomp,targetcateg,h_list,shape_syst_list,iffile,tar
             
             print ("about to fill")
             for itfile,tfile in enumerate(range(len(decay))):
-                print ("thiss", (itfile, iffile,len(decay)))
+                #print ("thiss", (itfile, iffile,len(decay)))
                 if not( itfile == int(iffile) ) :
                     continue
-                print (iffile,"here")    
-                print("file : ",decay[tfile])
+                #print (iffile,"here")    
+                #print("file : ",decay[tfile])
                 
                 global flav
                 if "2e2mu" in decay[tfile] : 
@@ -316,25 +327,17 @@ def FillHist(targetprod,targetcomp,targetcateg,h_list,shape_syst_list,iffile,tar
 
                             
                             if (event.EventTag == targetcateg) : 
-                                
                                 if production == "VBF" :
-                                    #print ("here")
-                                    if  IsCrossFeed(event) : continue
-                                    
+                                    #remove 2l2q from offshell VBF samples
+                                    if  IsCrossFeed(event) : continue                                    
 
                                 
-                                wght = 1
-                                #targetreweight = {"gg": ["p_Gen_GG_SIG_kappaTopBot_1_ghz1_1_MCFM*KFactor_QCD_ggZZ_Nominal", "p_Gen_GG_BSI_kappaTopBot_1_ghz1_1_MCFM*KFactor_QCD_ggZZ_Nominal", "p_Gen_GG_BKG_MCFM*KFactor_QCD_ggZZ_Nominal"],
-                 #"VBF": ["p_Gen_JJEW_SIG_ghv1_1_MCFM*0.5", "p_Gen_JJEW_BSI_ghv1_1_MCFM*0.5", "p_Gen_JJEW_BKG_MCFM*0.5"],
-                  #                                "ZZTo4l": ["1"]}
-                  
-                  
-                  
-                                k3nlo = 1.147
+                                wght = 1                
               
                 
                                 if production == "gg" : 
-                                    
+                                    #reweighting + kfactors
+                                    k3nlo = 1.147
                                     if targetcomp == 0 : wght = k3nlo*event.p_Gen_GG_SIG_kappaTopBot_1_ghz1_1_MCFM*event.KFactor_QCD_ggZZ_Nominal
                                     if targetcomp == 1 : wght = k3nlo*(event.p_Gen_GG_BSI_kappaTopBot_1_ghz1_1_MCFM -event.p_Gen_GG_SIG_kappaTopBot_1_ghz1_1_MCFM - event.p_Gen_GG_BKG_MCFM)*event.KFactor_QCD_ggZZ_Nominal
                                     if targetcomp == 2 : wght = k3nlo*event.p_Gen_GG_BKG_MCFM*event.KFactor_QCD_ggZZ_Nominal
@@ -350,9 +353,11 @@ def FillHist(targetprod,targetcomp,targetcateg,h_list,shape_syst_list,iffile,tar
                                     wght = event.KFactor_EW_qqZZ 
                                     
                                 if production == "VBF" :  
-                                    if targetcomp == 0 : wght = event.p_Gen_JJEW_SIG_ghv1_1_MCFM*0.5
-                                    if targetcomp == 1 : wght = (event.p_Gen_JJEW_BSI_ghv1_1_MCFM - event.p_Gen_JJEW_SIG_ghv1_1_MCFM - event.p_Gen_JJEW_BKG_MCFM )*0.5
-                                    if targetcomp == 2 : wght = event.p_Gen_JJEW_BKG_MCFM*0.5
+                                    #reweighting + kfactors
+                                    kewLN2 = 1.039
+                                    if targetcomp == 0 : wght = kewLN2*event.p_Gen_JJEW_SIG_ghv1_1_MCFM*0.5
+                                    if targetcomp == 1 : wght = kewLN2*(event.p_Gen_JJEW_BSI_ghv1_1_MCFM - event.p_Gen_JJEW_SIG_ghv1_1_MCFM - event.p_Gen_JJEW_BKG_MCFM )*0.5
+                                    if targetcomp == 2 : wght = kewLN2*event.p_Gen_JJEW_BKG_MCFM*0.5
                                     samplew = -1.
                                     samplew = eval( "event."+sampleweight ) 
                                     wght = wght/samplew 
@@ -362,6 +367,7 @@ def FillHist(targetprod,targetcomp,targetcateg,h_list,shape_syst_list,iffile,tar
                                     wewcatcor = 1
                                     if (event.ZZMass < 600)  and int(targetcomp) == 0 and correctionsOn : 
                                         wewcatcor = EWcor(targetcateg,event.ZZMass,ew_fparams[0],ew_fparams[1],ew_fparams[2],ew_fparams[3])                                        
+                                        print (wewcatcor)
                                     wght = wght*wewcatcor
                                    
 
@@ -513,9 +519,9 @@ if procsystfile == "" :
 
 h_list_withsyst =[]
 catt = -1
-if category == "Untagged" : catt = 0 
+if category == "Untagged"  : catt = 0 
 if category == "VBFtagged" : catt = 1 
-if category == "VHtagged" : catt = 2
+if category == "VHtagged"  : catt = 2
 
 assert not (catt == -1), "Invalid Category" 
 
