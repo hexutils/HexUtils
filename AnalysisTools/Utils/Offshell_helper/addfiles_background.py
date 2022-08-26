@@ -4,11 +4,22 @@ import sys
 import copy
 ROOT.gROOT.SetBatch(True)
 
+
+procsyst = ""
+if len(sys.argv) > 1 : 
+    procsyst = sys.argv[1]
+
+treelistpath = "./back_output_temps.txt"
+
+if not  procsyst == "" : 
+    os.system('find Output_'+procsyst+' -name "*.root" > syst_temp_'+procsyst+'.txt')
+    treelistpath = './syst_temp_'+procsyst+'.txt'
+
+
 category = ["Untagged","VBFtagged","VHtagged"]
 year16 = ["2016","2016","2016"]
 year17 = ["2017","2017","2017"]
 year18 = ["2018","2018","2018"]
-treelistpath = "./back_output_temps.txt"
 
 finpaths = list(zip(category,year16)) +list(zip(category,year17)) + list(zip(category,year18))
 
@@ -60,13 +71,21 @@ for el in paths:
                     hists[ihist].Add(h_new)
                     hnevs[ihist] = hnevs[ihist] + h_new.GetEntries()  
 
-    fout = ROOT.TFile("./Templates/background_"+el[0]+"_"+el[1]+".root","recreate")
+    if procsyst == "" : 
+        fout = ROOT.TFile("./Templates/background_"+el[0]+"_"+el[1]+".root","recreate")
+    else : 
+        fout = ROOT.TFile("./Templates_syst/background_"+el[0]+"_"+el[1]+procsyst+".root","recreate")
+
     fout.cd()
     
     for ihist,hist in enumerate(hists) : 
         count = hnevs[ihist]
         hist.Scale(1./count)
-        print "Writting:",hist.GetName(),hist.Integral()
+        if not procsyst == "" : 
+            hnew = hist.GetName()
+            hnew = hnew+"_"+procsyst
+            hist.SetName(hnew)
+        print "Writting:",hist.GetName(),hist.Integral()    
         hist.Write()
             
             
@@ -77,11 +96,16 @@ for el in paths:
 
 
 
+if procsyst == "": 
+    os.system("hadd background_Untagged.root  ./Templates/*Untagged*.root")
+    os.system("hadd background_VHtagged.root  ./Templates/*VHtagged*.root")
+    os.system("hadd background_VBFtagged.root  ./Templates/*VBFtagged*.root")
+else : 
+    os.system("hadd background_Untagged"+procsys+".root  ./Templates_syst/*Untagged*"+procsys+".root")
+    os.system("hadd background_VHtagged"+procsys+".root  ./Templates_syst/*VHtagged*"+procsys+".root")
+    os.system("hadd background_VBFtagged"+procsys+".root  ./Templates_syst/*VBFtagged*"+procsys+".root")
 
-os.system("hadd background_Untagged.root  ./Templates/*Untagged*.root")
-os.system("hadd background_VHtagged.root  ./Templates/*VHtagged*.root")
-os.system("hadd background_VBFtagged.root  ./Templates/*VBFtagged*.root")
-
+    
 
 
 
