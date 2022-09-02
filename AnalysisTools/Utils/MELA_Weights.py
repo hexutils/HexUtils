@@ -40,7 +40,7 @@ def parse_prob(probability):
   elif "BSI" in probability:
     parsed_dict["Process"] = "BSI"
   #Sort Reco Or Not#
-  if "GEN" in probability:
+  if "_Gen" in probability:
     parsed_dict["isReco"] = False
   else:
     parsed_dict["isReco"] = True
@@ -139,12 +139,17 @@ def parse_prob(probability):
     raise ValueError("Coupling does not have a valid MatrixElement")
   if parsed_dict["Process"] == None:
     raise ValueError("Coupling does not have a valid Process")
+  #print (parsed_dict)
   return parsed_dict
 
 def exportPath():
   os.system("export LD_LIBRARY_PATH=AnalysisTools/JHUGenMELA/MELA/data/$SCRAM_ARCH/:${LD_LIBRARY_PATH}")
 
-def addprobabilities(infile,outfile,probabilities,TreePath):
+def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
+  HasMCFMSampleHypothesis = False
+  SampleHypothesisMCFM = kwargs.get('SampleHypothesisMCFM', None)
+  if SampleHypothesisMCFM != None:
+    HasMCFMSampleHypothesis = True
   assert os.path.exists(infile)
   #assert not os.path.exists(outfile)
 
@@ -154,7 +159,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath):
         outfile = outfile.replace(".root", "_{}.root".format(i))
         break
 
-  print(outfile)
+  #print(outfile)
 
   exportPath()
   m = Mela(13, 125)
@@ -173,19 +178,21 @@ def addprobabilities(infile,outfile,probabilities,TreePath):
     """
     for prob in probabilities: 
       probname = prob
-      print(probname)
+      #print(probname)
       if probname in newtbranches:
         for i in range(1000):
             probname = prob+"_{}".format(i)
-            print(probname)
+            #print(probname)
             if not probname in newtbranches: break
-      print(probname, prob)
+      #print(probname, prob)
       probdict[prob]=np.array([0],dtype=np.float32)
       newt.Branch(probname,probdict[prob],probname+"/F")
-      print(probdict)
+      #print(probdict)
+    if HasMCFMSampleHypothesis:
+      probdict[SampleHypothesisMCFM]=np.array([0],dtype=np.float32)
     print(probdict)
 
-    print(parse_prob(prob))
+    #print(parse_prob(prob))
     
     #sys.exit()
 
@@ -291,6 +298,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath):
                         ProcExec += "HSMHiggs"
                 else:
                     ProcExec += "SelfDefine_spin0"
+            DivideP = True 
             
         elif parsed_prob_dict["MatrixElement"] == "JHUGen":
             ProcExec += "SelfDefine_spin0"
@@ -300,13 +308,13 @@ def addprobabilities(infile,outfile,probabilities,TreePath):
         except:
             print("Current Process Not Supported")
         
-        #print("\n\n", parsed_prob_dict, "\n\n")
+        print("\n\n", parsed_prob_dict, "\n\n")
 
         #print("\n\n", parsed_prob_dict["ProdMode"], "\n\n")
 
         #print("\n\n", ns, "\n\n")
 
-        #print("\n\n", ns['Process'],ns['MatrixElement'],ns['Production'], "\n\n")
+        print("\n\n", ns['Process'],ns['MatrixElement'],ns['Production'], "\n\n")
 
         #print("\n\n", ns, "\n\n")
 
@@ -336,7 +344,10 @@ def addprobabilities(infile,outfile,probabilities,TreePath):
           elif key == "ghza4":
             m.ghzgs4 = parsed_prob_dict['coupl_dict'][key]
           elif key == "kappaTopBot":
-            m.kappa = parsed_prob_dict['coupl_dict'][key]
+            m.kappa_top = parsed_prob_dict['coupl_dict'][key]
+            m.kappa_top_tilde = 0 
+            m.kappa_bot = parsed_prob_dict['coupl_dict'][key]
+            m.kappa_bot_tilde = 0
           elif key == "kappa":
             m.kappa = parsed_prob_dict['coupl_dict'][key]
           elif key == "kappatilde":
@@ -363,11 +374,13 @@ def addprobabilities(infile,outfile,probabilities,TreePath):
           probdict[prob][0] = m.computeProdP()
         elif parsed_prob_dict["Prod"] == False and parsed_prob_dict["Dec"] == True:
           probdict[prob][0] = m.computeP()
-        elif parsed_prob_dict["Prod"] == False and parsed_prob_dict["Dec"] == True:
+        elif parsed_prob_dict["Prod"] == True and parsed_prob_dict["Dec"] == True:
           probdict[prob][0] = m.computeProdDecP()
         else:
           raise ValueError("Failed to process the probability passed here")
-
+      for prob in probdict:
+        if prob != SampleHypothesisMCFM and "MCFM" in prob:
+          probdict[prob][0] /= probdict[SampleHypothesisMCFM][0]
       #once at the end of the event
       m.resetInputEvent()
 
