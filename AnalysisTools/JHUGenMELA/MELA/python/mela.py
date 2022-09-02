@@ -474,6 +474,10 @@ class Mela(object):
 
   kappa = SelfDCoupling("selfDHqqcoupl", 0, ROOT.pymela.gHIGGS_KAPPA)
   kappa_tilde = SelfDCoupling("selfDHqqcoupl", 0, ROOT.pymela.gHIGGS_KAPPA_TILDE)
+  kappa_top = SelfDCoupling("selfDHttcoupl", 0, ROOT.pymela.gHIGGS_KAPPA)
+  kappa_top_tilde = SelfDCoupling("selfDHttcoupl", 0, ROOT.pymela.gHIGGS_KAPPA_TILDE)
+  kappa_bot = SelfDCoupling("selfDHbbcoupl", 0, ROOT.pymela.gHIGGS_KAPPA)
+  kappa_bot_tilde = SelfDCoupling("selfDHbbcoupl", 0, ROOT.pymela.gHIGGS_KAPPA_TILDE)
 
   ghzzp1 = SelfDCoupling("selfDHzzpcoupl", ROOT.pymela.gHIGGS_VV_1)
   ghzzp2 = SelfDCoupling("selfDHzzpcoupl", ROOT.pymela.gHIGGS_VV_2)

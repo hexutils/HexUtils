@@ -8,17 +8,18 @@ import time
 from pathlib import Path
 import re
 
-
 def main(argv):
     inputfile = ''
     pthsubdir = ''
     outputdir = ''
     branchfile = ''
+    lhe2root = ''
+    mcfmprob = ''
     removesubtrees = ''
     try:
-        opts, args = getopt.getopt(argv,"hi:s:o:b:l:",["ifile=","subdr=","outdr=","bfile=","lhe2root="])
+        opts, args = getopt.getopt(argv,"hi:s:o:b:l:m:",["ifile=","subdr=","outdr=","bfile=","lhe2root=","mcfmprob="])
     except getopt.GetoptError:
-        print('\nMELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-l <lhe2root>)\n')
+        print('\nMELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-l <lhe2root>) (-m <mcfmprob>)\n')
         exit()
     for opt, arg in opts:
         if opt == '-h' or opt == '--help':
@@ -33,8 +34,10 @@ def main(argv):
         elif opt in ("-b", "--bfile"):
             branchfile = arg
         elif opt in ("-l", "--lhe2root"):
-            lh2root = arg
-
+            lhe2root = arg
+        elif opt in ("-m", "--mcfmprob"):
+            mcfmprob = arg
+        
     if not all([inputfile, pthsubdir, outputdir, branchfile]):
         print('\nMELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-l <lhe2root>)\n')
         exit()
@@ -116,11 +119,14 @@ def main(argv):
 
     print(branchlist)
 
-    if lhe2root: from AnalysisTools.Utils.MELA_Weights import addprobabilities
+    if not lhe2root: from AnalysisTools.Utils.MELA_Weights import addprobabilities
     else: from AnalysisTools.Utils.MELA_Weights_lhe2root import addprobabilities
-
-    #addprobabilities(filename, outtreefilename, branchlist, "eventTree")
-    addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree")
+    
+    if mcfmprob:
+      addprobabilities(filename, outtreefilename, branchlist, "eventTree", SampleHypothesisMCFM = mcfmprob)
+    else:
+      addprobabilities(filename, outtreefilename, branchlist, "eventTree")
+    #addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree")
 
 if __name__ == "__main__":
     main(sys.argv[1:])
