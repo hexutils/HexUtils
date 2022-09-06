@@ -1,12 +1,22 @@
 import os
 import sys
 import ROOT
-from Unroll_gen import Unroll 
+from Unroll_gen   import Unroll 
 import copy
 from Addsyst_functions import *
 
 nm = sys.argv[1]
 
+if "Untagged" in nm : catt = "Untagged"
+if "VBFtagged" in nm : catt = "VBFtagged"
+if "VHtagged" in nm : catt = "VHtagged"
+
+
+#name = nm.replace("./temps/","")
+#name = name.replace(".root","")
+#name = name.replace("_GEN_210702","")
+
+#backfile = nm.replace("ggh","background")
 fin = ROOT.TFile.Open(nm)
 
 processes      =[]
@@ -61,7 +71,7 @@ for key in fin.GetListOfKeys():
 proc = len(processes)
 category = nm.replace("input.root","offshell.txt")
 chanel = category.replace(".offshell.txt","")
-print("here",category)
+#print category
 f = open(category, "w")
 
 f.write("imax 1\n")
@@ -84,7 +94,7 @@ lineSHsyst= []
 print (procsyst)
 for isyst,syst in enumerate(applyshapesyst):
     lineSHsyst.append(syst)
-    print(syst)
+    print syst
     lineSHsyst[isyst] = lineSHsyst[isyst] + " shape1 "
     for proc in processes :
       pas = False
@@ -102,11 +112,22 @@ for isyst,syst in enumerate(applyshapesyst):
           lineSHsyst[isyst] = lineSHsyst[isyst] + " -"
 
 scale_syst = []
-addlumi(scale_syst,processes)
+addlumi16(scale_syst,processes)
+addlumi17(scale_syst,processes)
+addlumi18(scale_syst,processes)
+
 addhzzbr(scale_syst,processes)
+
 addCMS_EFF_e(scale_syst,processes)
 addCMS_EFF_mu(scale_syst,processes)
+
+add_pythiatune(scale_syst,processes,catt)
+
+addkfew_as(scale_syst,processes)
+addkfew_pdf(scale_syst,processes)
+addkfew_qcdscale(scale_syst,processes)
 addkf_ggZZ_background(scale_syst,processes)
+
 #addEWcorr_qqZZ(scale_syst,processes)
 
 

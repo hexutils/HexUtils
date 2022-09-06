@@ -16,9 +16,41 @@ def addlumi(lines,processes):
         line =  line + " 1.016/0.984" 
     #line = line + " \n"
     #taken from https://twiki.cern.ch/twiki/bin/view/CMS/TWikiLUM#SummaryTable
-    
+    #inclusive lumi
     lines.append(line)    
 
+
+
+def addlumi16(lines,processes):
+    line = "lumi_13TeV_2016 lnN"
+    for pr in processes :
+        line =  line + " 1.0082/0.9918" 
+    #line = line + " \n"
+    #taken from https://twiki.cern.ch/twiki/bin/view/CMS/TWikiLUM#SummaryTable
+    #inclusive lumi
+    lines.append(line)    
+
+def addlumi17(lines,processes):
+    line = "lumi_13TeV_2017 lnN"
+    for pr in processes :
+        line =  line + " 1.0088/0.9912" 
+    #line = line + " \n"
+    #taken from https://twiki.cern.ch/twiki/bin/view/CMS/TWikiLUM#SummaryTable
+    #inclusive lumi
+    lines.append(line)    
+
+def addlumi18(lines,processes):
+    line = "lumi_13TeV_2018 lnN"
+    for pr in processes :
+        line =  line + " 1.0106/0.9894" 
+    #line = line + " \n"
+    #taken from https://twiki.cern.ch/twiki/bin/view/CMS/TWikiLUM#SummaryTable
+    #inclusive lumi
+    lines.append(line)    
+
+
+
+    
 def addQCDscale_muR_ggH(lines,processes):
     line = "QCDscale_muF_qqH lnN"
     for pr in processes :
@@ -67,15 +99,21 @@ def addQCDscale_muF_qqH(lines,processes):
 def addCMS_EFF_mu(lines,processes):
     line = "CMS_eff_mu lnN"
     
-    for pr in processes : 
-        line = line + " 1.0191/0.9799"
+    for pr in processes :
+        if "back_qqZZ" not in pr:  
+            line = line + " 1.0191/0.9799"
+        else :
+            line = line + " -"
     lines.append(line)
         
 def addCMS_EFF_e(lines,processes):
     line = "CMS_eff_e lnN"
     
-    for pr in processes : 
-        line = line + " 1.0584/0.9383"
+    for pr in processes :
+        if "back_qqZZ" not in pr:  
+            line = line + " 1.0584/0.9383"
+        else :
+            line = line + " -"    
     lines.append(line)
         
 
@@ -104,5 +142,56 @@ def addkf_ggZZ_background(lines,processes):
     #line = line + " \n"    
     lines.append(line)
 
+def add_pythiatune(lines,processes,category):
+    line = "CMS_pythia_tune lnN"
+    for pr in processes :
+        if "back_qqZZ" not in pr: 
+            if "Untagged" in category :
+                line =  line + " 0.9985/1.0032"
+            if "VHtagged" in category :
+                line = line + " 1.0075/0.9973"
+            if "VBFtagged" in category :
+                line = line + " 1.0105/0.9967"
+        else:     
+            line = line + " -"
+
+    lines.append(line)
+
+
+
+def addkfew_as(lines,processes):
+    line = "kfas_ew lnN"
+    for pr in processes :
+        if "offqqH" in pr: 
+            line =  line + " 1.0065/0.993500"
+        else:     
+            line = line + " -"
+
+    lines.append(line)
+    
+
+def addkfew_pdf(lines,processes):
+    line = "kfpdf_ew lnN"
+    for pr in processes :
+        if "offqqH" in pr: 
+            line =  line + " 1.0189/0.9811"
+        else:     
+            line = line + " -"
+
+    lines.append(line)
+    
+def addkfew_qcdscale(lines,processes):
+    line = "kfqcd_ew lnN"
+    for pr in processes :
+        if "offqqH" in pr: 
+            line =  line + " 1.0133/0.992"
+        else:      
+            line = line + " -"
+
+    lines.append(line)
+
+
+
+    
 
 
