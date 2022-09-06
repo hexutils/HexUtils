@@ -190,7 +190,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
       #print(probdict)
     if HasMCFMSampleHypothesis:
       probdict[SampleHypothesisMCFM]=np.array([0],dtype=np.float32)
-    print(probdict)
+    #print(probdict)
 
     #print(parse_prob(prob))
     
@@ -308,13 +308,13 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
         except:
             print("Current Process Not Supported")
         
-        print("\n\n", parsed_prob_dict, "\n\n")
+        #print("\n\n", parsed_prob_dict, "\n\n")
 
         #print("\n\n", parsed_prob_dict["ProdMode"], "\n\n")
 
         #print("\n\n", ns, "\n\n")
 
-        print("\n\n", ns['Process'],ns['MatrixElement'],ns['Production'], "\n\n")
+        #print("\n\n", ns['Process'],ns['MatrixElement'],ns['Production'], "\n\n")
 
         #print("\n\n", ns, "\n\n")
 
