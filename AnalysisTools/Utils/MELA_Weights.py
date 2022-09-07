@@ -327,7 +327,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
         #print("\n\n===========================================================================================================================================================\n\n")
 
 
-        print(parsed_prob_dict['coupl_dict'])
+        #print(parsed_prob_dict['coupl_dict'])
         m.setProcess(ns['Process'],ns['MatrixElement'],ns['Production'])
         # Sort Couplings 
         for key in parsed_prob_dict['coupl_dict']:
