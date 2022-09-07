@@ -124,13 +124,19 @@ def parse_prob(probability):
     parsed_dict["MatrixElement"] = "MCFM"
   # Sort Couplings #
   coupling_names = re.findall(r"[a-zA-Z0-9]+_[0-9]", probability)
-  coupling_value_tuples = re.findall("[a-zA-Z0-9]+_([+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*))(?:[eE]([+-]?\d+))?",probability)
+  coupling_value_tuples = re.findall("[a-zA-Z0-9]+_([0-9]?(?:p)*?[0-9]+)(?:[eE]([+-]?\d+))?",probability)
   for i in range(len(coupling_names)):
     coupling = coupling_names[i].split("_")[0]
     if coupling_value_tuples[i][1] == '':
-      value = float(coupling_value_tuples[i][0]) 
+      if "p" in coupling_value_tuples[i][0]:
+        value = float(coupling_value_tuples[i][0].split("p")[0] + "." + coupling_value_tuples[i][0].split("p")[1])
+      else:
+        value = float(coupling_value_tuples[i][0]) 
     else:
-      value = float(coupling_value_tuples[i][0]) * 10 ** float(coupling_value_tuples[i][1])
+      if "p" in coupling_value_tuples[i][0]:
+        value = float(coupling_value_tuples[i][0].split("p")[0] + "." + coupling_value_tuples[i][0].split("p")[1]) * 10 ** float(coupling_value_tuples[i][1])
+      else:
+        value = float(coupling_value_tuples[i][0]) * 10 ** float(coupling_value_tuples[i][1])
     parsed_dict["coupl_dict"][coupling] = value
   
   if parsed_dict["ProdMode"] == None:
@@ -321,7 +327,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
         #print("\n\n===========================================================================================================================================================\n\n")
 
 
-
+        print(parsed_prob_dict['coupl_dict'])
         m.setProcess(ns['Process'],ns['MatrixElement'],ns['Production'])
         # Sort Couplings 
         for key in parsed_prob_dict['coupl_dict']:
