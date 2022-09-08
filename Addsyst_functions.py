@@ -158,6 +158,31 @@ def add_pythiatune(lines,processes,category):
     lines.append(line)
 
 
+def add_pythiascale(lines,processes,category):
+    line = "CMS_pythia_tune ?"
+    for pr in processes :
+        if "back_qqZZ" in pr: 
+            
+            #Derived here : 
+            #/afs/cern.ch/work/s/skyriaco/Offshell_trees/TreeEditor/TempMaker_aug15/background/PythiaScaleTest/plots
+
+            if "Untagged" in category :
+                line =  line + " 0.9985/1.0007"
+            if "VHtagged" in category :
+                line = line + " 1.0405/0.9936"
+            if "VBFtagged" in category :
+                line = line + " 1.0258/0.9603"
+        else :     
+            line = line + " -"
+
+    lines.append(line)
+
+
+
+
+
+
+
 
 def addkfew_as(lines,processes):
     line = "kfas_ew lnN"
