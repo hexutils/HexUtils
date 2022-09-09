@@ -184,7 +184,7 @@ def add_pythiascale(lines,processes,category):
             if "VBFtagged" in category :
                 line = line + " 1.011/0.9543"
 
-        elif "VBF" in pr and "offqqH_0PM" not in pr :
+        elif "offqqH" in pr and "offqqH_0PM" not in pr :
             if "Untagged" in category :
                 line =  line + " 0.9921/1.0306"
             if "VHtagged" in category :
@@ -198,7 +198,9 @@ def add_pythiascale(lines,processes,category):
                 line = line + " 1.0057/0.9180"
             if "VBFtagged" in category :
                 line = line + " 0.9910/1.00005"
-        elif "offggH" in pr:     
+        elif "offggH" in pr:
+            #derived using high mass samples here: 
+            #/afs/cern.ch/work/s/skyriaco/Offshell_trees/TreeEditor/testCat/cat_jul20/PythiaScale/ggF/MC18/plots
             if "Untagged" in category :
                 line =  line + " 1.0075/0.9934"
             if "VHtagged" in category :
