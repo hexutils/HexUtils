@@ -161,8 +161,9 @@ def add_pythiatune(lines,processes,category):
 def add_pythiascale(lines,processes,category):
     line = "CMS_pythia_tune ?"
     for pr in processes :
+
+
         if "back_qqZZ" in pr: 
-            
             #Derived here : 
             #/afs/cern.ch/work/s/skyriaco/Offshell_trees/TreeEditor/TempMaker_aug15/background/PythiaScaleTest/plots
 
@@ -172,8 +173,39 @@ def add_pythiascale(lines,processes,category):
                 line = line + " 1.0405/0.9936"
             if "VBFtagged" in category :
                 line = line + " 1.0258/0.9603"
-        else :     
-            line = line + " -"
+        elif "offqqH_0PM" in pr :
+            #all vbf uncert derived here: 
+            #/afs/cern.ch/work/s/skyriaco/Offshell_trees/TreeEditor/TempMaker_aug15/VBF_filebased/PythiaScale/plots
+
+            if "Untagged" in category :
+                line =  line + " 0.9914/1.0388"
+            if "VHtagged" in category :
+                line = line + " 1.0020/0.9489"
+            if "VBFtagged" in category :
+                line = line + " 1.011/0.9543"
+
+        elif "VBF" in pr and "offqqH_0PM" not in pr :
+            if "Untagged" in category :
+                line =  line + " 0.9921/1.0306"
+            if "VHtagged" in category :
+                line = line + " 1.0103/0.9645"
+            if "VBFtagged" in category :
+                line = line + " 1.0082/0.9680"
+        elif "back_VVZZ" in pr : 
+            if "Untagged" in category :
+                line =  line + " 0.9987/1.0046"
+            if "VHtagged" in category :
+                line = line + " 1.0057/0.9180"
+            if "VBFtagged" in category :
+                line = line + " 0.9910/1.00005"
+        elif "offggH" in pr:     
+            if "Untagged" in category :
+                line =  line + " 1.0075/0.9934"
+            if "VHtagged" in category :
+                line = line + " 0.90276/1.0945"
+            if "VBFtagged" in category :
+                line = line + " 0.8755/1.1328"
+
 
     lines.append(line)
 
