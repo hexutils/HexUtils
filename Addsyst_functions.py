@@ -145,13 +145,20 @@ def addkf_ggZZ_background(lines,processes):
 def add_pythiatune(lines,processes,category):
     line = "CMS_pythia_tune lnN"
     for pr in processes :
-        if "back_qqZZ" not in pr: 
+        if "offggH" in pr: 
             if "Untagged" in category :
                 line =  line + " 0.9985/1.0032"
             if "VHtagged" in category :
                 line = line + " 1.0075/0.9973"
             if "VBFtagged" in category :
                 line = line + " 1.0105/0.9967"
+        elif "offqqH_0PM" in pr : 
+            if "Untagged" in category :
+                line =  line + " 0.9990/1.0004"
+            if "VHtagged" in category :
+                line = line + " 0.9875/1.0151"
+            if "VBFtagged" in category :
+                line = line + " 1.0021/0.9988"
         else:     
             line = line + " -"
 
@@ -159,7 +166,7 @@ def add_pythiatune(lines,processes,category):
 
 
 def add_pythiascale(lines,processes,category):
-    line = "CMS_pythia_tune ?"
+    line = "CMS_pythia_scale ?"
     for pr in processes :
 
 
