@@ -384,9 +384,12 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
           probdict[prob][0] = m.computeProdDecP()
         else:
           raise ValueError("Failed to process the probability passed here")
-      for prob in probdict:
-        if prob != SampleHypothesisMCFM and "MCFM" in prob:
-          probdict[prob][0] /= probdict[SampleHypothesisMCFM][0]
+      if HasMCFMSampleHypothesis:
+        for prob in probdict:
+          if (prob != SampleHypothesisMCFM) and ("MCFM" in prob):
+            probdict[prob][0] /= probdict[SampleHypothesisMCFM][0]
+        # Now divide the Sample Hypothesis by itself to make the probability = 1
+        probdict[SampleHypothesisMCFM][0] /= probdict[SampleHypothesisMCFM][0]
       #once at the end of the event
       m.resetInputEvent()
 
