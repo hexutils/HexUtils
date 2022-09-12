@@ -541,7 +541,7 @@ def GetIsoHVVCouplingName(IsoTemplateName):
     return "gha4"
   raise ValueError("Invalid Iso Template Name")
 
-def GetIntFromTemplateName(IntTemplateName,ProductionMode,isData):
+def GetIntFromTemplateName_MCFM(IntTemplateName,ProductionMode,isData):
   CouplingDict={} #Stores Coupling Orders  
   CouplingValuesDict=GetCouplingValues()
   print("IntTemplate",IntTemplateName)
@@ -587,7 +587,55 @@ def GetIntFromTemplateName(IntTemplateName,ProductionMode,isData):
     raise ValueError("Not supported yet")
   raise ValueError("Invalid Iso Template Name")
 
-def GetPureFromTemplateName(OutputHypothesis,ProductionMode,isData):
+
+
+def GetIntFromTemplateName_JHUGen(IntTemplateName,ProductionMode,isData):
+  CouplingDict={} #Stores Coupling Orders  
+  CouplingValuesDict=GetCouplingValues()
+  print("IntTemplate",IntTemplateName)
+  #sort out order of each coupling#
+  if re.search("(g1(?P<Order>[1234]))",IntTemplateName):
+    CouplingDict["ghz1"] = re.search("(g1(?P<Order>[1234]))",IntTemplateName)["Order"]
+  if re.search("(g2(?P<Order>[1234]))",IntTemplateName):
+    CouplingDict["ghz2"] = re.search("(g2(?P<Order>[1234]))",IntTemplateName)["Order"]
+  if re.search("(g4(?P<Order>[1234]))",IntTemplateName):
+    CouplingDict["ghz4"] = re.search("(g4(?P<Order>[1234]))",IntTemplateName)["Order"]
+  if re.search("(g1prime2(?P<Order>[1234]))",IntTemplateName):
+    CouplingDict["ghz1prime2"] = re.search("(g1prime2(?P<Order>[1234]))",IntTemplateName)["Order"]
+  if re.search("(ghzgs1prime2(?P<Order>[1234]))",IntTemplateName):
+    CouplingDict["ghza1prime2"] = re.search("(ghzgs1prime2(?P<Order>[1234]))",IntTemplateName)["Order"]
+  if re.search("(g2Zg(?P<Order>[1234]))",IntTemplateName):
+    CouplingDict["ghza2"] = re.search("(g2Zg(?P<Order>[1234]))",IntTemplateName)["Order"]
+  if re.search("(g4Zg(?P<Order>[1234]))",IntTemplateName):
+    CouplingDict["ghza4"] = re.search("(g4Zg(?P<Order>[1234]))",IntTemplateName)["Order"]
+  if re.search("(g2gg(?P<Order>[1234]))",IntTemplateName):
+    CouplingDict["gha2"] = re.search("(g2gg(?P<Order>[1234]))",IntTemplateName)["Order"]
+  if re.search("(g4gg(?P<Order>[1234]))",IntTemplateName):
+    CouplingDict["gha4"] = re.search("(g4gg(?P<Order>[1234]))",IntTemplateName)["Order"]
+  # See how to parse all of the orders #
+  print("Parsed Coupling Dict",CouplingDict)
+  SumOfOrders = sum(float(CouplingDict[Coupling]) for Coupling in CouplingDict)
+  if SumOfOrders == 2:
+    Pure_Couplings = []
+    Mixed_Couplings = []
+    for coupling in CouplingDict:
+      # Need to get the pure Couplings 
+      if 'gg' in ProductionMode:
+        coupl_string = "ghg2_1_"+coupling+"_"+CouplingValuesDict[coupling]
+        Pure_Couplings.append("p_Gen_GG_SIG_"+coupl_string+"_JHUGen")
+    # We need to calculate mixed couplings
+    sorted_couplings = Sort_Name_Order(CouplingDict.keys())
+    coupl_string = "ghg2_1_"
+    for coupling in sorted_couplings:
+      coupl_string += coupling+"_"+CouplingValuesDict[coupling]+"_"
+    Mixed_Couplings.append("p_Gen_GG_SIG_"+coupl_string+"JHUGen")
+    # Now make the correct combination of coupling strings # 
+    return Mixed_Couplings[0] +"-"+Pure_Couplings[0]+"-"+Pure_Couplings[1]
+  elif SumOfOrders == 4: #Not Supported Yet
+    raise ValueError("Not supported yet")
+  raise ValueError("Invalid Iso Template Name")
+
+def GetPureFromTemplateName_MCFM(OutputHypothesis,ProductionMode,isData):
   IsoBranchName = ''
   prodName = ''
   coupl_string = ''
@@ -600,6 +648,19 @@ def GetPureFromTemplateName(OutputHypothesis,ProductionMode,isData):
       Generator = "MCFM"
   return "p_Gen_"+prodName+"_SIG_"+coupl_string+"_"+Generator
 
+def GetPureFromTemplateName_JHUGen(OutputHypothesis,ProductionMode,isData):
+  IsoBranchName = ''
+  prodName = ''
+  coupl_string = ''
+  coupling_name= GetIsoHVVCouplingName(OutputHypothesis)
+  CouplingValuesDict=GetCouplingValues()
+  if not isData:
+    if 'gg' in ProductionMode:
+      prodName = 'GG'
+      coupl_string = 'ghg2_1_'+coupling_name+"_"+CouplingValuesDict[coupling_name]
+      Generator =  "JHUGen"
+  return "p_Gen_"+prodName+"_SIG_"+coupl_string+"_"+Generator
+
 # This function will interptret what the hypothesis means and what constants are needed #
 def GetConstantsAndMELA(Hypothesis,ProductionMode,isData):
   MelaConstantNames={}
@@ -609,17 +670,31 @@ def GetConstantsAndMELA(Hypothesis,ProductionMode,isData):
   MelaConstantNames["Mixed"]=(GetMixedMelaConstants(Coupling_Dict,ProductionMode,isData))
   return MelaConstantNames
 
-def GetConstantsAndMELA_From_Template_Name(Template_Name,ProductionMode,isData):
+def GetConstantsAndMELA_From_Template_Name_JHUGen(Template_Name,ProductionMode,isData):
   Branch_Names_String = ''  
   print("Template Names",Template_Name)
   Grouped = re.match("(?:(?P<Hffpure>0(?:PM|M)ff)_)?(?:(?P<HVVpure>0(?:PM|M|PH|L1|L1Zg|Mgg|PHgg|MZg|PHZg))|(?P<HVVint>(?:g(?:1|2|4|1prime2|hzgs1prime2|2gg|4gg|2Zg|4Zg)[1234])*))$",Template_Name)
   grouped_names = Grouped.groupdict()
   print("Grouped names", grouped_names)
   if (grouped_names["HVVpure"] != None):
-    Branch_Names_String = GetPureFromTemplateName(grouped_names["HVVpure"],ProductionMode,isData)
+    Branch_Names_String = GetPureFromTemplateName_JHUGen(grouped_names["HVVpure"],ProductionMode,isData)
   if (grouped_names["HVVint"] != None):
-    Branch_Names_String = GetIntFromTemplateName(grouped_names["HVVint"],ProductionMode,isData)
+    Branch_Names_String = GetIntFromTemplateName_JHUGen(grouped_names["HVVint"],ProductionMode,isData)
   return Branch_Names_String
+
+def GetConstantsAndMELA_From_Template_Name_MCFM(Template_Name,ProductionMode,isData):
+  Branch_Names_String = ''  
+  print("Template Names",Template_Name)
+  Grouped = re.match("(?:(?P<Hffpure>0(?:PM|M)ff)_)?(?:(?P<HVVpure>0(?:PM|M|PH|L1|L1Zg|Mgg|PHgg|MZg|PHZg))|(?P<HVVint>(?:g(?:1|2|4|1prime2|hzgs1prime2|2gg|4gg|2Zg|4Zg)[1234])*))$",Template_Name)
+  grouped_names = Grouped.groupdict()
+  print("Grouped names", grouped_names)
+  if (grouped_names["HVVpure"] != None):
+    Branch_Names_String = GetPureFromTemplateName_MCFM(grouped_names["HVVpure"],ProductionMode,isData)
+  if (grouped_names["HVVint"] != None):
+    Branch_Names_String = GetIntFromTemplateName_MCFM(grouped_names["HVVint"],ProductionMode,isData)
+  return Branch_Names_String
+
+
 
 def Reweight_Event(InputEvent,ProductionMode,InputHypothesis,OutputHypothesis,HffHypothesis,isData,Analysis_Config,lumi,year):
   # Check the input for Input Hypothesis and Output Hypothesis #
@@ -710,6 +785,10 @@ def Reweight_Branch_NoHff(InputTree,ProductionMode,OutputHypothesis,isData,Analy
   else:
     return np.array(eventweight) * lumi 
 
+# ===========================================#
+# This is what I use for the photon analysis #
+# ===========================================#
+
 def Reweight_Branch_NoHff_From_Template_Name(InputTree,template_name,isData,Analysis_Config,lumi,year,DoMassFilter):
   # Check the input for Input Hypothesis and Output Hypothesis #
   print ("InputTree:",InputTree)
@@ -759,9 +838,10 @@ def Reweight_Branch_NoHff_From_Template_Name(InputTree,template_name,isData,Anal
     raise ValueError('Choose Valid Reweighting procedure in Analysis.Config')
   # Get List of Hypothesis to Reweight By #
   if doMELA_Reweight:
-    MelaConstantNames = GetConstantsAndMELA_From_Template_Name(OutputHypothesis,ProductionMode,isData)
+    MelaConstantNames = GetConstantsAndMELA_From_Template_Name_JHUG_JHUGen(OutputHypothesis,ProductionMode,isData)
     print(MelaConstantNames)
     return eventweight * tree2array(tree=InputTree,branches=[MelaConstantNames]).astype(float) * lumi
+    #return tree2array(tree=InputTree,branches=[MelaConstantNames]).astype(float)
   if "zjets" in ProductionMode or "ZX" in ProductionMode:
     return np.array(eventweight)
   else:
