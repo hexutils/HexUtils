@@ -73,11 +73,18 @@ def plotStack(filein):
             htemp = filein.Get(key.GetName())
             hname = key.GetName()    
             if hist.GetName() == "offggH_0PM" and "offggH" in hname: 
-                hist.Add(htemp)
+                if "negative" in hname : 
+                    hist.Add(htemp,-1)
+                else: 
+                    hist.Add(htemp)
+
             if hist.GetName() == "offggH_0PM" and "back_ggZZ" in hname: 
-                hist.Add(htemp)
+                    hist.Add(htemp)
             if hist.GetName() == "offqqH_0PM" and "offqqH" in hname: 
-                hist.Add(htemp)
+                if "negative" in hname : 
+                    hist.Add(htemp,-1)
+                else: 
+                    hist.Add(htemp)
             if hist.GetName() == "offqqH_0PM" and "back_VVZZ" in hname: 
                 hist.Add(htemp)
 
@@ -110,7 +117,7 @@ def plotStack(filein):
             hhname = "EW s+b+i"
         if "back" in hist.GetName(): 
             hhname = "q#bar{q}#rightarrow 4l bkg"
-        if "qqH_0PM" in hist.GetName(): 
+        if "qqH_0PM" ==  hist.GetName(): 
             hhname = "Cross-feed"
         leg.AddEntry(hist,hhname,"f")
         
