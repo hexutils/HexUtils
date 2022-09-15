@@ -1,0 +1,15 @@
+executable              = condorbatchscript_ew_bkg.sh
+arguments               = $(i)
+
+output                  = TaggerOutput/Out_$(i).out
+error                   = TaggerOutput/Out_$(i).err
+log                     = TaggerOutput/Out_$(i).log
+
+request_memory          = 4000M
++JobFlavour             = "nextweek"
+
+#https://www-auth.cs.wisc.edu/lists/htcondor-users/2010-September/msg00009.shtml
+periodic_remove         = JobStatus == 5
+WhenToTransferOutput    = ON_EXIT_OR_EVICT
+
+queue i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27
