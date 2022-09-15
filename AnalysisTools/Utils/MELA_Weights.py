@@ -80,7 +80,7 @@ def parse_prob(probability):
   elif "JJEW" in probability:
     parsed_dict["ProdMode"] = "JJEW"
     parsed_dict["Prod"] = True
-    parsed_dict["Dec"] = False
+    parsed_dict["Dec"] = True
   elif "JJVBF" in probability:
     parsed_dict["ProdMode"] = "JJVBF"
     if "JHUGen" in probability:
@@ -153,9 +153,13 @@ def exportPath():
 
 def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
   HasMCFMSampleHypothesis = False
+  HasJHUGenSampleHypothesis = False
   SampleHypothesisMCFM = kwargs.get('SampleHypothesisMCFM', None)
+  SampleHypothesisJHUGen = kwargs.get('SampleHypothesisJHUGen', None)
   if SampleHypothesisMCFM != None:
     HasMCFMSampleHypothesis = True
+  if SampleHypothesisJHUGen != None:
+    HasJHUGenSampleHypothesis = True
   assert os.path.exists(infile)
   #assert not os.path.exists(outfile)
 
@@ -177,11 +181,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
     newtbranches = newt.GetListOfBranches()
     probdict = {}
 
-    """
-    for prob in probabilities:
-      probdict[prob]=np.array([0],dtype=np.float32)
-      newt.Branch(prob,probdict[prob],prob+"/F")
-    """
+  
     for prob in probabilities: 
       probname = prob
       #print(probname)
@@ -304,6 +304,24 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
                         ProcExec += "HSMHiggs"
                 else:
                     ProcExec += "SelfDefine_spin0"
+            elif parsed_prob_dict["ProdMode"] == "JJEW":
+                if parsed_prob_dict["Process"] == "BKG":
+                    if len(parsed_prob_dict["coupl_dict"]) == 0:
+                        ProcExec += "bkgZZ"
+                    else:
+                        ProcExec += "bkgZZ"
+                elif parsed_prob_dict["Process"] == "BSI":
+                    if len(parsed_prob_dict["coupl_dict"]) == 0:
+                        ProcExec += "bkgZZ_SMHiggs"
+                    else:
+                        ProcExec += "bkgZZ_SMHiggs"
+                elif parsed_prob_dict["Process"] == "SIG":
+                    if len(parsed_prob_dict["coupl_dict"]) == 0:
+                        ProcExec += "HSMHiggs"
+                    else:
+                        ProcExec += "HSMHiggs"
+                else:
+                    ProcExec += "SelfDefine_spin0"
             DivideP = True 
             
         elif parsed_prob_dict["MatrixElement"] == "JHUGen":
@@ -316,7 +334,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
         
         #print("\n\n", parsed_prob_dict, "\n\n")
 
-        #print("\n\n", parsed_prob_dict["ProdMode"], "\n\n")
+        #print("\n\n", parsed_prob_dict, "\n\n")
 
         #print("\n\n", ns, "\n\n")
 
@@ -390,9 +408,16 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
             probdict[prob][0] /= probdict[SampleHypothesisMCFM][0]
         # Now divide the Sample Hypothesis by itself to make the probability = 1
         probdict[SampleHypothesisMCFM][0] /= probdict[SampleHypothesisMCFM][0]
+      if HasJHUGenSampleHypothesis:
+        for prob in probdict:
+          if (prob != SampleHypothesisJHUGen) and ("JHUGen" in prob):
+            #print(probdict[prob][0],probdict[SampleHypothesisJHUGen][0])
+            probdict[prob][0] /= probdict[SampleHypothesisJHUGen][0]
+            #print(probdict[prob][0])
+        # Now divide the Sample Hypothesis by itself to make the probability = 1
+        probdict[SampleHypothesisJHUGen][0] /= probdict[SampleHypothesisJHUGen][0]
       #once at the end of the event
       m.resetInputEvent()
-
       newt.Fill()
 
       if i % 1000 == 0 or i == t.GetEntries():
