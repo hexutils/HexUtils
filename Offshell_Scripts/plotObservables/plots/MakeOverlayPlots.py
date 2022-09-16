@@ -65,27 +65,34 @@ def plotStack(filein):
     
     
     for hist in hists : 
-        if "back" not in hist.GetName() and not "qqH_0PM" == hist.GetName(): 
-            hist.Reset()
+        #if "back" not in hist.GetName() and not "qqH_0PM" == hist.GetName(): 
+        #    hist.Reset()
         for key in filein.GetListOfKeys(): 
             if "Up" in key.GetName() or "Down" in key.GetName():  
                 continue
             htemp = filein.Get(key.GetName())
             hname = key.GetName()    
-            if hist.GetName() == "offggH_0PM" and "offggH" in hname: 
-                if "negative" in hname : 
+            if hist.GetName() == "offggH_0PM" and "offggH" in hname and not hname == hist.GetName()  : 
+                if "negative" in hname :
+                    print "adding",hname,htemp.Integral()," to",hist.GetName() 
                     hist.Add(htemp,-1)
                 else: 
+                    print "adding",hname,htemp.Integral()," to",hist.GetName() 
                     hist.Add(htemp)
 
             if hist.GetName() == "offggH_0PM" and "back_ggZZ" in hname: 
+                    print "adding",hname,htemp.Integral()," to",hist.GetName() 
                     hist.Add(htemp)
-            if hist.GetName() == "offqqH_0PM" and "offqqH" in hname: 
+            if hist.GetName() == "offqqH_0PM" and "offqqH" in hname in hname and not hname == hist.GetName(): 
                 if "negative" in hname : 
+                    print "adding",hname,htemp.Integral()," to",hist.GetName() 
                     hist.Add(htemp,-1)
                 else: 
+                    print "adding",hname,htemp.Integral()," to",hist.GetName() 
                     hist.Add(htemp)
             if hist.GetName() == "offqqH_0PM" and "back_VVZZ" in hname: 
+                print "adding",hname,htemp.Integral()," to",hist.GetName() 
+                
                 hist.Add(htemp)
 
                 
@@ -126,18 +133,24 @@ def plotStack(filein):
 
     for hist in hists :      
        if hist.GetName() == "qqH_0PM": 
+           print hist.GetName(),hist.Integral()
            hstack.Add(hist)
            break
     for hist in hists :      
        if hist.GetName() == "back_qqZZ": 
+           print hist.GetName(),hist.Integral()
+
            hstack.Add(hist)
            break
     for hist in hists :      
        if hist.GetName() == "offggH_0PM": 
+           print hist.GetName(),hist.Integral()
+           
            hstack.Add(hist)
            break
     for hist in hists :      
        if hist.GetName() == "offqqH_0PM": 
+           print hist.GetName(),hist.Integral()
            hstack.Add(hist)
            break
 
