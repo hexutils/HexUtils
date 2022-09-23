@@ -81,11 +81,11 @@ def getDbkgVHdecConstant(cConstants, ZZflav,  ZZMass): # ZZflav==id1*id2*id3*id4
 
 def getDbkgkinConstant(cConstants, ZZflav,  ZZMass): # ZZflav==id1*id2*id3*id4
   if (abs(ZZflav)==11*11*11*11 or abs(ZZflav)==2*11*11*11*11 or abs(ZZflav)==2*11*11*2*11*11):
-     return cConstants["DggbkgkinSpline4e"].Eval(ZZMass)
+     return cConstants["DbkgkinSpline4e"].Eval(ZZMass)
   if (abs(ZZflav)==11*11*13*13 or abs(ZZflav)==2*11*11*13*13 or abs(ZZflav)==2*11*11*2*13*13):
-     return cConstants["DggbkgkinSpline2e2mu"].Eval(ZZMass)
+     return cConstants["DbkgkinSpline2e2mu"].Eval(ZZMass)
   if (abs(ZZflav)==13*13*13*13 or abs(ZZflav)==2*13*13*13*13 or abs(ZZflav)==2*13*13*2*13*13):
-     return cConstants["DggbkgkinSpline4mu"].Eval(ZZMass)
+     return cConstants["DbkgkinSpline4mu"].Eval(ZZMass)
   print("Invalid ZZflav " + str(ZZflav))
   assert 0
   return 0
