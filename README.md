@@ -60,4 +60,4 @@ This command should list all the installed packages and dependencies that you ha
  ./install.sh
  ```
 
- Follow any additional directions the installer gives you and it should all workout for you!
+ Follow any additional directions the installer gives you and it should all work out for you!
