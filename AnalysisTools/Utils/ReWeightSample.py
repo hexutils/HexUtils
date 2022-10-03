@@ -838,7 +838,7 @@ def Reweight_Branch_NoHff_From_Template_Name(InputTree,template_name,isData,Anal
     raise ValueError('Choose Valid Reweighting procedure in Analysis.Config')
   # Get List of Hypothesis to Reweight By #
   if doMELA_Reweight:
-    MelaConstantNames = GetConstantsAndMELA_From_Template_Name_JHUG_JHUGen(OutputHypothesis,ProductionMode,isData)
+    MelaConstantNames = GetConstantsAndMELA_From_Template_Name_JHUGen(OutputHypothesis,ProductionMode,isData)
     print(MelaConstantNames)
     return eventweight * tree2array(tree=InputTree,branches=[MelaConstantNames]).astype(float) * lumi
     #return tree2array(tree=InputTree,branches=[MelaConstantNames]).astype(float)

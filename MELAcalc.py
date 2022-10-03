@@ -15,15 +15,16 @@ def main(argv):
     branchfile = ''
     lhe2root = ''
     mcfmprob = ''
+    jhuprob = ''
     removesubtrees = ''
     try:
-        opts, args = getopt.getopt(argv,"hi:s:o:b:l:m:",["ifile=","subdr=","outdr=","bfile=","lhe2root=","mcfmprob="])
+        opts, args = getopt.getopt(argv,"hi:s:o:b:l:m:j:",["ifile=","subdr=","outdr=","bfile=","lhe2root=","mcfmprob=","jhuprob="])
     except getopt.GetoptError:
-        print('\nMELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-l <lhe2root>) (-m <mcfmprob>)\n')
+        print('\nMELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-l <lhe2root>) (-m <mcfmprob>) (-j <jhuprob>)\n')
         exit()
     for opt, arg in opts:
         if opt == '-h' or opt == '--help':
-            print('\nMELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-l <lhe2root>)\n')
+            print('\nMELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-l <lhe2root>) (-m <mcfmprob>) (-j <jhuprob>) \n')
             exit()
         elif opt in ("-i", "--ifile"):
             inputfile = arg
@@ -37,9 +38,11 @@ def main(argv):
             lhe2root = arg
         elif opt in ("-m", "--mcfmprob"):
             mcfmprob = arg
+        elif opt in ("-j", "--jhuprob"):
+            jhuprob = arg
         
     if not all([inputfile, pthsubdir, outputdir, branchfile]):
-        print('\nMELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-l <lhe2root>)\n')
+        print('\nMELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-l <lhe2root>) (-m <mcfmprob>) (-j <jhuprob>)\n')
         exit()
 
     if not outputdir.endswith("/"):
@@ -123,7 +126,13 @@ def main(argv):
     else: from AnalysisTools.Utils.MELA_Weights_lhe2root import addprobabilities
     
     if mcfmprob:
-      addprobabilities(filename, outtreefilename, branchlist, "eventTree", SampleHypothesisMCFM = mcfmprob)
+      #addprobabilities(filename, outtreefilename, branchlist, "eventTree", SampleHypothesisMCFM = mcfmprob)
+      addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree", SampleHypothesisMCFM = mcfmprob)
+    elif jhuprob:
+      addprobabilities(filename, outtreefilename, branchlist, "eventTree", SampleHypothesisJHUGen = jhuprob)
+      #addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree", SampleHypothesisJHUGen = mcfmprob)
+    elif (jhuprob) and (mcfmprob):
+      addprobabilities(filename, outtreefilename, branchlist, "eventTree", SampleHypothesisMCFM = mcfmprob, SampleHypothesisJHUGen = jhuprob)
     else:
       addprobabilities(filename, outtreefilename, branchlist, "eventTree")
     #addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree")
