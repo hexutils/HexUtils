@@ -9,8 +9,8 @@ Input_Trees = sys.argv[2:]
 
 # Load up the analysis configuration # 
 
-Analysis_Config = Config.Analysis_Config("gammaH_Photons_Decay_Only_Optimal_Binning")
-#Analysis_Config = Config.Analysis_Config("gammaH_Photons_Decay_Only")
+#Analysis_Config = Config.Analysis_Config("gammaH_Photons_Decay_Only_Optimal_Binning")
+Analysis_Config = Config.Analysis_Config("gammaH_Photons_Decay_Only")
 Production_Modes = Analysis_Config.Production_Modes
 Event_Categories = Analysis_Config.Event_Categories
 Final_States = Analysis_Config.Final_States
@@ -26,11 +26,6 @@ if not outputdir.endswith("/"):
 if not os.path.exists(outputdir):
   os.mkdir(outputdir)
 
-condor_dir = ""
-if not os.path.exists(outputdir+"condor"):
-  os.mkdir(outputdir+"condor")
-
-condor_dir = outputdir+"condor/"
 def separate_by_year(Input_File):
   Files_By_Year = {"2016":[],"2017":[],"2018":[],"Run2":[]}
   with open(Input_File) as f:
@@ -58,6 +53,10 @@ for fin in Input_Trees:
   files_by_year = separate_by_year(fin)
   input_string = " -i " + fin
   if "SIGNAL" in fin.upper():
+    condor_dir = ""
+    if not os.path.exists(outputdir+"condor_signal"):
+      os.mkdir(outputdir+"condor_signal")
+    condor_dir = outputdir+"condor_signal/"
     SubFolder_Name = "signal_Templates/"
     for pm in Production_Modes:
       production_mode_string = " -p " + pm
@@ -98,6 +97,10 @@ for fin in Input_Trees:
     files_by_year = separate_by_year(fin)
     input_string = " -i " + fin
     production_mode_string = " -p ew_bkg "
+    condor_dir = ""
+    if not os.path.exists(outputdir+"condor_ew"):
+      os.mkdir(outputdir+"condor_ew")
+    condor_dir = outputdir+"condor_ew/"
     for category in Event_Categories:
         category_string = " -c " + category
         for fs in Final_States:
@@ -136,6 +139,10 @@ for fin in Input_Trees:
     files_by_year = separate_by_year(fin)
     input_string = " -i " + fin
     production_mode_string = " -p ggZZ "
+    condor_dir = ""
+    if not os.path.exists(outputdir+"condor_gg4l"):
+      os.mkdir(outputdir+"condor_gg4l")
+    condor_dir = outputdir+"condor_gg4l/"
     for category in Event_Categories:
         category_string = " -c " + category
         for fs in Final_States:
@@ -174,6 +181,10 @@ for fin in Input_Trees:
     files_by_year = separate_by_year(fin)
     input_string = " -i " + fin
     production_mode_string = " -p qqZZ "
+    condor_dir = ""
+    if not os.path.exists(outputdir+"condor_qq4l"):
+      os.mkdir(outputdir+"condor_qq4l")
+    condor_dir = outputdir+"condor_qq4l/"
     for category in Event_Categories:
         category_string = " -c " + category
         for fs in Final_States:
@@ -212,6 +223,10 @@ for fin in Input_Trees:
     files_by_year = separate_by_year(fin)
     input_string = " -i " + fin
     production_mode_string = " -p ZX "
+    condor_dir = ""
+    if not os.path.exists(outputdir+"condor_ZX"):
+      os.mkdir(outputdir+"condor_ZX")
+    condor_dir = outputdir+"condor_ZX/"
     for category in Event_Categories:
         category_string = " -c " + category
         for fs in Final_States:
