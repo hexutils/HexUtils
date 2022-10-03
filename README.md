@@ -29,3 +29,35 @@ All of the tools in this framework can, in principle, be run outside of a CMSSW 
 - numpy 1.17.5
 - root-numpy 4.8.0
 - tqdm 4.62.2 (optional but highly recommended)
+
+## Installing on a local machine
+
+The easiest way to install HexUtils on a local machine is to use <a href="https://www.anaconda.com/products/distribution">Anaconda</a>. Personally we recommend the lightweight <a href="https://docs.conda.io/en/latest/miniconda.html">Miniconda</a>, as it isn't as bulky as the full Anaconda system.
+
+Initialize a new Conda environment on your computer (or, if you'd like, you can simply use your current one). Make sure that this environment has an instance of Python with a version $\geq$ 3.9. Then do the following commands:
+
+Install the dependencies listed <a href="https://root.cern/install/dependencies/">here</a> for ROOT for your given operating system. Afterwards, do the following on conda.
+
+```console
+conda install numpy
+conda install -c conda-forge root=6.22 root_numpy=4.8.0 tqdm
+```
+
+**DON'T BE WORRIED IF THIS TAKES SOME TIME!** Conda can be slow at times, but it should all work out in the end.
+
+To check your installation, run the following in your terminal:
+```console
+conda list
+```
+
+This command should list all the installed packages and dependencies that you have installed in your current environment. If you see all the packages you need, the installation was successful!
+
+
+ After installing these dependencies, *wget* the <a href="https://raw.githubusercontent.com/hexutils/HexUtils/main/install.sh">install.sh</a> file to the directory you would like to place HexUtils (make sure to give it permissions with *chmod*!), and run the installer. The following commands should work here:
+ ```console
+ wget https://raw.githubusercontent.com/hexutils/HexUtils/main/install.sh
+ chmod 777 install.sh
+ ./install.sh
+ ```
+
+ Follow any additional directions the installer gives you and it should all work out for you!
