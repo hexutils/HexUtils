@@ -75,12 +75,12 @@ def init_FakeRates_OS():
   return FakeRate_Dict
 
 def get_Fake_Rate_From_File(FakeRate_Root_File,lep_Pt,lep_eta,lep_ID):
-   if "SS" in FakeRate_Root_File.GetName():
+   if "_SS_" in FakeRate_Root_File.GetName():
      g_FR_mu_EB = FakeRate_Root_File.Get("FR_SS_muon_EB")
      g_FR_mu_EE = FakeRate_Root_File.Get("FR_SS_muon_EE")
      g_FR_e_EB  = FakeRate_Root_File.Get("FR_SS_electron_EB")
      g_FR_e_EE  = FakeRate_Root_File.Get("FR_SS_electron_EE")
-   elif "OS" in FakeRate_Root_File.GetName():
+   elif "_OS_" in FakeRate_Root_File.GetName():
      g_FR_mu_EB = FakeRate_Root_File.Get("FR_OS_muon_EB");
      g_FR_mu_EE = FakeRate_Root_File.Get("FR_OS_muon_EE");
      g_FR_e_EB  = FakeRate_Root_File.Get("FR_OS_electron_EB");

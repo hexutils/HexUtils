@@ -26,6 +26,7 @@ def  Unroll(hist):
     #Unroll Hists
     indk = 0
     has_negative = False 
+    intt_in = hist.Integral()
     for y in range (1,ybins+1):
         for x in range (1,xbins+1):
             if is3d : 
@@ -41,10 +42,10 @@ def  Unroll(hist):
                 #put small values in empty background bins
                 if cont == 0 : 
                     if "back" in hist.GetName():
-                        intt = hist.Integral()
                         nb = ybins*xbins*zbins
-                        contt = 0.1*intt*1.0/nb
-                        #print ("found empty bin",contt)
+                        contt = 0.0001*intt_in*1.0/nb
+                        if ("back_qqZZ" == hist.GetName()) : 
+                            print ("found empty bin",contt)
                         hist.SetBinContent(ibin,contt)
                         #print (cont)
                 if cont  < 0 :
