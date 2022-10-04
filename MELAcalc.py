@@ -9,6 +9,9 @@ from pathlib import Path
 import re
 
 def main(argv):
+    
+    template_input = '\nMELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-l <lhe2root>) (-m <mcfmprob>) (-j <jhuprob>) (-z <zprime/higgs input>)\n'
+    
     inputfile = ''
     pthsubdir = ''
     outputdir = ''
@@ -16,15 +19,16 @@ def main(argv):
     lhe2root = ''
     mcfmprob = ''
     jhuprob = ''
+    zPrime_Higgs = ''
     removesubtrees = ''
     try:
-        opts, args = getopt.getopt(argv,"hi:s:o:b:l:m:j:",["ifile=","subdr=","outdr=","bfile=","lhe2root=","mcfmprob=","jhuprob="])
+        opts, args = getopt.getopt(argv,"hi:s:o:b:l:m:j:z:",["ifile=","subdr=","outdr=","bfile=","lhe2root=","mcfmprob=","jhuprob=","zprime="])
     except getopt.GetoptError:
-        print('\nMELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-l <lhe2root>) (-m <mcfmprob>) (-j <jhuprob>)\n')
+        print(template_input)
         exit()
     for opt, arg in opts:
         if opt == '-h' or opt == '--help':
-            print('\nMELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-l <lhe2root>) (-m <mcfmprob>) (-j <jhuprob>) \n')
+            print(template_input)
             exit()
         elif opt in ("-i", "--ifile"):
             inputfile = arg
@@ -40,9 +44,11 @@ def main(argv):
             mcfmprob = arg
         elif opt in ("-j", "--jhuprob"):
             jhuprob = arg
+        elif opt in ("-z", "--zprime"):
+            zPrime_Higgs = arg
         
     if not all([inputfile, pthsubdir, outputdir, branchfile]):
-        print('\nMELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-l <lhe2root>) (-m <mcfmprob>) (-j <jhuprob>)\n')
+        print(template_input)
         exit()
 
     if not outputdir.endswith("/"):
@@ -78,6 +84,13 @@ def main(argv):
     else: lhe2root = "True"
 
     lhe2root = eval(lhe2root)
+    
+    if zPrime_Higgs != '':
+        zPrime_Higgs = [i.split('-') for i in zPrime_Higgs.split('_')]
+        if len(zPrime_Higgs) != 2 or len(zPrime_Higgs[0]) != 3 or len(zPrime_Higgs[1]) != 2:
+            print("\nERROR: \tOption '-z' is expected to be of form ZPrime-(Mass)-(Width)_Higgs-(Mass) in GeV")
+            print(template_input)
+            exit()
 
     print("\n================ Reading user input ================\n")
 
@@ -125,17 +138,30 @@ def main(argv):
     if not lhe2root: from AnalysisTools.Utils.MELA_Weights import addprobabilities
     else: from AnalysisTools.Utils.MELA_Weights_lhe2root import addprobabilities
     
-    if mcfmprob:
-      #addprobabilities(filename, outtreefilename, branchlist, "eventTree", SampleHypothesisMCFM = mcfmprob)
-      addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree", SampleHypothesisMCFM = mcfmprob)
-    elif jhuprob:
-      addprobabilities(filename, outtreefilename, branchlist, "eventTree", SampleHypothesisJHUGen = jhuprob)
-      #addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree", SampleHypothesisJHUGen = mcfmprob)
-    elif (jhuprob) and (mcfmprob):
-      addprobabilities(filename, outtreefilename, branchlist, "eventTree", SampleHypothesisMCFM = mcfmprob, SampleHypothesisJHUGen = jhuprob)
+    if zPrime_Higgs: #bool('') = False, bool('any string') =  True  
+        if mcfmprob:
+            #addprobabilities(filename, outtreefilename, branchlist, "eventTree", SampleHypothesisMCFM = mcfmprob)
+            addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree", SampleHypothesisMCFM = mcfmprob, ZHiggs=zPrime_Higgs)
+        elif jhuprob:
+            addprobabilities(filename, outtreefilename, branchlist, "EventBranch", SampleHypothesisJHUGen = jhuprob, ZHiggs=zPrime_Higgs)
+            #addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree", SampleHypothesisJHUGen = mcfmprob)
+        elif (jhuprob) and (mcfmprob):
+            addprobabilities(filename, outtreefilename, branchlist, "eventTree", SampleHypothesisMCFM = mcfmprob, SampleHypothesisJHUGen = jhuprob, ZHiggs=zPrime_Higgs)
+        else:
+            addprobabilities(filename, outtreefilename, branchlist, "eventTree", ZHiggs=zPrime_Higgs)
+            #addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree")
     else:
-      addprobabilities(filename, outtreefilename, branchlist, "eventTree")
-    #addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree")
-
+        if mcfmprob:
+            #addprobabilities(filename, outtreefilename, branchlist, "eventTree", SampleHypothesisMCFM = mcfmprob)
+            addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree", SampleHypothesisMCFM = mcfmprob)
+        elif jhuprob:
+            addprobabilities(filename, outtreefilename, branchlist, "EventBranch", SampleHypothesisJHUGen = jhuprob)
+            #addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree", SampleHypothesisJHUGen = mcfmprob)
+        elif (jhuprob) and (mcfmprob):
+            addprobabilities(filename, outtreefilename, branchlist, "eventTree", SampleHypothesisMCFM = mcfmprob, SampleHypothesisJHUGen = jhuprob)
+        else:
+            addprobabilities(filename, outtreefilename, branchlist, "eventTree")
+            #addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree")
+            
 if __name__ == "__main__":
     main(sys.argv[1:])

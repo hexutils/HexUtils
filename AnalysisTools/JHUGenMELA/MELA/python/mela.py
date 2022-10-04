@@ -35,16 +35,16 @@ which are useful for quick tests.
 See examples at the bottom.
 """
 
-from __future__ import print_function
+
 from collections import namedtuple
 import ROOT
-from .pythonmelautils import MultiDimensionalCppArray, SelfDParameter, SelfDCoupling
+from pythonmelautils import MultiDimensionalCppArray, SelfDParameter, SelfDCoupling
 from ROOT import TUtil, TVar
 
 try:
-  basestring
+  str
 except NameError:
-  basestring = str
+  str = str
 
 class Mela(object):
   counter = 0
@@ -288,19 +288,19 @@ class Mela(object):
 
   def setInputEvent_fromLHE_Hwithdecay(self, event, isgen=False):
     "For any LHE event that writes H (id=25 or 39) explicitly and decays it"
-    from lhefile import LHEEvent_Hwithdecay
+    from .lhefile import LHEEvent_Hwithdecay
     self.setInputEvent(*LHEEvent_Hwithdecay(event, isgen))
   def setInputEvent_fromLHE_StableHiggs(self, event, isgen=False):
     "For any LHE event that writes H (id=25) explicitly and doesn't decay it"
-    from lhefile import LHEEvent_StableHiggs
+    from .lhefile import LHEEvent_StableHiggs
     self.setInputEvent(*LHEEvent_StableHiggs(event, isgen))
   def setInputEvent_fromLHE_JHUGenVBFVH(self, event, isgen=False):
     "For undecayed JHUGen VBF and VH (same as StableHiggs, but insists on exactly 2 associated particles)"
-    from lhefile import LHEEvent_JHUGenVBFVH
+    from .lhefile import LHEEvent_JHUGenVBFVH
     self.setInputEvent(*LHEEvent_JHUGenVBFVH(event, isgen))
   def setInputEvent_fromLHE_JHUGenttH(self, event, isgen=False):
     "For undecayed JHUGen ttH (same as StableHiggs, but insists on exactly 6 associated particles)"
-    from lhefile import LHEEvent_JHUGenttH
+    from .lhefile import LHEEvent_JHUGenttH
     self.setInputEvent(*LHEEvent_JHUGenttH(event, isgen))
 
   def getPAux(self): return ROOT.getPAux(self.__mela)
@@ -694,7 +694,7 @@ def SimpleParticleCollection_t(iterable=None):
 def SimpleParticle_t(lineorid, pxortlv=None, py=None, pz=None, e=None):
   if pxortlv is py is pz is e is None:
     if isinstance(lineorid, ROOT.SimpleParticle_t): return lineorid
-    if isinstance(lineorid, basestring):
+    if isinstance(lineorid, str):
       lineorid = lineorid.split()
     if len(lineorid) == 13:
       id, status, mother1, mother2, color1, color2, px, py, pz, e, m, lifetime, spin = (f(_) for f, _ in zip((int, int, int, int, int, int, float, float, float, float, float, float, float), lineorid))
@@ -705,14 +705,26 @@ def SimpleParticle_t(lineorid, pxortlv=None, py=None, pz=None, e=None):
     else:
       raise ValueError("len(lineorid) has to be 5 or 13, not {}".format(len(lineorid)))
   else:
-    id = lineorid
+    try:
+      if lineorid != int(lineorid):
+        raise ValueError("""\n
+                         Casting to an int changes the id value! 
+                         Revise your types or forever be doomed!
+                         \n""")
+      id = int(lineorid)
+    except:
+      raise TypeError("""\n
+                      Id number passed must be castable to a string
+                      Revise your types or forever be doomed!
+                      \n""")
+    
     px = pxortlv
 
   if py is pz is e is None:
     tlv = pxortlv
   else:
     tlv = ROOT.TLorentzVector(px, py, pz, e)
-
+  
   return ROOT.SimpleParticle_t(id, tlv)
 
 if __name__ == "__main__":
