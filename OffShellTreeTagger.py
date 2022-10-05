@@ -29,9 +29,15 @@ import root_numpy
 from root_numpy import array2tree, tree2array
 import subprocess
 
+
+
+
 from AnalysisTools.data import gConstants as gConstants
 from AnalysisTools.data import cConstants as cConstants
 from AnalysisTools.Utils.Discriminants import *
+
+from AnalysisTools.data.Fake_Rates import init_FakeRates_OS, init_FakeRates_SS, getFakeRate, Normalize_ZX
+
 
 def main(argv):
     inputfile = ''
@@ -39,10 +45,11 @@ def main(argv):
     outputdir = ''
     branchfile = ''
     removesubtrees = ''
+    data = ''
     try:
-        opts, args = getopt.getopt(argv,"hi:s:o:b:c:",["ifile=","subdr=","outdr=","bfile=","clean="])
+        opts, args = getopt.getopt(argv,"hi:s:o:b:d:c:",["ifile=","subdr=","outdr=","bfile=","data=","clean="])
     except getopt.GetoptError:
-        print('\nOffShellTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
+        print('\nOffShellTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> -d <DATA MC or dataZX> (-c <removesubtrees>)\n')
         exit()
     for opt, arg in opts:
         if opt == '-h' or opt == '--help':
@@ -58,6 +65,8 @@ def main(argv):
             branchfile = arg
         elif opt in ("-c", "--clean"):
             removesubtrees = arg
+        elif opt in ("-d","--data"): 
+            data = arg
 
     if not all([inputfile, pthsubdir, outputdir, branchfile]):
         print('\nOffShellTreeTagger.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-c <removesubtrees>)\n')
@@ -68,6 +77,10 @@ def main(argv):
 
     if not pthsubdir.endswith("/"):
         pthsubdir = pthsubdir+"/"
+
+
+        
+
 
     pthsubdir = pthsubdir.split("/")[-2]
 
@@ -154,20 +167,40 @@ def main(argv):
 
         f = ROOT.TFile(filename, 'READ')
 
-        treenames = ["candTree", "candTree_failed"]
+        treenames = ["candTree"] #, "candTree_failed"]
 
         #================ Loop over target trees ================
 
         d = f.Get("ZZTree")
+        if data == "dataZX" : 
+            d = f.Get("CRZLLTree")
+        
         fobjects = [key.GetName() for key in d.GetListOfKeys()]
 
-        for tind, tree in enumerate(treenames):
-            if tree not in fobjects:
+        print (treenames)
+
+        for tind, tree in enumerate(treenames):        
+            if tree not in fobjects  :
                 continue
             
+            
+            year = 0
+            if data == "dataZX" : 
+                ("\n================ Setting up  ZX estimate ================\n")
+                t = f.Get("CRZLLTree/"+tree)
+                print 
+                SSFR = init_FakeRates_SS()
+                OSFR = init_FakeRates_OS()
+                
+                if "2016" in filename : year = 2016
+                if "2017" in filename : year = 2017
+                if "2018" in filename : year = 2018
+                
+            else : 
+                t = f.Get("ZZTree/"+tree)
+
             print("\n================ Reading events from '" + tree + "' and calculating new branches ================\n")
 
-            t = f.Get("ZZTree/"+tree)
 
             treebranches = [ x.GetName() for x in t.GetListOfBranches() ]
 
@@ -187,13 +220,22 @@ def main(argv):
             branchdict["D2jVBF"] = []
             branchdict["D2jZH"] = []
             branchdict["D2jWH"] = []
+ 
+            if data == "dataZX" : 
+                branchdict["ZXweight"] = []
+                #LepLepId = tree2array(tree=t,branches=["LepLepId"])
+                #LepPt = tree2array(tree=t,branches=["LepPt"])
+                #LepEta = tree2array(tree=t,branches=["LepEta"])
 
-            for ent in trange(t.GetEntries()):
+            for  ent in trange(t.GetEntries()):
 
                 #================ Loop over events ================
-
+                #if ent > 100 : 
+                #    continue
                 while t.GetEntry(ent):
-
+                    
+                    
+                    
                     #================ Fill failed events with dummy and skip to loop over branches ================
 
                     branchdict["Bin40"].append(f.Get("ZZTree/Counters").GetBinContent(40))
@@ -214,6 +256,17 @@ def main(argv):
                     ZZFlav = t.Z1Flav * t.Z2Flav
 
                     tag = "none"
+
+
+                    if data == "dataZX" : 
+                        ZX_Weight = 0.
+                        if (t.Z1Flav < 0 and t.Z2Flav < 0) or (t.Z1Flav > 0 and t.Z2Flav > 0):
+                            ZX_Norm = Normalize_ZX(year, True, t.Z1Flav, t.Z2Flav) 
+                            ZX_Lep3FR = getFakeRate(SSFR, year, True, t.LepPt[2], t.LepEta[2], t.LepLepId[2]) 
+                            ZX_Lep4FR = getFakeRate(SSFR, year, True, t.LepPt[3], t.LepEta[3], t.LepLepId[3])
+                            ZX_Weight = ZX_Norm * ZX_Lep3FR * ZX_Lep4FR
+                        branchdict["ZXweight"].append(ZX_Weight)
+
 
                     if( t.nCleanedJetsPt30 < 2 ):
                     
@@ -297,18 +350,23 @@ def main(argv):
             
             t.SetObject('eventTree', 'eventTree')
 
-            exec("new{} = t.CloneTree(-1, 'fast')".format(tree))
+            
 
+            exec("new{} = t.CloneTree(-1, 'fast')".format(tree))
+            
             for key in branchdict.keys():
                 exec("array2tree(np.array(branchdict['{}'], dtype=[('{}', np.single)]), tree=new{})".format(key, key, tree))
-
+                
             print("\n================ Saving processed '"+tree+"' ================\n")
-
+            
             exec("new{}.SetName('eventTree')".format(tree))
-
+            
             exec("new{}.Write()".format(tree))
+            
+
 
             ftemptree.Close()
+
             
             print("Modified '{}' written to '{}'".format(tree, tagtreefilename.replace(".root", "_subtree"+str(tind)+".root")))
 
