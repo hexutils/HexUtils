@@ -64,6 +64,6 @@ This command should list all the installed packages and dependencies that you ha
  
  After installing, make sure to run
  ```console
- souce install.sh
+ source install.sh
  ```
 in the directory where you initially called it to install the file - this will make sure all the necessary paths are configured!
