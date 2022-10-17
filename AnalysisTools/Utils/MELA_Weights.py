@@ -124,6 +124,9 @@ def parse_prob(probability):
     parsed_dict["MatrixElement"] = "MCFM"
   # Sort Couplings #
   coupling_names = re.findall(r"[a-zA-Z0-9]+_[0-9]", probability)
+  
+  # print('\nThe coupling names are as follows:\n', coupling_names)
+  
   coupling_value_tuples = re.findall("[a-zA-Z0-9]+_([0-9]?(?:p)*?[0-9]+)(?:[eE]([+-]?\d+))?",probability)
   for i in range(len(coupling_names)):
     coupling = coupling_names[i].split("_")[0]
@@ -137,15 +140,18 @@ def parse_prob(probability):
         value = float(coupling_value_tuples[i][0].split("p")[0] + "." + coupling_value_tuples[i][0].split("p")[1]) * 10 ** float(coupling_value_tuples[i][1])
       else:
         value = float(coupling_value_tuples[i][0]) * 10 ** float(coupling_value_tuples[i][1])
+    
+    # print("The value passed to the dictionary is: ", value, "with coupling key", coupling)
     parsed_dict["coupl_dict"][coupling] = value
-  
+    
   if parsed_dict["ProdMode"] == None:
     raise ValueError("Coupling does not have a valid Production Mode")
   if parsed_dict["MatrixElement"] == None:
     raise ValueError("Coupling does not have a valid MatrixElement")
   if parsed_dict["Process"] == None:
+    print('\n',parsed_dict,'\n')
     raise ValueError("Coupling does not have a valid Process")
-  #print (parsed_dict)
+  # print (parsed_dict)
   return parsed_dict
 
 def exportPath():
@@ -156,6 +162,24 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
   HasJHUGenSampleHypothesis = False
   SampleHypothesisMCFM = kwargs.get('SampleHypothesisMCFM', None)
   SampleHypothesisJHUGen = kwargs.get('SampleHypothesisJHUGen', None)
+  
+  ZPrimeHiggs = kwargs.get('ZHiggs', None)
+  #This is the "Higgs" mass. Default is 125 GeV, but you can change that
+  
+  higgsMass = 125
+  zPrimeMass = None
+  zPrimeWidth = None
+  
+  if ZPrimeHiggs != None:
+    #input should be of form ZPrime-(Mass)-(Width)_Higgs-(Mass)
+    
+    (_, zPrimeMass, zPrimeWidth), (_, higgsMass) = ZPrimeHiggs
+    
+    zPrimeMass = float(zPrimeMass)
+    zPrimeWidth = float(zPrimeWidth)
+    higgsMass = float(higgsMass)
+    
+  
   if SampleHypothesisMCFM != None:
     HasMCFMSampleHypothesis = True
   if SampleHypothesisJHUGen != None:
@@ -172,12 +196,23 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
   #print(outfile)
 
   exportPath()
-  m = Mela(13, 125)
+  
+  m = Mela(13, higgsMass) #Takes the higgs mass in the kwargs
+  print('\nThis is the mass of the "Higgs":', higgsMass)
+  if ZPrimeHiggs != None:
+    m.Ga_Zprime = zPrimeWidth
+    m.M_Zprime = zPrimeMass
+    print("\nzPrime set to width and mass of", m.Ga_Zprime, "&", m.M_Zprime, '\n')
+  
+  
+  
   f = ROOT.TFile(infile)
   t = f.Get(TreePath)
+  print(infile, TreePath, t)
   try:
     newf = ROOT.TFile(outfile, "RECREATE")
     newt = t.CloneTree(0)
+    print(newt)
     newtbranches = newt.GetListOfBranches()
     probdict = {}
 
@@ -392,8 +427,14 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
           elif key == "ghv1prime2":
             m.ghz1_prime2 = parsed_prob_dict['coupl_dict'][key]
             m.ghw1_prime2 = parsed_prob_dict['coupl_dict'][key]
+            
+          elif key == "ghzpzp1":
+            m.ghzpzp1 = parsed_prob_dict['coupl_dict'][key]
+          elif key == "ghzpzp4":
+            m.ghzpzp4 = parsed_prob_dict['coupl_dict'][key]
           else:
-            raise ValueError("{} is not a supported coupling!".format(key))
+            raise ValueError(str(key) + " is not a supported coupling!")
+          
         if parsed_prob_dict["Prod"] == True and parsed_prob_dict["Dec"] == False:
           probdict[prob][0] = m.computeProdP()
         elif parsed_prob_dict["Prod"] == False and parsed_prob_dict["Dec"] == True:
@@ -411,7 +452,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
       if HasJHUGenSampleHypothesis:
         for prob in probdict:
           if (prob != SampleHypothesisJHUGen) and ("JHUGen" in prob):
-            #print(probdict[prob][0],probdict[SampleHypothesisJHUGen][0])
+            print('\ndivision!',probdict[prob][0],probdict[SampleHypothesisJHUGen][0])
             probdict[prob][0] /= probdict[SampleHypothesisJHUGen][0]
             #print(probdict[prob][0])
         # Now divide the Sample Hypothesis by itself to make the probability = 1

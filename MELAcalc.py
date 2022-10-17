@@ -9,6 +9,9 @@ from pathlib import Path
 import re
 
 def main(argv):
+    
+    template_input = '\nMELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-l <lhe2root>) (-m <mcfmprob>) (-j <jhuprob>) (-z <zprime/higgs input>) (-c <couplings file>)\n'
+    
     inputfile = ''
     pthsubdir = ''
     outputdir = ''
@@ -16,15 +19,17 @@ def main(argv):
     lhe2root = ''
     mcfmprob = ''
     jhuprob = ''
+    zPrime_Higgs = ''
+    couplings = ''
     removesubtrees = ''
     try:
-        opts, args = getopt.getopt(argv,"hi:s:o:b:l:m:j:",["ifile=","subdr=","outdr=","bfile=","lhe2root=","mcfmprob=","jhuprob="])
+        opts, args = getopt.getopt(argv,"hi:s:o:b:l:m:j:z:c:",["ifile=","subdr=","outdr=","bfile=","lhe2root=","mcfmprob=","jhuprob=","zprime=", "coupling="])
     except getopt.GetoptError:
-        print('\nMELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-l <lhe2root>) (-m <mcfmprob>) (-j <jhuprob>)\n')
+        print(template_input)
         exit()
     for opt, arg in opts:
         if opt == '-h' or opt == '--help':
-            print('\nMELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-l <lhe2root>) (-m <mcfmprob>) (-j <jhuprob>) \n')
+            print(template_input)
             exit()
         elif opt in ("-i", "--ifile"):
             inputfile = arg
@@ -40,9 +45,13 @@ def main(argv):
             mcfmprob = arg
         elif opt in ("-j", "--jhuprob"):
             jhuprob = arg
+        elif opt in ("-z", "--zprime"):
+            zPrime_Higgs = arg
+        elif opt in ("-c", "--coupling"):
+            couplings = arg
         
     if not all([inputfile, pthsubdir, outputdir, branchfile]):
-        print('\nMELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-l <lhe2root>) (-m <mcfmprob>) (-j <jhuprob>)\n')
+        print(template_input)
         exit()
 
     if not outputdir.endswith("/"):
@@ -78,6 +87,35 @@ def main(argv):
     else: lhe2root = "True"
 
     lhe2root = eval(lhe2root)
+    
+    if zPrime_Higgs != '':
+        zPrime_Higgs = [i.split('-') for i in zPrime_Higgs.split('_')]
+        if len(zPrime_Higgs) != 2 or len(zPrime_Higgs[0]) != 3 or len(zPrime_Higgs[1]) != 2:
+            print("\nERROR: \tOption '-z' is expected to be of form ZPrime-(Mass)-(Width)_Higgs-(Mass) in GeV")
+            print(template_input)
+            exit()
+            
+    if couplings != '':
+        lst_of_couplings = []
+        if not os.path.exists(couplings):
+            print("\nERROR: \tCouplings file" + couplings +" Cannot be located. Please try again with valid input.\n")
+        with open(couplings) as f:
+            couplings = f.readlines()
+            coupling_template = "couplings must be of form <coupling name>-<value> for each line"
+            for coupling_duo in couplings:
+                coupling_duo = coupling_duo.strip('\n\t').split('-')
+                coupling_duo[1] = float(coupling_duo[1])
+                
+                if coupling_duo == '':
+                    continue
+                
+                elif len(coupling_duo) != 2:
+                    print(coupling_template)
+                    print(template_input)
+                    exit()
+                
+                lst_of_couplings.append(coupling_duo)
+                
 
     print("\n================ Reading user input ================\n")
 
@@ -85,6 +123,16 @@ def main(argv):
     print("Path subdirectory is '{}'".format(pthsubdir))
     print("Output directory is '{}'".format(outputdir[:-1]))
     print("Branch list file is '{}'".format(branchfile))
+    if jhuprob: print("JHUGen Prob is '{}'".format(jhuprob))
+    if zPrime_Higgs: print("ZPrime mass/width =",
+                           str(zPrime_Higgs[0][1]) + "/" + str(zPrime_Higgs[0][2]),
+                           "with 'Higgs' mass of", zPrime_Higgs[1][1])
+    if couplings:
+        print("The following couplings are explicily used:")
+        print(*(i[0] + ' = ' + str(i[1]).strip() for i in lst_of_couplings), sep='\n')
+    else:
+        couplings = [None]
+        
     if lhe2root: print("MELA parser expecting lhe2root branch names")
     else: print("MELA parser expecting CJLST branch names")
 
@@ -125,17 +173,30 @@ def main(argv):
     if not lhe2root: from AnalysisTools.Utils.MELA_Weights import addprobabilities
     else: from AnalysisTools.Utils.MELA_Weights_lhe2root import addprobabilities
     
-    if mcfmprob:
-      #addprobabilities(filename, outtreefilename, branchlist, "eventTree", SampleHypothesisMCFM = mcfmprob)
-      addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree", SampleHypothesisMCFM = mcfmprob)
-    elif jhuprob:
-      addprobabilities(filename, outtreefilename, branchlist, "eventTree", SampleHypothesisJHUGen = jhuprob)
-      #addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree", SampleHypothesisJHUGen = mcfmprob)
-    elif (jhuprob) and (mcfmprob):
-      addprobabilities(filename, outtreefilename, branchlist, "eventTree", SampleHypothesisMCFM = mcfmprob, SampleHypothesisJHUGen = jhuprob)
+    if zPrime_Higgs: #bool('') = False, bool('any string') =  True  
+        if mcfmprob:
+            #addprobabilities(filename, outtreefilename, branchlist, "eventTree", SampleHypothesisMCFM = mcfmprob)
+            addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree", SampleHypothesisMCFM = mcfmprob, ZHiggs=zPrime_Higgs, couplings=lst_of_couplings)
+        elif jhuprob:
+            addprobabilities(filename, outtreefilename, branchlist, "eventTree", SampleHypothesisJHUGen = jhuprob, ZHiggs=zPrime_Higgs, couplings=lst_of_couplings)
+            #addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree", SampleHypothesisJHUGen = mcfmprob)
+        elif (jhuprob) and (mcfmprob):
+            addprobabilities(filename, outtreefilename, branchlist, "eventTree", SampleHypothesisMCFM = mcfmprob, SampleHypothesisJHUGen = jhuprob, ZHiggs=zPrime_Higgs, couplings=lst_of_couplings)
+        else:
+            addprobabilities(filename, outtreefilename, branchlist, "eventTree", ZHiggs=zPrime_Higgs, couplings=lst_of_couplings)
+            #addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree")
     else:
-      addprobabilities(filename, outtreefilename, branchlist, "eventTree")
-    #addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree")
-
+        if mcfmprob:
+            #addprobabilities(filename, outtreefilename, branchlist, "eventTree", SampleHypothesisMCFM = mcfmprob)
+            addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree", SampleHypothesisMCFM = mcfmprob, couplings=lst_of_couplings)
+        elif jhuprob:
+            addprobabilities(filename, outtreefilename, branchlist, "eventTree", SampleHypothesisJHUGen = jhuprob, couplings=lst_of_couplings)
+            #addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree", SampleHypothesisJHUGen = mcfmprob)
+        elif (jhuprob) and (mcfmprob):
+            addprobabilities(filename, outtreefilename, branchlist, "eventTree", SampleHypothesisMCFM = mcfmprob, SampleHypothesisJHUGen = jhuprob, couplings=lst_of_couplings)
+        else:
+            addprobabilities(filename, outtreefilename, branchlist, "eventTree", couplings=lst_of_couplings)
+            #addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree")
+            
 if __name__ == "__main__":
     main(sys.argv[1:])
