@@ -165,6 +165,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
   
   ZPrimeHiggs = kwargs.get('ZHiggs', None)
   #This is the "Higgs" mass. Default is 125 GeV, but you can change that
+  couplings = kwargs.get('couplings', [None])
   
   higgsMass = 125
   zPrimeMass = None
@@ -197,14 +198,13 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
 
   exportPath()
   
-  m = Mela(13, higgsMass) #Takes the higgs mass in the kwargs
+  m = Mela(13, 125)#, TVar.DEBUG_MECHECK) <- this is the debugger! 
+  #Use it as another argument if you'd like to debug code
+  #Always initialize MELA at m=125 GeV
   print('\nThis is the mass of the "Higgs":', higgsMass)
   if ZPrimeHiggs != None:
     m.Ga_Zprime = zPrimeWidth
     m.M_Zprime = zPrimeMass
-    print("\nzPrime set to width and mass of", m.Ga_Zprime, "&", m.M_Zprime, '\n')
-  
-  
   
   f = ROOT.TFile(infile)
   t = f.Get(TreePath)
@@ -231,6 +231,8 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
       #print(probdict)
     if HasMCFMSampleHypothesis:
       probdict[SampleHypothesisMCFM]=np.array([0],dtype=np.float32)
+    if HasJHUGenSampleHypothesis:
+      probdict[SampleHypothesisJHUGen]=np.array([0],dtype=np.float32)
     #print(probdict)
 
     #print(parse_prob(prob))
@@ -369,7 +371,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
         
         #print("\n\n", parsed_prob_dict, "\n\n")
 
-        #print("\n\n", parsed_prob_dict, "\n\n")
+        # print("\n\n", parsed_prob_dict, "\n\n")
 
         #print("\n\n", ns, "\n\n")
 
@@ -434,6 +436,19 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
             m.ghzpzp4 = parsed_prob_dict['coupl_dict'][key]
           else:
             raise ValueError(str(key) + " is not a supported coupling!")
+        
+        if ZPrimeHiggs != None:
+          m.Ga_Zprime = zPrimeWidth
+          m.M_Zprime = zPrimeMass
+          m.setMelaHiggsMassWidth(higgsMass, 0.001, 0)
+          # m.setMelaHiggsWidth(0.001,0)
+          # print("\nzPrime set to width and mass of", m.Ga_Zprime, "&", m.M_Zprime, '\n')
+          
+        if couplings != [None]:
+          # print('couplings!', couplings)
+          for coupling_duo in couplings: #sets all the couplings set earlier
+            setattr(m, coupling_duo[0], coupling_duo[1])
+            # print(coupling_duo[0], "set to", getattr(m, coupling_duo[0]))
           
         if parsed_prob_dict["Prod"] == True and parsed_prob_dict["Dec"] == False:
           probdict[prob][0] = m.computeProdP()
@@ -452,7 +467,10 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
       if HasJHUGenSampleHypothesis:
         for prob in probdict:
           if (prob != SampleHypothesisJHUGen) and ("JHUGen" in prob):
-            print('\ndivision!',probdict[prob][0],probdict[SampleHypothesisJHUGen][0])
+            
+            if probdict[prob][0] == 0 or probdict[SampleHypothesisJHUGen][0] == 0:
+              print('\ndivision with a zero!',probdict[prob][0],probdict[SampleHypothesisJHUGen][0])
+              
             probdict[prob][0] /= probdict[SampleHypothesisJHUGen][0]
             #print(probdict[prob][0])
         # Now divide the Sample Hypothesis by itself to make the probability = 1
