@@ -20,7 +20,7 @@ def Make_Template_With_Fake_Data(OutName,names):
   for nm in names:
     fin = ROOT.TFile.Open(nm)
     for key in fin.GetListOfKeys():
-      if "TH1F" in key.GetClassName():
+      if "TH1" in key.GetClassName():
         h_name = key.GetName()
         h_temp = fin.Get(h_name)
         h_temp.SetDirectory(0)
