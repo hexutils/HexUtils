@@ -434,6 +434,8 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
             m.ghzpzp1 = parsed_prob_dict['coupl_dict'][key]
           elif key == "ghzpzp4":
             m.ghzpzp4 = parsed_prob_dict['coupl_dict'][key]
+          elif key == "ghzpzp2":
+            m.ghzpzp2 = parsed_prob_dict['coupl_dict'][key]
           else:
             raise ValueError(str(key) + " is not a supported coupling!")
         
@@ -471,10 +473,10 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
             if probdict[prob][0] == 0 or probdict[SampleHypothesisJHUGen][0] == 0:
               print('\ndivision with a zero!',probdict[prob][0],probdict[SampleHypothesisJHUGen][0])
               
-            probdict[prob][0] /= probdict[SampleHypothesisJHUGen][0]
+            # probdict[prob][0] /= probdict[SampleHypothesisJHUGen][0]
             #print(probdict[prob][0])
         # Now divide the Sample Hypothesis by itself to make the probability = 1
-        probdict[SampleHypothesisJHUGen][0] /= probdict[SampleHypothesisJHUGen][0]
+        # probdict[SampleHypothesisJHUGen][0] /= probdict[SampleHypothesisJHUGen][0]
       #once at the end of the event
       m.resetInputEvent()
       newt.Fill()

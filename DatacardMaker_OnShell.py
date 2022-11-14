@@ -35,7 +35,7 @@ for filename in glob.iglob(Input_Dir+'/**', recursive=True):
     obs = 0
     
     for key in fin.GetListOfKeys():
-        if "TH1F" in key.GetClassName():
+        if "TH1" in key.GetClassName():
             h_name = key.GetName()
             print(h_name)
             if "Up" not in h_name and "Down" not in h_name and "data" not in h_name: #Up and Down are for tune up tune down QCD stuff
