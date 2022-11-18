@@ -276,8 +276,8 @@ try:
         #  print("daughter", n, (ll.third + ll.fourth).M())
         
         # print("Z1:", (event.daughters[0].second + event.daughters[1].second).M())
-        print("Z1:", (event.daughters[0].second + event.daughters[1].second).M())
-        print("Z2:", (event.daughters[2].second + event.daughters[3].second).M())
+#        print("Z1:", (event.daughters[0].second + event.daughters[1].second).M())
+#        print("Z2:", (event.daughters[2].second + event.daughters[3].second).M())
           
         flav4l = 1;
         for d in event.daughters: 
@@ -759,7 +759,7 @@ try:
           branches["weight"][0] = event.weight
               # print "FIlling!"
         t.Fill()
-      print("Processed", i+1, "events")
+      # print("Processed", i+1, "events")
 
   newf.Write()
 except:
