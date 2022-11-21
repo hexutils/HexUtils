@@ -1,6 +1,7 @@
 from __future__ import print_function
 from ..JHUGenMELA.MELA.python.mela import Mela, TVar, SimpleParticle_t, SimpleParticleCollection_t
 import ROOT, os, sys, re, numpy as np
+import tqdm
 
 def tlv(pt, eta, phi, m):
   result = ROOT.TLorentzVector()
@@ -201,18 +202,18 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
   m = Mela(13, 125)#, TVar.DEBUG_MECHECK) <- this is the debugger! 
   #Use it as another argument if you'd like to debug code
   #Always initialize MELA at m=125 GeV
-  print('\nThis is the mass of the "Higgs":', higgsMass)
+  # print('\nThis is the mass of the "Higgs":', higgsMass)
   if ZPrimeHiggs != None:
     m.Ga_Zprime = zPrimeWidth
     m.M_Zprime = zPrimeMass
   
   f = ROOT.TFile(infile)
   t = f.Get(TreePath)
-  print(infile, TreePath, t)
+  # print(infile, TreePath, t)
   try:
     newf = ROOT.TFile(outfile, "RECREATE")
     newt = t.CloneTree(0)
-    print(newt)
+    # print(newt)
     newtbranches = newt.GetListOfBranches()
     probdict = {}
 
@@ -239,7 +240,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
     
     #sys.exit()
 
-    for i, entry in enumerate(t, start=1):
+    for i, entry in enumerate(tqdm.tqdm(t, desc="# Events Processed", total=t.GetEntries()), start=1):
       #####################################################
       # RECO probabilities, for reweighting Discriminants #
       #####################################################
@@ -481,8 +482,8 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
       m.resetInputEvent()
       newt.Fill()
 
-      if i % 1000 == 0 or i == t.GetEntries():
-        print(i, "/", t.GetEntries())
+      # if i % 1000 == 0 or i == t.GetEntries():
+        # print(i, "/", t.GetEntries())
         
     newf.Write()
   except:
