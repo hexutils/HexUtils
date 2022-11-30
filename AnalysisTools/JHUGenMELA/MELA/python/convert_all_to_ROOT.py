@@ -1,4 +1,5 @@
 import os
+import re
 import argparse
 
 exceptions = {
@@ -72,7 +73,8 @@ if __name__ == '__main__':
         candidate = os.fsdecode(candidate)
         if (not os.path.isdir(candidate)) or (candidate in exceptions):
             continue
-        
+        cross_sections = open(candidate + '/' + "CrossSections.txt", 'w+')
+        cross_sections.write('Sample, Cross Section, Uncertainty\n')
         for lhefile in os.listdir(candidate):
             lhefile = os.fsdecode(lhefile)
             
@@ -92,7 +94,18 @@ if __name__ == '__main__':
 
             running_str = "python lhe2root.py --" + args.argument + " " + (candidate + '/LHE_' + filename) + '.root ' + (candidate + '/' + lhefile) + ' > /dev/null'
             titlestr = "Generating ROOT file for " + (candidate + '/' + lhefile)
-            print_msg_box("Output name: " + 'LHE_' + filename + '.root' + 
-                          "\nArgument: " + args.argument,
-                          title=titlestr, width=len(titlestr))
+            
+            with open(candidate + '/' + lhefile) as getting_cross_section:
+                head = getting_cross_section.read()
+                cross_finder = re.compile(r'<init>\n.+\n.+(\d+\.\d+E(\+|-)\d{2})\s+(\d+\.\d+E(\+|-)\d{2})\s+(\d+\.\d+E(\+|-)\d{2})(\d|\s)+</init>')
+                cross_section_match = re.search(cross_finder,head)
+                cross_sections.write('LHE_'+filename + '.root' + ', ' + cross_section_match.group(1) + ',' + cross_section_match.group(3) + '\n')
+            
+                print_msg_box("Output name: " + 'LHE_' + filename + '.root' + 
+                            "\nArgument: " + args.argument + 
+                            "\n\u03C3: " + cross_section_match.group(1) + " \u00b1 " + cross_section_match.group(3),
+                            title=titlestr, width=len(titlestr))
+            
             os.system(running_str)
+        
+        cross_sections.close()
