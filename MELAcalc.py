@@ -7,49 +7,73 @@ import glob
 import time
 from pathlib import Path
 import re
+import argparse
 
-def main(argv):
+parser = argparse.ArgumentParser()
+parser.add_argument('-i', '--ifile', nargs=1, type=str, required=True)
+parser.add_argument('-s', '--subdr', nargs=1, type=str, required=True)
+parser.add_argument('-o', '--outdr', nargs=1, type=str, required=True)
+parser.add_argument('-b', '--bfile', nargs=1, type=str, required=True)
+parser.add_argument('-l', '--lhe2root', nargs=1, type=str, default=[''])
+parser.add_argument('-m', '--mcfmprob', nargs=1, type=str, default=[''])
+parser.add_argument('-j', '--jhuprob', nargs=1, type=str, default=[''])
+parser.add_argument('-z', '--zprime', nargs=1, type=str, default=[''])
+parser.add_argument('-c', '--couplings', nargs=1, type=str, default=[''])
+parser.add_argument('-v', '--verbose', type=int, default=0, choices=[0,1,2,3,4,5])
+
+
+def main():
     
     template_input = '\nMELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile> (-l <lhe2root>) (-m <mcfmprob>) (-j <jhuprob>) (-z <zprime/higgs input>) (-c <couplings file>)\n'
     
-    inputfile = ''
-    pthsubdir = ''
-    outputdir = ''
-    branchfile = ''
-    lhe2root = ''
-    mcfmprob = ''
-    jhuprob = ''
-    zPrime_Higgs = ''
-    couplings = ''
-    removesubtrees = ''
-    try:
-        opts, args = getopt.getopt(argv,"hi:s:o:b:l:m:j:z:c:",["ifile=","subdr=","outdr=","bfile=","lhe2root=","mcfmprob=","jhuprob=","zprime=", "coupling="])
-    except getopt.GetoptError:
-        print(template_input)
-        exit()
-    for opt, arg in opts:
-        if opt == '-h' or opt == '--help':
-            print(template_input)
-            exit()
-        elif opt in ("-i", "--ifile"):
-            inputfile = arg
-        elif opt in ("-s", "--subdr"):
-            pthsubdir = arg
-        elif opt in ("-o", "--outdr"):
-            outputdir = arg
-        elif opt in ("-b", "--bfile"):
-            branchfile = arg
-        elif opt in ("-l", "--lhe2root"):
-            lhe2root = arg
-        elif opt in ("-m", "--mcfmprob"):
-            mcfmprob = arg
-        elif opt in ("-j", "--jhuprob"):
-            jhuprob = arg
-        elif opt in ("-z", "--zprime"):
-            zPrime_Higgs = arg
-        elif opt in ("-c", "--coupling"):
-            couplings = arg
-        
+    # inputfile = ''
+    # pthsubdir = ''
+    # outputdir = ''
+    # branchfile = ''
+    # lhe2root = ''
+    # mcfmprob = ''
+    # jhuprob = ''
+    # zPrime_Higgs = ''
+    # couplings = ''
+    # removesubtrees = ''
+    # try:
+    #     opts, args = getopt.getopt(argv,"hi:s:o:b:l:m:j:z:c:",["ifile=","subdr=","outdr=","bfile=","lhe2root=","mcfmprob=","jhuprob=","zprime=", "coupling="])
+    # except getopt.GetoptError:
+    #     print(template_input)
+    #     exit()
+    # for opt, arg in opts:
+    #     if opt == '-h' or opt == '--help':
+    #         print(template_input)
+    #         exit()
+    #     elif opt in ("-i", "--ifile"):
+    #         inputfile = arg
+    #     elif opt in ("-s", "--subdr"):
+    #         pthsubdir = arg
+    #     elif opt in ("-o", "--outdr"):
+    #         outputdir = arg
+    #     elif opt in ("-b", "--bfile"):
+    #         branchfile = arg
+    #     elif opt in ("-l", "--lhe2root"):
+    #         lhe2root = arg
+    #     elif opt in ("-m", "--mcfmprob"):
+    #         mcfmprob = arg
+    #     elif opt in ("-j", "--jhuprob"):
+    #         jhuprob = arg
+    #     elif opt in ("-z", "--zprime"):
+    #         zPrime_Higgs = arg
+    #     elif opt in ("-c", "--coupling"):
+    #         couplings = arg
+    
+    inputfile = args.ifile[0]
+    pthsubdir = args.subdr[0]
+    outputdir = args.outdr[0]
+    branchfile = args.bfile[0]
+    lhe2root = args.lhe2root[0]
+    mcfmprob = args.mcfmprob[0]
+    jhuprob = args.jhuprob[0]
+    zPrime_Higgs = args.zprime[0]
+    couplings = args.couplings[0]
+    
     if not all([inputfile, pthsubdir, outputdir, branchfile]):
         print(template_input)
         exit()
@@ -176,27 +200,40 @@ def main(argv):
     if zPrime_Higgs: #bool('') = False, bool('any string') =  True  
         if mcfmprob:
             #addprobabilities(filename, outtreefilename, branchlist, "eventTree", SampleHypothesisMCFM = mcfmprob)
-            addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree", SampleHypothesisMCFM = mcfmprob, ZHiggs=zPrime_Higgs, couplings=lst_of_couplings)
+            addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree", 
+                             SampleHypothesisMCFM = mcfmprob, ZHiggs=zPrime_Higgs, couplings=lst_of_couplings,
+                             verbosity=args.verbose)
         elif jhuprob:
-            addprobabilities(filename, outtreefilename, branchlist, "eventTree", SampleHypothesisJHUGen = jhuprob, ZHiggs=zPrime_Higgs, couplings=lst_of_couplings)
+            addprobabilities(filename, outtreefilename, branchlist, "eventTree", 
+                             SampleHypothesisJHUGen = jhuprob, ZHiggs=zPrime_Higgs, couplings=lst_of_couplings,
+                             verbosity=args.verbose)
             #addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree", SampleHypothesisJHUGen = mcfmprob)
         elif (jhuprob) and (mcfmprob):
-            addprobabilities(filename, outtreefilename, branchlist, "eventTree", SampleHypothesisMCFM = mcfmprob, SampleHypothesisJHUGen = jhuprob, ZHiggs=zPrime_Higgs, couplings=lst_of_couplings)
+            addprobabilities(filename, outtreefilename, branchlist, "eventTree", 
+                             SampleHypothesisMCFM = mcfmprob, SampleHypothesisJHUGen = jhuprob, ZHiggs=zPrime_Higgs, 
+                             couplings=lst_of_couplings, verbosity=args.verbose)
         else:
-            addprobabilities(filename, outtreefilename, branchlist, "eventTree", ZHiggs=zPrime_Higgs, couplings=lst_of_couplings)
+            addprobabilities(filename, outtreefilename, branchlist, "eventTree", ZHiggs=zPrime_Higgs, couplings=lst_of_couplings,
+                             verbosity=args.verbose)
             #addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree")
     else:
         if mcfmprob:
             #addprobabilities(filename, outtreefilename, branchlist, "eventTree", SampleHypothesisMCFM = mcfmprob)
-            addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree", SampleHypothesisMCFM = mcfmprob, couplings=lst_of_couplings)
+            addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree", 
+                             SampleHypothesisMCFM = mcfmprob, couplings=lst_of_couplings, verbosity=args.verbose)
         elif jhuprob:
-            addprobabilities(filename, outtreefilename, branchlist, "eventTree", SampleHypothesisJHUGen = jhuprob, couplings=lst_of_couplings)
+            addprobabilities(filename, outtreefilename, branchlist, "eventTree", 
+                             SampleHypothesisJHUGen = jhuprob, couplings=lst_of_couplings, verbosity=args.verbose)
             #addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree", SampleHypothesisJHUGen = mcfmprob)
         elif (jhuprob) and (mcfmprob):
-            addprobabilities(filename, outtreefilename, branchlist, "eventTree", SampleHypothesisMCFM = mcfmprob, SampleHypothesisJHUGen = jhuprob, couplings=lst_of_couplings)
+            addprobabilities(filename, outtreefilename, branchlist, "eventTree", 
+                             SampleHypothesisMCFM = mcfmprob, SampleHypothesisJHUGen = jhuprob, couplings=lst_of_couplings,
+                             verbosity=args.verbose)
         else:
-            addprobabilities(filename, outtreefilename, branchlist, "eventTree", couplings=lst_of_couplings)
+            addprobabilities(filename, outtreefilename, branchlist, "eventTree", couplings=lst_of_couplings, verbosity=args.verbose)
             #addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree")
             
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    args = parser.parse_args()
+    # main(sys.argv[1:])
+    main()

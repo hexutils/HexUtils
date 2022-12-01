@@ -44,7 +44,7 @@ parser.add_argument('filename',nargs='+',
 parser.add_argument('-v','--values',nargs='*',default=['M4L'],
                     help="The attributes you want to plot.")
 
-parser.add_argument('-r','--ranges',nargs='*', default=['6,9'], type=ran,
+parser.add_argument('-r','--ranges',nargs='*', default=[(6,9)], type=ran,
                     help='The ranges for your attributes. Enclose your ranges with quotes and a leading space i.e. " -3.14,3.14"')
 
 parser.add_argument('-n', '--nbins', nargs=1, type=int, default=100,
@@ -79,9 +79,9 @@ if __name__ == "__main__":
                     raise argparse.ArgumentTypeError("You can only choose from these attributes:\n" + str(list(f.columns)))
                 
                 if args.label:
-                    plt.hist(attribute, range=range_x, histtype='step', bins=args.nbins, label=args.label)
+                    plt.hist(attribute, range=range_x, histtype='step', bins=args.nbins, label=args.label, lw=2)
                 else:
-                    plt.hist(attribute, range=range_x, histtype='step', bins=args.nbins)
+                    plt.hist(attribute, range=range_x, histtype='step', bins=args.nbins, lw=2)
                 plt.xlim(range_x)
                 plt.xlabel(beautified_title[value], horizontalalignment='center', fontsize=30)
                 plt.tight_layout()

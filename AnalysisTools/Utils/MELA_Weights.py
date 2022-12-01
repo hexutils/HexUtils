@@ -168,6 +168,8 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
   #This is the "Higgs" mass. Default is 125 GeV, but you can change that
   couplings = kwargs.get('couplings', [None])
   
+  verbosity = kwargs.get('verbose', 0)
+  
   higgsMass = 125
   zPrimeMass = None
   zPrimeWidth = None
@@ -199,7 +201,20 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
 
   exportPath()
   
-  m = Mela(13, 125)#, TVar.DEBUG_MECHECK) <- this is the debugger! 
+  if verbosity == 0:
+    verbosity = TVar.SILENT
+  elif verbosity == 1:
+    verbosity = TVar.ERROR
+  elif verbosity == 2:
+    verbosity = TVar.INFO
+  elif verbosity == 3:
+    verbosity = TVar.DEBUG
+  elif verbosity == 4:
+    verbosity = TVar.DEBUG_VERBOSE
+  elif verbosity == 5:
+    verbosity = TVar.DEBUG_MECHECK
+  
+  m = Mela(13, 125, verbosity)# <- this is the debugger! 
   #Use it as another argument if you'd like to debug code
   #Always initialize MELA at m=125 GeV
   # print('\nThis is the mass of the "Higgs":', higgsMass)
@@ -279,7 +294,8 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
           leptons = SimpleParticleCollection_t(SimpleParticle_t(pid, tlv(pt, eta, phi, m)) for pid, pt, eta, phi, m in zip(t.LHEDaughterId, t.LHEDaughterPt, t.LHEDaughterEta, t.LHEDaughterPhi, t.LHEDaughterMass))
           jets = SimpleParticleCollection_t(SimpleParticle_t(pid, tlv(pt, eta, phi, m)) for pid, pt, eta, phi, m in zip(t.LHEAssociatedParticleId, t.LHEAssociatedParticlePt, t.LHEAssociatedParticleEta, t.LHEAssociatedParticlePhi, t.LHEAssociatedParticleMass))
           mothers = SimpleParticleCollection_t(SimpleParticle_t(pid, ROOT.TLorentzVector(0, 0, pz, e)) for pid, pz, e in zip(t.LHEMotherId, t.LHEMotherPz, t.LHEMotherE))
-          m.setInputEvent(leptons, jets, mothers, 1) 
+          m.setInputEvent(leptons, jets, mothers, 1)
+          print(leptons)
         # Sort the MatrixElement #
         MatrixExec = "MatrixElement = TVar."+parsed_prob_dict["MatrixElement"]
         exec(MatrixExec,ns)
