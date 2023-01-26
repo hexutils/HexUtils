@@ -20,7 +20,7 @@ parser.add_argument('-j', '--jhuprob', nargs=1, type=str, default=[''])
 parser.add_argument('-z', '--zprime', nargs=1, type=str, default=[''])
 parser.add_argument('-c', '--couplings', nargs=1, type=str, default=[''])
 parser.add_argument('-v', '--verbose', type=int, default=0, choices=[0,1,2,3,4,5])
-
+args = parser.parse_args()
 
 def main():
     
