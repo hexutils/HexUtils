@@ -65,7 +65,7 @@ double MelaPConstant::Eval(const MelaIO* RcdME, TVar::VerbosityLevel verbosity)c
   double candMass = RcdME->melaCand->m();
   if (verbosity>=TVar::DEBUG) MELAout << "MelaPConstant::Eval: Candidate mass is " << candMass << endl;
   if (candMass<=0.) return 0.;
-  if (candMass<=100) return result;
+//   if (candMass<=100) return result;
   else if (fcnLow!=0 && candMass<fcnLow->GetXmax()) result = fcnLow->Eval(candMass);
   else if (fcnHigh!=0 && candMass>fcnHigh->GetXmin()) result = fcnHigh->Eval(candMass);
   else if (fcnMid!=0){
