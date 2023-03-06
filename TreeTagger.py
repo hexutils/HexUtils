@@ -1,5 +1,7 @@
 #! /cvmfs/sft.cern.ch/lcg/views/LCG_102b_cuda/x86_64-centos7-gcc8-opt/bin/python3
 
+"""source /cvmfs/sft.cern.ch/lcg/views/LCG_102b_cuda/x86_64-centos7-gcc8-opt/setup.sh"""
+
 import re
 import time
 import glob
