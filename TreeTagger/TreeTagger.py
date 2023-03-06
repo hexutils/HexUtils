@@ -1,6 +1,8 @@
 #! /cvmfs/sft.cern.ch/lcg/views/LCG_102b_cuda/x86_64-centos7-gcc8-opt/bin/python3
 
-"""source /cvmfs/sft.cern.ch/lcg/views/LCG_102b_cuda/x86_64-centos7-gcc8-opt/setup.sh"""
+"""
+run 'cmsenv' then run 'source /cvmfs/sft.cern.ch/lcg/views/LCG_102b_cuda/x86_64-centos7-gcc8-opt/setup.sh' then './TreeTagger.py'
+"""
 
 import re
 import time
@@ -52,6 +54,8 @@ ROOT::RDF::RNode FixRVec(ROOT::RDF::RNode df, const std::string &name) {
     return df.Redefine(name, [](const ROOT::VecOps::RVec<T> &v) { return std::vector<T>(v.begin(), v.end()); }, {name});
 }
 ''')
+
+sys.path.append(os.getcwd() + '/..')
 
 from AnalysisTools.data import gConstants as gConstants
 from AnalysisTools.data import cConstants as cConstants
