@@ -46,7 +46,7 @@ print(ROOT.__version__)
 ROOT.gInterpreter.Declare('''
 template<typename T>
 ROOT::RDF::RNode AddArray(ROOT::RDF::RNode df, ROOT::RVec<T> &v, const std::string &name) {
-    return df.Define(name, [&](ULong64_t e) { return v[e]; }, {"rdfentry_"});
+    return df.Define(name, [&](T e) { return v[e]; }, {"rdfentry_"});
 }
 
 template<typename T>
@@ -178,7 +178,6 @@ def main(argv):
                 if branch: branchlist.append(branch)
 
         treenames = ["candTree", "candTree_failed"]
-        #treenames = ["candTree"]
 
         #================ Loop over target trees ================
 
