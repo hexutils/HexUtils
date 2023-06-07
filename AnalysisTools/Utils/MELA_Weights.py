@@ -164,25 +164,23 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
   SampleHypothesisMCFM = kwargs.get('SampleHypothesisMCFM', None)
   SampleHypothesisJHUGen = kwargs.get('SampleHypothesisJHUGen', None)
   
-  ZPrimeHiggs = kwargs.get('ZHiggs', None)
+  ZPrime = kwargs.get('ZP', None)
+  higgsMass = kwargs.get('HM', 125)
   #This is the "Higgs" mass. Default is 125 GeV, but you can change that
   couplings = kwargs.get('couplings', [None])
   
   verbosity = kwargs.get('verbose', 0)
   
-  higgsMass = 125
   zPrimeMass = None
   zPrimeWidth = None
   
-  if ZPrimeHiggs != None:
+  if ZPrime != None:
     #input should be of form ZPrime-(Mass)-(Width)_Higgs-(Mass)
     
-    (_, zPrimeMass, zPrimeWidth), (_, higgsMass) = ZPrimeHiggs
+    zPrimeMass, zPrimeWidth = ZPrime
     
     zPrimeMass = float(zPrimeMass)
-    zPrimeWidth = float(zPrimeWidth)
-    higgsMass = float(higgsMass)
-    
+    zPrimeWidth = float(zPrimeWidth)    
   
   if SampleHypothesisMCFM != None:
     HasMCFMSampleHypothesis = True
@@ -218,7 +216,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
   #Use it as another argument if you'd like to debug code
   #Always initialize MELA at m=125 GeV
   # print('\nThis is the mass of the "Higgs":', higgsMass)
-  if ZPrimeHiggs != None:
+  if ZPrime != None:
     m.Ga_Zprime = zPrimeWidth
     m.M_Zprime = zPrimeMass
   
@@ -255,7 +253,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
     
     #sys.exit()
 
-    for i, entry in enumerate(tqdm.tqdm(t, desc="# Events Processed", total=t.GetEntries()), start=1):
+    for i, entry in enumerate(tqdm.tqdm(t, desc="Events Processed", total=t.GetEntries()), start=1):
       #####################################################
       # RECO probabilities, for reweighting Discriminants #
       #####################################################
@@ -456,7 +454,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
           else:
             raise ValueError(str(key) + " is not a supported coupling!")
         
-        if ZPrimeHiggs != None:
+        if ZPrime != None:
           m.Ga_Zprime = zPrimeWidth
           m.M_Zprime = zPrimeMass
           m.setMelaHiggsMassWidth(higgsMass, 0.001, 0)
