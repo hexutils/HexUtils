@@ -253,7 +253,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
     
     #sys.exit()
 
-    for i, entry in enumerate(tqdm.tqdm(t, desc="Events Processed", total=t.GetEntries()), start=1):
+    for i, entry in enumerate(tqdm.tqdm(t, desc="Events Processed for " + infile, total=t.GetEntries()), start=1):
       #####################################################
       # RECO probabilities, for reweighting Discriminants #
       #####################################################

@@ -1,32 +1,38 @@
 #!/cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/cmssw/CMSSW_12_2_0/external/slc7_amd64_gcc900/bin/python3
 
-import importlib.util
-import sys, getopt
 import os
 import glob
-import time
 from pathlib import Path
-import re
 import argparse
+import useful_helpers as help
+import warnings
 
 def main(raw_args=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument('-i', '--ifile', type=str, nargs='+', required=True)
-    parser.add_argument('-o', '--outdr', type=str, required=True)
-    parser.add_argument('-b', '--bfile', type=str, required=True)
-    parser.add_argument('-l', '--lhe2root', action="store_true")
-    parser.add_argument('-m', '--mcfmprob', type=str, default='')
-    parser.add_argument('-j', '--jhuprob', type=str, default='')
-    parser.add_argument('-h', '--hmass', type=float, default=125)
-    parser.add_argument('-z', '--zprime', type=float, nargs=2, default=0)
-    parser.add_argument('-c', '--couplings', type=str, default='')
-    parser.add_argument('-v', '--verbose', type=int, default=0, choices=[0,1,2,3,4,5])
-    parser.add_argument('-ow', '--overwrite', action="store_true")
+    input_possibilities = parser.add_mutually_exclusive_group(required=True)
+    input_possibilities.add_argument('-i', '--ifile', type=str, nargs='+', help="individual files you want weights applied to")
+    input_possibilities.add_argument('-id', '--idirectory', type=str, help="An entire folder you want weights applied to")
+    parser.add_argument('-o', '--outdr', type=str, required=True, help="The output folder")
+    parser.add_argument('-b', '--bfile', type=str, required=True, help="The file containing your branch names")
+    parser.add_argument('-l', '--lhe2root', action="store_true", help="Enable this if you want to use lhe2root naming")
+    parser.add_argument('-m', '--mcfmprob', type=str, default='', help="mcfm probabilities")
+    parser.add_argument('-j', '--jhuprob', type=str, default='', help="JHUGen probabilities")
+    parser.add_argument('-hm', '--hmass', type=float, default=125, help="The mass of the Higgs")
+    parser.add_argument('-z', '--zprime', type=float, nargs=2, default=0, help="The mass and width of a Z Prime as 2 arguments")
+    parser.add_argument('-c', '--couplings', type=str, default='', help="A file containing the Zff couplings you are using")
+    parser.add_argument('-v', '--verbose', type=int, default=0, choices=[0,1,2,3,4,5], help="The verbosity level of MELA")
+    parser.add_argument('-ow', '--overwrite', action="store_true", help="Enable if you want to overwrite files in the output folder")
     args = parser.parse_args(raw_args)
     
     template_input = '\nMELAcalc.py -i <inputfile> -o <outputdir> -b <branchfile> (-l <lhe2root>) (-m <mcfmprob>) (-j <jhuprob>) (-z <mass> <width>) (-h <mass>)(-c <couplings file>)\n'
     
     inputfiles = args.ifile
+    input_directory = args.idirectory
+    
+    if input_directory: #if you put in a directory instead of a set of files - this will recurse over that evertything in that file
+        # looking for ROOT files
+        inputfiles = help.recurse_through_folder(input_directory, ".root")
+    
     pthsubdirs = inputfiles
     outputdir = args.outdr
     branchfile = args.bfile
@@ -38,26 +44,51 @@ def main(raw_args=None):
     couplings = args.couplings
     overwrite = args.overwrite
     
+    branchlist = []
+    with open(branchfile) as f:
+        branchlist = [line.strip() for line in f]
     
     if lhe2root: from AnalysisTools.Utils.MELA_Weights_lhe2root import addprobabilities
     else: from AnalysisTools.Utils.MELA_Weights import addprobabilities
 
     if not outputdir.endswith("/"):
         outputdir = outputdir+"/"
-
-    if not pthsubdir.endswith("/"):
-        pthsubdir = pthsubdir+"/"
-
-    pthsubdir = pthsubdir.split("/")[-2]
-
+    
+    if not os.path.exists(branchfile):
+        print("\nERROR: \tBranches list '" + branchfile + "' cannot be located. Please try again with valid input.\n")
+        print('MELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile>\n')
+        exit()
+    
+    
+    if couplings != '':
+        lst_of_couplings = []
+        if not os.path.exists(couplings):
+            print("\nERROR: \tCouplings file" + couplings +" Cannot be located. Please try again with valid input.\n")
+        with open(couplings) as f:
+            couplings_temp = f.readlines()
+            coupling_template = "couplings must be of form <coupling name>-<value> for each line"
+            for coupling_duo in couplings_temp:
+                coupling_duo = coupling_duo.strip().split('-')
+                coupling_duo[1] = float(coupling_duo[1])
+                
+                if coupling_duo == '':
+                    continue
+                
+                elif len(coupling_duo) != 2:
+                    print(coupling_template)
+                    print(template_input)
+                    exit()
+                
+                lst_of_couplings.append(coupling_duo)
+    
     for inputfile, pthsubdir in zip(inputfiles, pthsubdirs):
+        if not pthsubdir.endswith("/"):
+            pthsubdir = pthsubdir+"/"
+
+        pthsubdir = pthsubdir.split("/")[-2]
+        
         if not os.path.exists(inputfile):
             print("\nERROR: \tROOT file '" + inputfile + "' cannot be located. Please try again with valid input.\n")
-            print('MELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile>\n')
-            exit()
-
-        if not os.path.exists(branchfile):
-            print("\nERROR: \tBranches list '" + branchfile + "' cannot be located. Please try again with valid input.\n")
             print('MELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile>\n')
             exit()
 
@@ -65,69 +96,45 @@ def main(raw_args=None):
             print("\nERROR: \tSubdirectory '" + pthsubdir + "' is not in the input path. Please try again with valid input.\n")
             print('MELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile>\n')
             exit()
-                
-        if couplings != '':
-            lst_of_couplings = []
-            if not os.path.exists(couplings):
-                print("\nERROR: \tCouplings file" + couplings +" Cannot be located. Please try again with valid input.\n")
-            with open(couplings) as f:
-                couplings = f.readlines()
-                coupling_template = "couplings must be of form <coupling name>-<value> for each line"
-                for coupling_duo in couplings:
-                    coupling_duo = coupling_duo.strip('\n\t').split('-')
-                    coupling_duo[1] = float(coupling_duo[1])
-                    
-                    if coupling_duo == '':
-                        continue
-                    
-                    elif len(coupling_duo) != 2:
-                        print(coupling_template)
-                        print(template_input)
-                        exit()
-                    
-                    lst_of_couplings.append(coupling_duo)
                     
 
-        print("\n================ Reading user input ================\n")
+        # print("\n================ Reading user input ================\n")
 
-        print("Input PTree is '{}'".format(inputfile))
-        print("Path subdirectory is '{}'".format(pthsubdir))
-        print("Output directory is '{}'".format(outputdir[:-1]))
-        print("Branch list file is '{}'".format(branchfile))
-        if jhuprob: print("JHUGen Prob is '{}'".format(jhuprob))
-        if zp: print("ZPrime mass/width =",
-                            "{:.2f}/{:.2f}".format(*zp),
-                            "with 'Higgs' mass of {:.2f}".format(higgs_mass))
+        User_text = "Input PTree is '{}'".format(inputfile)
+        User_text += "\nPath subdirectory is '{}'".format(pthsubdir)
+        User_text += "\nOutput directory is '{}'".format(outputdir[:-1])
+        
+        if jhuprob: User_text += "\nJHUGen Prob is '{}'".format(jhuprob)
+        if zp: User_text += "\n\nZPrime mass/width = {:.2f}/{:.5f} with 'Higgs' mass of {:.2f} GeV".format(*zp, higgs_mass)
         if couplings:
-            print("The following couplings are explicily used:")
-            print(*(i[0] + ' = ' + str(i[1]).strip() for i in lst_of_couplings), sep='\n')
+            User_text += "\n\nThe following Zff couplings are explicily used:\n"
+            User_text += "\n".join([i[0] + ' = ' + str(i[1]).strip() for i in lst_of_couplings]) + "\n"
         else:
             couplings = [None]
             
-        if lhe2root: print("MELA parser expecting lhe2root branch names")
-        else: print("MELA parser expecting CJLST branch names")
+        if lhe2root: User_text += "\nMELA parser expecting lhe2root branch names"
+        else: User_text += "\nMELA parser expecting CJLST branch names"
+        
+        User_text += "\n\nThe following probabilities will be calculated:\n"
+        User_text += "\n".join(branchlist)
 
+        print(help.print_msg_box(User_text, title="Reading user input"))
         #================ Set input file path and output file path ================
         
-        filename = inputfile
-        branchlistpath = branchfile
-        tagtreepath = outputdir
+        ind = inputfile.split("/").index(pthsubdir)
 
-        ind = filename.split("/").index(pthsubdir)
-
-        tagtreefile = "/".join(filename.split("/")[ind:])
-        outtreefilename = tagtreepath+tagtreefile
+        tagtreefile = "/".join(inputfile.split("/")[ind:])
+        outtreefilename = outputdir+tagtreefile
 
         print("\n================ Processing user input ================\n")
 
-        if not os.path.exists(filename):
-            print("ERROR: \t'" + filename + "' does not exist!\n")
+        if not os.path.exists(inputfile):
+            print("ERROR: \t'" + inputfile + "' does not exist!\n")
             exit()
 
         elif os.path.exists(outtreefilename):
-            
             if overwrite:
-                print("WARNING: Overwriting", outtreefilename, "\n")
+                warnings.warn("WARNING: Overwriting"+outtreefilename+"\n")
                 os.remove(outtreefilename)
             else:
                 print("ERROR: \t'" + outtreefilename + "' or parts of it already exist!\n")
@@ -138,49 +145,44 @@ def main(raw_args=None):
             if not os.path.exists("/".join(outtreefilename.split("/")[:-1])):
                 Path("/".join(outtreefilename.split("/")[:-1])).mkdir(True, True)
 
-        print("Read '"+filename+"'\n")
+        print("Read '"+inputfile+"'\n")
         print("Write '"+outtreefilename+"'\n")
-
-        with open(branchlistpath) as f:
-            branchlist = [line.rstrip() for line in f]
-
-        print(branchlist)
         
         if zp: #bool('') = False, bool('any string') =  True  
             if mcfmprob:
-                #addprobabilities(filename, outtreefilename, branchlist, "eventTree", SampleHypothesisMCFM = mcfmprob)
-                addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree", 
+                #addprobabilities(inputfile, outtreefilename, branchlist, "eventTree", SampleHypothesisMCFM = mcfmprob)
+                addprobabilities(inputfile, outtreefilename, branchlist, "ZZTree/candTree", 
                                 SampleHypothesisMCFM = mcfmprob, ZP=zp, couplings=lst_of_couplings,
                                 verbosity=args.verbose, HM=higgs_mass)
             elif jhuprob:
-                addprobabilities(filename, outtreefilename, branchlist, "eventTree", 
+                addprobabilities(inputfile, outtreefilename, branchlist, "eventTree", 
                                 SampleHypothesisJHUGen = jhuprob, ZP=zp, couplings=lst_of_couplings,
                                 verbosity=args.verbose, HM=higgs_mass)
-                #addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree", SampleHypothesisJHUGen = mcfmprob)
+                #addprobabilities(inputfile, outtreefilename, branchlist, "ZZTree/candTree", SampleHypothesisJHUGen = mcfmprob)
             elif (jhuprob) and (mcfmprob):
-                addprobabilities(filename, outtreefilename, branchlist, "eventTree", 
+                addprobabilities(inputfile, outtreefilename, branchlist, "eventTree", 
                                 SampleHypothesisMCFM = mcfmprob, SampleHypothesisJHUGen = jhuprob, ZP=zp, 
                                 couplings=lst_of_couplings, verbosity=args.verbose, HM=higgs_mass)
             else:
-                addprobabilities(filename, outtreefilename, branchlist, "eventTree", ZP=zp, couplings=lst_of_couplings,
+                addprobabilities(inputfile, outtreefilename, branchlist, "eventTree", ZP=zp, couplings=lst_of_couplings,
                                 verbosity=args.verbose, HM=higgs_mass)
-                #addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree")
+                #addprobabilities(inputfile, outtreefilename, branchlist, "ZZTree/candTree")
         else:
             if mcfmprob:
-                #addprobabilities(filename, outtreefilename, branchlist, "eventTree", SampleHypothesisMCFM = mcfmprob)
-                addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree", 
+                #addprobabilities(inputfile, outtreefilename, branchlist, "eventTree", SampleHypothesisMCFM = mcfmprob)
+                addprobabilities(inputfile, outtreefilename, branchlist, "ZZTree/candTree", 
                                 SampleHypothesisMCFM = mcfmprob, couplings=lst_of_couplings, verbosity=args.verbose, HM=higgs_mass)
             elif jhuprob:
-                addprobabilities(filename, outtreefilename, branchlist, "eventTree", 
+                addprobabilities(inputfile, outtreefilename, branchlist, "eventTree", 
                                 SampleHypothesisJHUGen = jhuprob, couplings=lst_of_couplings, verbosity=args.verbose, HM=higgs_mass)
-                #addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree", SampleHypothesisJHUGen = mcfmprob)
+                #addprobabilities(inputfile, outtreefilename, branchlist, "ZZTree/candTree", SampleHypothesisJHUGen = mcfmprob)
             elif (jhuprob) and (mcfmprob):
-                addprobabilities(filename, outtreefilename, branchlist, "eventTree", 
+                addprobabilities(inputfile, outtreefilename, branchlist, "eventTree", 
                                 SampleHypothesisMCFM = mcfmprob, SampleHypothesisJHUGen = jhuprob, couplings=lst_of_couplings,
                                 verbosity=args.verbose, HM=higgs_mass)
             else:
-                addprobabilities(filename, outtreefilename, branchlist, "eventTree", couplings=lst_of_couplings, verbosity=args.verbose, HM=higgs_mass)
-                #addprobabilities(filename, outtreefilename, branchlist, "ZZTree/candTree")
+                addprobabilities(inputfile, outtreefilename, branchlist, "eventTree", couplings=lst_of_couplings, verbosity=args.verbose, HM=higgs_mass)
+                #addprobabilities(inputfile, outtreefilename, branchlist, "ZZTree/candTree")
             
 if __name__ == "__main__":
     main()
