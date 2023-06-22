@@ -25,7 +25,8 @@ def main(raw_args=None):
     parser.add_argument('-ow', '--overwrite', action="store_true", help="Enable if you want to overwrite files in the output folder")
     args = parser.parse_args(raw_args)
     
-    template_input = '\nMELAcalc.py -i <inputfile> -o <outputdir> -b <branchfile> (-s <subdr>) (-l <lhe2root>) (-m <mcfmprob>) (-j <jhuprob>) (-z <mass> <width>) (-h <mass>)(-c <couplings file>)\n'
+    # template_input = '\nMELAcalc.py -i <inputfile> -o <outputdir> -b <branchfile> \n(-s <subdr>) (-l <lhe2root>) (-m <mcfmprob>) (-j <jhuprob>) (-z <mass> <width>) (-h <mass>)(-c <couplings file>)\n'
+    template_input = parser.format_help()
     
     inputfiles = args.ifile
     input_directory = args.idirectory
@@ -45,31 +46,35 @@ def main(raw_args=None):
     couplings = args.couplings
     overwrite = args.overwrite
     
-    branchlist = []
-    with open(branchfile) as f:
-        branchlist = [line.strip() for line in f]
-    
-    if lhe2root: from AnalysisTools.Utils.MELA_Weights_lhe2root import addprobabilities
-    else: from AnalysisTools.Utils.MELA_Weights import addprobabilities
+    if not os.environ.get("LD_LIBRARY_PATH"):
+        errortext = "\nPlease setup MELA first using the following command:"
+        errortext += "\neval $(./setup.sh env)\n"
+        errortext = help.print_msg_box(errortext, title="ERROR")
+        raise os.error("\n"+errortext)
 
     if not outputdir.endswith("/"):
         outputdir = outputdir+"/"
     
     if not os.path.exists(branchfile):
-        print("\nERROR: \tBranches list '" + branchfile + "' cannot be located. Please try again with valid input.\n")
+        errortext = "Branches list '" + branchfile + "' cannot be located. Please try again with valid input.\n"
+        errortext = help.print_msg_box(errortext, title="ERROR")
         print(template_input)
-        exit()
+        raise FileNotFoundError("\n" + errortext)
     
+    branchlist = []
+    with open(branchfile) as f:
+        branchlist = [line.strip() for line in f]
     
     if couplings:
         lst_of_couplings = []
         if not os.path.exists(couplings):
-            print("\nERROR: \tCouplings file" + couplings +" Cannot be located. Please try again with valid input.\n")
+            errortext = "Couplings file" + couplings +" Cannot be located. Please try again with valid input.\n"
+            errortext = help.print_msg_box(errortext, title="ERROR")
             print(template_input)
-            exit()
+            raise FileNotFoundError("\n" + errortext)
         with open(couplings) as f:
             couplings_temp = f.readlines()
-            coupling_template = "couplings must be of form <coupling name>-<value> for each line"
+            coupling_template = "couplings must be of form <coupling name>-<value> for each line\n"
             for coupling_duo in couplings_temp:
                 coupling_duo = coupling_duo.strip().split('-')
                 coupling_duo[1] = float(coupling_duo[1])
@@ -78,11 +83,15 @@ def main(raw_args=None):
                     continue
                 
                 elif len(coupling_duo) != 2:
-                    print(coupling_template)
+                    errortext = coupling_template
+                    errortext = help.print_msg_box(errortext, title="ERROR")
                     print(template_input)
-                    exit()
+                    raise ValueError("\n" + errortext)
                 
                 lst_of_couplings.append(coupling_duo)
+    
+    if lhe2root: from AnalysisTools.Utils.MELA_Weights_lhe2root import addprobabilities
+    else: from AnalysisTools.Utils.MELA_Weights import addprobabilities
     
     for inputfile, pthsubdir in zip(inputfiles, pthsubdirs):
         if not pthsubdir.endswith("/"):
@@ -129,17 +138,15 @@ def main(raw_args=None):
 
         print("\n================ Processing user input ================\n")
 
-        if not os.path.exists(inputfile):
-            print("ERROR: \t'" + inputfile + "' does not exist!\n")
-            exit()
-
-        elif os.path.exists(outtreefilename):
+        if os.path.exists(outtreefilename):
             if overwrite:
-                warnings.warn("WARNING: Overwriting"+outtreefilename+"\n")
+                warningtext =  "Overwriting"+outtreefilename+"\n"
+                warnings.warn("\n" + help.print_msg_box(warningtext, title="WARNING"))
                 os.remove(outtreefilename)
             else:
-                print("ERROR: \t'" + outtreefilename + "' or parts of it already exist!\n")
-                exit()
+                errortext = outtreefilename + "' or parts of it already exist!\n"
+                errortext = help.print_msg_box(errortext, title="ERROR")
+                raise FileExistsError("\n" + errortext)
 
         else:
             print("Pre-existing output PTree not found --- safe to proceed")
