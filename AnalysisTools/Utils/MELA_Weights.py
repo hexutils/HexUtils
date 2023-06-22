@@ -12,116 +12,117 @@ def parse_prob(probability):
   ## Functionality only tested for ggH mode ##
   parsed_dict={"Process":None,"ProdMode":None,"MatrixElement":None,"coupl_dict":{},"isReco":None,"Prod":None,"Dec":None,"JES":None,"JEC":None,"JER":None}
   # Sort whether to use Jet systematics #
-  if "JES" in probability: 
-    if "Up" in probability:
+  probability = probability.lower()
+  if "jes" in probability: 
+    if "up" in probability:
       parsed_dict["JES"] = "Up"
-    elif "Down" in probability:
+    elif "down" in probability:
       parsed_dict["JES"] = "Down"
     else:
       raise ValueError("Invalid JES option")
-  if "JEC" in probability:
-    if "Nominal" in probability: 
+  if "jec" in probability:
+    if "nominal" in probability: 
       parsed_dict["JEC"] = "Nominal"
     else:
       raise ValueError("Invalid JEC option")
-  if "JER" in probability:
-    if "Up" in probability:
+  if "jer" in probability:
+    if "up" in probability:
       parsed_dict["JER"] = "Up"
-    elif "Down" in probability:
+    elif "down" in probability:
       parsed_dict["JER"] = "Down"
     else:
       raise ValueError("Invalid JER option")
   if [parsed_dict["JES"], parsed_dict["JEC"], parsed_dict["JER"]].count(None) < 2:
     raise ValueError("Invalid combination of JES,JEC,JER!")
   # Sort Process over #
-  if "SIG" in probability:
+  if "sig" in probability:
     parsed_dict["Process"] = "SIG"
-  elif "BKG" in probability:
+  elif "bkg" in probability:
     parsed_dict["Process"] = "BKG"
-  elif "BSI" in probability:
+  elif "bsi" in probability:
     parsed_dict["Process"] = "BSI"
   #Sort Reco Or Not#
-  if "_Gen" in probability:
+  if "_gen" in probability:
     parsed_dict["isReco"] = False
   else:
     parsed_dict["isReco"] = True
   # Sort Production Mode #
-  if "GG" in probability:
+  if "gg" in probability:
     parsed_dict["ProdMode"] = "GG"
     parsed_dict["Prod"] = False
     parsed_dict["Dec"] = True
-  elif "LepZH" in probability:
+  elif "lepzh" in probability:
     parsed_dict["ProdMode"] = "LepZH"
     parsed_dict["Prod"] = True
     parsed_dict["Dec"] = False
-  elif "HadZH" in probability:
+  elif "hadzh" in probability:
     parsed_dict["ProdMode"] = "HadZH"
-    if "JHUGen" in probability:
+    if "jhugen" in probability:
       parsed_dict["Prod"] = True
       parsed_dict["Dec"] = False
-    elif "MCFM" in probability:
+    elif "mcfm" in probability:
       parsed_dict["Prod"] = True
       parsed_dict["Dec"] = True
     else:
       raise ValueError("Choose correct Matrix element for HadZH")
-  elif "LepWH" in probability:
+  elif "lepwh" in probability:
     parsed_dict["ProdMode"] = "LepWH"
     parsed_dict["Prod"] = True
     parsed_dict["Dec"] = False
-  elif "HadWH" in probability:
+  elif "hadwh" in probability:
     parsed_dict["ProdMode"] = "HadWH"
-    if "JHUGen" in probability:
+    if "jhugen" in probability:
       parsed_dict["Prod"] = True
       parsed_dict["Dec"] = False
-    elif "MCFM" in probability:
+    elif "mcfm" in probability:
       parsed_dict["Prod"] = True
       parsed_dict["Dec"] = True
     else:
       raise ValueError("Choose correct Matrix element for HadWH")
-  elif "JJEW" in probability:
+  elif "jjew" in probability:
     parsed_dict["ProdMode"] = "JJEW"
     parsed_dict["Prod"] = True
     parsed_dict["Dec"] = True
-  elif "JJVBF" in probability:
+  elif "jjvbf" in probability:
     parsed_dict["ProdMode"] = "JJVBF"
-    if "JHUGen" in probability:
+    if "jhugen" in probability:
       parsed_dict["Prod"] = True
       parsed_dict["Dec"] = False
-    elif "MCFM" in probability:
+    elif "mcfm" in probability:
       parsed_dict["Prod"] = True
       parsed_dict["Dec"] = True
     else:
       raise ValueError("Choose correct Matrix element for JJVBF")
-  elif "JVBF" in probability:
+  elif "jvbf" in probability:
     parsed_dict["ProdMode"] = "JJEWQCD"
     parsed_dict["Prod"] = True
     parsed_dict["Dec"] = False
-  elif "JJQCD" in probability:
+  elif "jjqcd" in probability:
     parsed_dict["ProdMode"] = "JJQCD"
-    if "JHUGen" in probability:
+    if "jhugen" in probability:
       parsed_dict["Prod"] = True
       parsed_dict["Dec"] = False
-    elif "MCFM" in probability:
+    elif "mcfm" in probability:
       parsed_dict["Prod"] = True
       parsed_dict["Dec"] = True
     else:
       raise ValueError("Choose correct Matrix element for JJQCD")
-  elif "JQCD" in probability:
+  elif "jqcd" in probability:
     parsed_dict["ProdMode"] = "JQCD"
     parsed_dict["Prod"] = True
     parsed_dict["Dec"] = False
-  elif "ttH" in probability:
+  elif "tth" in probability:
     parsed_dict["ProdMode"] = "ttH"
     parsed_dict["Prod"] = True
     parsed_dict["Dec"] = False
-  elif "bbH" in probability:
+  elif "bbh" in probability:
     parsed_dict["ProdMode"] = "bbH"
     parsed_dict["Prod"] = True
     parsed_dict["Dec"] = False
   # Sort MatrixElement #
-  if "JHUGen" in probability:
+  if "jhugen" in probability:
     parsed_dict["MatrixElement"] = "JHUGen"
-  elif "MCFM" in probability:
+  elif "mcfm" in probability:
     parsed_dict["MatrixElement"] = "MCFM"
   # Sort Couplings #
   coupling_names = re.findall(r"[a-zA-Z0-9]+_[0-9]", probability)
@@ -158,18 +159,14 @@ def parse_prob(probability):
 def exportPath():
   os.system("export LD_LIBRARY_PATH=AnalysisTools/JHUGenMELA/MELA/data/$SCRAM_ARCH/:${LD_LIBRARY_PATH}")
 
-def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
+def addprobabilities(infile,outfile,probabilities,TreePath, 
+                    hasJets=False, 
+                    SampleHypothesisMCFM=None, SampleHypothesisJHUGen=None,
+                    ZPrime=None, higgsMass=125, couplings=[None], verbosity=0, 
+                    **kwargs):
+  
   HasMCFMSampleHypothesis = False
   HasJHUGenSampleHypothesis = False
-  SampleHypothesisMCFM = kwargs.get('SampleHypothesisMCFM', None)
-  SampleHypothesisJHUGen = kwargs.get('SampleHypothesisJHUGen', None)
-  
-  ZPrime = kwargs.get('ZP', None)
-  higgsMass = kwargs.get('HM', 125)
-  #This is the "Higgs" mass. Default is 125 GeV, but you can change that
-  couplings = kwargs.get('couplings', [None])
-  
-  verbosity = kwargs.get('verbose', 0)
   
   zPrimeMass = None
   zPrimeWidth = None
@@ -265,23 +262,24 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
         JetPt = None
         MatrixElement = None
         Production = None
-        ns = {'t':entry,'JetPt':JetPt,'Process':Process,'MatrixElement':MatrixElement,'Production':Production,'TVar':TVar}
-        # Setup the correct Jet Scales etc #
-        JetPtExec='JetPt=t.'
-        if parsed_prob_dict["JES"] == "Up":
-          JetPtExec+='JetPt_JESUp'
-        elif parsed_prob_dict["JES"] == "Down":
-          JetPtExec+='JetPt_JESDown'
-        elif parsed_prob_dict["JER"] == "Up":
-          JetPtExec+='JetPt_JERUp'
-        elif parsed_prob_dict["JER"] == "Down":
-          JetPtExec+='JetPt_JESDown'
-        else:
-          JetPtExec+="JetPt"
-        try:
-          exec(JetPtExec,ns)
-        except:
-          print("Error in choosing JetPt Uncertainty")
+        if hasJets:
+          ns = {'t':entry,'JetPt':JetPt,'Process':Process,'MatrixElement':MatrixElement,'Production':Production,'TVar':TVar}
+          # Setup the correct Jet Scales etc #
+          JetPtExec='JetPt=t.'
+          if parsed_prob_dict["JES"] == "Up":
+            JetPtExec+='JetPt_JESUp'
+          elif parsed_prob_dict["JES"] == "Down":
+            JetPtExec+='JetPt_JESDown'
+          elif parsed_prob_dict["JER"] == "Up":
+            JetPtExec+='JetPt_JERUp'
+          elif parsed_prob_dict["JER"] == "Down":
+            JetPtExec+='JetPt_JESDown'
+          else:
+            JetPtExec+="JetPt"
+          try:
+            exec(JetPtExec,ns)
+          except:
+            print("Error in choosing JetPt Uncertainty")
         # Setup event information depending on RECO or LHE level #
         if parsed_prob_dict["isReco"]:
           leptons = SimpleParticleCollection_t(SimpleParticle_t(pid, tlv(pt, eta, phi, 0)) for pid, pt, eta, phi in zip(t.LepLepId, t.LepPt, t.LepEta, t.LepPhi))

@@ -27,7 +27,7 @@ def print_msg_box(msg, indent=1, width=0, title=""):
     box += ''.join([f'║{space}{line:<{width}}{space}║\n' for line in lines])
     box += f'╚{"═" * (width + indent * 2)}╝'  # lower_border
     return box
-    
+
 def recurse_through_folder(folder_path, extension="", verbose=False):
     folder_path = folder_path.strip()
     
