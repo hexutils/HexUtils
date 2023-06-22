@@ -65,8 +65,8 @@ def main(raw_args=None):
     with open(branchfile) as f:
         branchlist = [line.strip() for line in f]
     
+    lst_of_couplings = []
     if couplings:
-        lst_of_couplings = []
         if not os.path.exists(couplings):
             errortext = "Couplings file" + couplings +" Cannot be located. Please try again with valid input.\n"
             errortext = help.print_msg_box(errortext, title="ERROR")
