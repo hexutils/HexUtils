@@ -1,8 +1,9 @@
 import os
 
 def print_msg_box(msg, indent=1, width=0, title=""):
-    """Print message-box with optional title.
+    """returns message-box with optional title.
     Ripped from https://stackoverflow.com/questions/39969064/how-to-print-a-message-box-in-python
+    
     Parameters
     ----------
     msg : str

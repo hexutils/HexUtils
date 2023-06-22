@@ -13,6 +13,7 @@ def main(raw_args=None):
     input_possibilities.add_argument('-i', '--ifile', type=str, nargs='+', help="individual files you want weights applied to")
     input_possibilities.add_argument('-id', '--idirectory', type=str, help="An entire folder you want weights applied to")
     parser.add_argument('-o', '--outdr', type=str, required=True, help="The output folder")
+    parser.add_argument('-s', '--subdr', nargs=1, type=str, default="", help="Optional subdirectory, otherwise will default to the input files")
     parser.add_argument('-b', '--bfile', type=str, required=True, help="The file containing your branch names")
     parser.add_argument('-l', '--lhe2root', action="store_true", help="Enable this if you want to use lhe2root naming")
     parser.add_argument('-m', '--mcfmprob', type=str, default='', help="mcfm probabilities")
@@ -24,7 +25,7 @@ def main(raw_args=None):
     parser.add_argument('-ow', '--overwrite', action="store_true", help="Enable if you want to overwrite files in the output folder")
     args = parser.parse_args(raw_args)
     
-    template_input = '\nMELAcalc.py -i <inputfile> -o <outputdir> -b <branchfile> (-l <lhe2root>) (-m <mcfmprob>) (-j <jhuprob>) (-z <mass> <width>) (-h <mass>)(-c <couplings file>)\n'
+    template_input = '\nMELAcalc.py -i <inputfile> -o <outputdir> -b <branchfile> (-s <subdr>) (-l <lhe2root>) (-m <mcfmprob>) (-j <jhuprob>) (-z <mass> <width>) (-h <mass>)(-c <couplings file>)\n'
     
     inputfiles = args.ifile
     input_directory = args.idirectory
@@ -33,7 +34,7 @@ def main(raw_args=None):
         # looking for ROOT files
         inputfiles = help.recurse_through_folder(input_directory, ".root")
     
-    pthsubdirs = inputfiles
+    pthsubdirs = args.subdr if args.subdr else inputfiles
     outputdir = args.outdr
     branchfile = args.bfile
     lhe2root = args.lhe2root
@@ -56,14 +57,16 @@ def main(raw_args=None):
     
     if not os.path.exists(branchfile):
         print("\nERROR: \tBranches list '" + branchfile + "' cannot be located. Please try again with valid input.\n")
-        print('MELAcalc.py -i <inputfile> -s <subdirectory> -o <outputdir> -b <branchfile>\n')
+        print(template_input)
         exit()
     
     
-    if couplings != '':
+    if couplings:
         lst_of_couplings = []
         if not os.path.exists(couplings):
             print("\nERROR: \tCouplings file" + couplings +" Cannot be located. Please try again with valid input.\n")
+            print(template_input)
+            exit()
         with open(couplings) as f:
             couplings_temp = f.readlines()
             coupling_template = "couplings must be of form <coupling name>-<value> for each line"
@@ -109,8 +112,6 @@ def main(raw_args=None):
         if couplings:
             User_text += "\n\nThe following Zff couplings are explicily used:\n"
             User_text += "\n".join([i[0] + ' = ' + str(i[1]).strip() for i in lst_of_couplings]) + "\n"
-        else:
-            couplings = [None]
             
         if lhe2root: User_text += "\nMELA parser expecting lhe2root branch names"
         else: User_text += "\nMELA parser expecting CJLST branch names"
