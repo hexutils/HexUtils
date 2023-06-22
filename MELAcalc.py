@@ -150,7 +150,12 @@ def main(raw_args=None):
         print("Write '"+outtreefilename+"'\n")
         
         if zp: #bool('') = False, bool('any string') =  True  
-            if mcfmprob:
+            if jhuprob and mcfmprob:
+                addprobabilities(inputfile, outtreefilename, branchlist, "eventTree", 
+                                SampleHypothesisMCFM = mcfmprob, SampleHypothesisJHUGen = jhuprob, ZP=zp, 
+                                couplings=lst_of_couplings, verbosity=args.verbose, HM=higgs_mass)
+                
+            elif mcfmprob:
                 #addprobabilities(inputfile, outtreefilename, branchlist, "eventTree", SampleHypothesisMCFM = mcfmprob)
                 addprobabilities(inputfile, outtreefilename, branchlist, "ZZTree/candTree", 
                                 SampleHypothesisMCFM = mcfmprob, ZP=zp, couplings=lst_of_couplings,
@@ -160,16 +165,17 @@ def main(raw_args=None):
                                 SampleHypothesisJHUGen = jhuprob, ZP=zp, couplings=lst_of_couplings,
                                 verbosity=args.verbose, HM=higgs_mass)
                 #addprobabilities(inputfile, outtreefilename, branchlist, "ZZTree/candTree", SampleHypothesisJHUGen = mcfmprob)
-            elif (jhuprob) and (mcfmprob):
-                addprobabilities(inputfile, outtreefilename, branchlist, "eventTree", 
-                                SampleHypothesisMCFM = mcfmprob, SampleHypothesisJHUGen = jhuprob, ZP=zp, 
-                                couplings=lst_of_couplings, verbosity=args.verbose, HM=higgs_mass)
             else:
                 addprobabilities(inputfile, outtreefilename, branchlist, "eventTree", ZP=zp, couplings=lst_of_couplings,
                                 verbosity=args.verbose, HM=higgs_mass)
                 #addprobabilities(inputfile, outtreefilename, branchlist, "ZZTree/candTree")
         else:
-            if mcfmprob:
+            if jhuprob and mcfmprob:
+                addprobabilities(inputfile, outtreefilename, branchlist, "eventTree", 
+                                SampleHypothesisMCFM = mcfmprob, SampleHypothesisJHUGen = jhuprob, couplings=lst_of_couplings,
+                                verbosity=args.verbose, HM=higgs_mass)
+                
+            elif mcfmprob:
                 #addprobabilities(inputfile, outtreefilename, branchlist, "eventTree", SampleHypothesisMCFM = mcfmprob)
                 addprobabilities(inputfile, outtreefilename, branchlist, "ZZTree/candTree", 
                                 SampleHypothesisMCFM = mcfmprob, couplings=lst_of_couplings, verbosity=args.verbose, HM=higgs_mass)
@@ -177,10 +183,6 @@ def main(raw_args=None):
                 addprobabilities(inputfile, outtreefilename, branchlist, "eventTree", 
                                 SampleHypothesisJHUGen = jhuprob, couplings=lst_of_couplings, verbosity=args.verbose, HM=higgs_mass)
                 #addprobabilities(inputfile, outtreefilename, branchlist, "ZZTree/candTree", SampleHypothesisJHUGen = mcfmprob)
-            elif (jhuprob) and (mcfmprob):
-                addprobabilities(inputfile, outtreefilename, branchlist, "eventTree", 
-                                SampleHypothesisMCFM = mcfmprob, SampleHypothesisJHUGen = jhuprob, couplings=lst_of_couplings,
-                                verbosity=args.verbose, HM=higgs_mass)
             else:
                 addprobabilities(inputfile, outtreefilename, branchlist, "eventTree", couplings=lst_of_couplings, verbosity=args.verbose, HM=higgs_mass)
                 #addprobabilities(inputfile, outtreefilename, branchlist, "ZZTree/candTree")
