@@ -13,7 +13,7 @@ def main(raw_args=None):
     input_possibilities.add_argument('-i', '--ifile', type=str, nargs='+', help="individual files you want weights applied to")
     input_possibilities.add_argument('-id', '--idirectory', type=str, help="An entire folder you want weights applied to")
     parser.add_argument('-o', '--outdr', type=str, required=True, help="The output folder")
-    parser.add_argument('-t', '--tBranch', type=str, default="eventTree", hlpe="The name of the TBranch you are using")
+    parser.add_argument('-t', '--tBranch', type=str, default="eventTree", help="The name of the TBranch you are using")
     parser.add_argument('-s', '--subdr', nargs=1, type=str, default="", help="Optional subdirectory, otherwise will default to the input files")
     parser.add_argument('-b', '--bfile', type=str, required=True, help="The file containing your branch names")
     parser.add_argument('-l', '--lhe2root', action="store_true", help="Enable this if you want to use lhe2root naming")
