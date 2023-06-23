@@ -261,8 +261,8 @@ def addprobabilities(infile,outfile,probabilities,TreePath,
         JetPt = None
         MatrixElement = None
         Production = None
+        ns = {'t':entry,'JetPt':JetPt,'Process':Process,'MatrixElement':MatrixElement,'Production':Production,'TVar':TVar}
         if hasJets:
-          ns = {'t':entry,'JetPt':JetPt,'Process':Process,'MatrixElement':MatrixElement,'Production':Production,'TVar':TVar}
           # Setup the correct Jet Scales etc #
           JetPtExec='JetPt=t.'
           if parsed_prob_dict["JES"] == "Up":
