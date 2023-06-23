@@ -1,6 +1,5 @@
-from __future__ import print_function
 from ..JHUGenMELA.MELA.python.mela import Mela, TVar, SimpleParticle_t, SimpleParticleCollection_t
-import ROOT, os, sys, re, numpy as np
+import ROOT, os, re, numpy as np
 import tqdm
 
 def tlv(pt, eta, phi, m):
@@ -291,7 +290,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath,
           jets = SimpleParticleCollection_t(SimpleParticle_t(pid, tlv(pt, eta, phi, m)) for pid, pt, eta, phi, m in zip(t.LHEAssociatedParticleId, t.LHEAssociatedParticlePt, t.LHEAssociatedParticleEta, t.LHEAssociatedParticlePhi, t.LHEAssociatedParticleMass))
           mothers = SimpleParticleCollection_t(SimpleParticle_t(pid, ROOT.TLorentzVector(0, 0, pz, e)) for pid, pz, e in zip(t.LHEMotherId, t.LHEMotherPz, t.LHEMotherE))
           m.setInputEvent(leptons, jets, mothers, 1)
-          print(leptons)
+          # print(leptons)
         # Sort the MatrixElement #
         MatrixExec = "MatrixElement = TVar."+parsed_prob_dict["MatrixElement"]
         exec(MatrixExec,ns)
