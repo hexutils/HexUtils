@@ -1,7 +1,6 @@
 #!/cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/cmssw/CMSSW_12_2_0/external/slc7_amd64_gcc900/bin/python3
 
 import os
-import glob
 from pathlib import Path
 import argparse
 import useful_helpers as help
@@ -60,7 +59,7 @@ def main(raw_args=None):
         outputdir = outputdir+"/"
     
     if not os.path.exists(branchfile):
-        errortext = "Branches list '" + branchfile + "' cannot be located. Please try again with valid input.\n"
+        errortext = "Branches file '" + branchfile + "' cannot be located. Please try again with valid input.\n"
         errortext = help.print_msg_box(errortext, title="ERROR")
         print(template_input)
         raise FileNotFoundError("\n" + errortext)
@@ -72,7 +71,7 @@ def main(raw_args=None):
     lst_of_couplings = []
     if couplings:
         if not os.path.exists(couplings):
-            errortext = "Couplings file" + couplings +" Cannot be located. Please try again with valid input.\n"
+            errortext = "Couplings file " + couplings +" Cannot be located. Please try again with valid input.\n"
             errortext = help.print_msg_box(errortext, title="ERROR")
             print(template_input)
             raise FileNotFoundError("\n" + errortext)
