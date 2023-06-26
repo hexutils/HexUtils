@@ -485,7 +485,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath,
             if probdict[prob][0] == 0 or probdict[SampleHypothesisJHUGen][0] == 0:
               print('\ndivision with a zero!',probdict[prob][0],probdict[SampleHypothesisJHUGen][0])
               
-            # probdict[prob][0] /= probdict[SampleHypothesisJHUGen][0]
+            probdict[prob][0] /= probdict[SampleHypothesisJHUGen][0]
             #print(probdict[prob][0])
         # Now divide the Sample Hypothesis by itself to make the probability = 1
         # probdict[SampleHypothesisJHUGen][0] /= probdict[SampleHypothesisJHUGen][0]
