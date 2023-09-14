@@ -93,8 +93,9 @@ def main(raw_args=None):
                 
                 lst_of_couplings.append(coupling_duo)
     
-    if lhe2root: from AnalysisTools.Utils.MELA_Weights_lhe2root import addprobabilities
-    else: from AnalysisTools.Utils.MELA_Weights import addprobabilities
+    #if lhe2root: from AnalysisTools.Utils.MELA_Weights_lhe2root import addprobabilities
+    #else: from AnalysisTools.Utils.MELA_Weights import addprobabilities
+    from AnalysisTools.Utils.MELA_Weights import addprobabilities
     
     for inputfile, pthsubdir in zip(inputfiles, pthsubdirs):
         if not pthsubdir.endswith("/"):
