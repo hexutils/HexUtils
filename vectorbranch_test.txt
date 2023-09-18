@@ -1,5 +1,0 @@
-ZZMass
-PhotonPt
-PhotonIsCutBasedLooseID
-LepPt
-LepEta
