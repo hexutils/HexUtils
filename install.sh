@@ -2,18 +2,18 @@
 
 # USER INPUTS
 CMSSW_release=CMSSW_12_2_0
-CMSSW_release_name=    #Leave this blank if you don't know what it is.  It's just a marker in case you have multiple identical directories. No need for the underscore.
+CMSSW_release_name=HexUtils    #Leave this blank if you don't know what it is.  It's just a marker in case you have multiple identical directories. No need for the underscore.
 SCRAM_ARCH_name="amd64_gcc900" # Leave slc6/7 out
 SCRAM_ARCH_name="slc7_${SCRAM_ARCH_name}"
 export SCRAM_ARCH=${SCRAM_ARCH_name}
 
-if [ $# -eq 0 ] || [ ${1,,} = "lgc" ] || [ ${1,,} = "cuda" ] || [ ${1,,} = "gpu" ]
+if [ "${1,,}" = "lgc" ]
   then
     echo "Loading LGC computing environment v103 with CUDA support"
     # Loading LHC Computing Grid software stack release 103cuda. More stable/applicable than CMSSW. https://lcginfo.cern.ch/
     source /cvmfs/sft.cern.ch/lcg/views/LCG_103cuda/x86_64-centos7-gcc11-opt/setup.sh
   else
-    echo "Loading CMSSW computing environment v12_2_0"
+    echo "Loading CMSSW computing environment $CMSSW_release"
     if [[ -z ${CMSSW_release_name+x} ]]; then
       CMSSW_release_name="${CMSSW_release}"
     else
@@ -37,7 +37,7 @@ fi
 #source /cvmfs/sft.cern.ch/lcg/views/LCG_103cuda/x86_64-centos7-gcc11-opt/setup.sh
 
 # HexUtils
-git clone https://github.com/lk11235/HexUtils.git
+git clone --recursive https://github.com/lk11235/HexUtils.git
 
 ./HexUtils/JHUGenMELA/MELA/setup.sh
 eval $(./HexUtils/JHUGenMELA/MELA/setup.sh env standalone)
@@ -47,8 +47,7 @@ eval $(./HexUtils/JHUGenMELA/MELA/setup.sh env standalone)
 
 scram b -j 16
 
-
-if ! { [ $# -eq 0 ] || [ ${1,,} = "lgc" ] || [ ${1,,} = "cuda" ] || [ ${1,,} = "gpu" ] }
+if ! [ "${1,,}" = "lgc" ]
   then
     echo "Removing .poisonededmplugincache"
     # see comment in patchesToSource.sh
