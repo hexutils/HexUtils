@@ -49,14 +49,11 @@ git cms-init --upstream-only
 # No CMSSW packages beyond this point #
 #######################################
 
-# HexUtils
-#git clone git@github.com:hexutils/HexUtils.git
-#git clone https://github.com/hexutils/HexUtils.git
-git clone https://github.com/lk11235/HexUtils.git
+# Loading LHC Computing Grid software stack release 103cuda. More stable/applicable than CMSSW. https://lcginfo.cern.ch/
+#source /cvmfs/sft.cern.ch/lcg/views/LCG_103cuda/x86_64-centos7-gcc11-opt/setup.sh
 
-# MELA
-#git clone git@github.com:JHUGen/JHUGenMELA.git
-#./JHUGenMELA/setup.sh -j
+# HexUtils
+git clone https://github.com/lk11235/HexUtils.git
 
 ./HexUtils/JHUGenMELA/MELA/setup.sh
 eval $(./HexUtils/JHUGenMELA/MELA/setup.sh env standalone)
@@ -64,8 +61,6 @@ eval $(./HexUtils/JHUGenMELA/MELA/setup.sh env standalone)
 # MELA Analytics
 #git clone git@github.com:MELALabs/MelaAnalytics.git
 
-#export LD_PRELOAD=/cvmfs/cms.cern.ch/slc7_amd64_gcc700/cms/cmssw/CMSSW_10_2_22/external/slc7_amd64_gcc700/lib/libjemalloc.so.2
-#scram b -j
 scram b -j 16
 
 # see comment in patchesToSource.sh
