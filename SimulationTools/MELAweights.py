@@ -1,4 +1,3 @@
-from __future__ import print_function
 from ..JHUGenMELA.MELA.python.mela import Mela, TVar, SimpleParticle_t, SimpleParticleCollection_t
 import ROOT, os, sys, re, numpy as np
 
@@ -10,7 +9,8 @@ def tlv(pt, eta, phi, m):
 def parse_prob(probability):
 #  print(probability)
   ## Functionality only tested for ggH mode ##
-  parsed_dict={"Process":None,"ProdMode":None,"MatrixElement":None,"coupl_dict":{},"isReco":None,"Prod":None,"Dec":None,"JES":None,"JEC":None,"JER":None,"BSM":None}
+  parsed_dict={"Process":None,"ProdMode":None,"MatrixElement":None,"coupl_dict":{},"isReco":None,"Prod":None,"Dec":None,"JES":None,"JEC":None,"JER":None,
+               "BSM":None, "SPIN":0}
   # Sort whether to use Jet systematics #
   if "JES" in probability: 
     if "Up" in probability:
@@ -153,7 +153,13 @@ def parse_prob(probability):
           value = -float(coupling_value_tuples[i][0]).split("m")[1] * 10 ** float(coupling_value_tuples[i][1])
         else:
           value = float(coupling_value_tuples[i][0]) * 10 ** float(coupling_value_tuples[i][1])
-    parsed_dict["coupl_dict"][coupling] = value 
+    parsed_dict["coupl_dict"][coupling] = value
+  
+  if "spin1" in probability:
+    parsed_dict['SPIN'] = 1
+  elif "spin2" in probability:
+    parsed_dict['SPIN'] = 2
+  
   if parsed_dict["ProdMode"] == None:
     raise ValueError("Coupling does not have a valid Production Mode")
   if parsed_dict["MatrixElement"] == None:
@@ -169,28 +175,28 @@ def exportPath():
 
 from tqdm import tqdm
 
-def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
+def addprobabilities(infile,outfile,probabilities,TreePath, 
+                    hasJets=False, 
+                    SampleHypothesisMCFM=None, SampleHypothesisJHUGen=None,
+                    ZPrime=None, higgsMass=125, couplings=[None], verbosity=0, 
+                    **kwargs):
+  
   HasMCFMSampleHypothesis = False
   HasJHUGenSampleHypothesis = False
   SampleHypothesisMCFM = kwargs.get('SampleHypothesisMCFM', None)
   SampleHypothesisJHUGen = kwargs.get('SampleHypothesisJHUGen', None)
   
-  ZPrimeHiggs = kwargs.get('ZHiggs', None)
-  #This is the "Higgs" mass. Default is 125 GeV, but you can change that
-  couplings = kwargs.get('couplings', [None])
-  
   higgsMass = 125
   zPrimeMass = None
   zPrimeWidth = None
   
-  if ZPrimeHiggs != None:
+  if ZPrime != None:
     #input should be of form ZPrime-(Mass)-(Width)_Higgs-(Mass)
     
-    (_, zPrimeMass, zPrimeWidth), (_, higgsMass) = ZPrimeHiggs
+    zPrimeMass, zPrimeWidth = ZPrime
     
     zPrimeMass = float(zPrimeMass)
     zPrimeWidth = float(zPrimeWidth)
-    higgsMass = float(higgsMass)
     
   
   if SampleHypothesisMCFM != None:
@@ -214,7 +220,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
   #Use it as another argument if you'd like to debug code
   #Always initialize MELA at m=125 GeV
   print('\nThis is the mass of the "Higgs":', higgsMass)
-  if ZPrimeHiggs != None:
+  if ZPrime != None:
     m.Ga_Zprime = zPrimeWidth
     m.M_Zprime = zPrimeMass
   
@@ -375,7 +381,14 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
             DivideP = True 
             
         elif parsed_prob_dict["MatrixElement"] == "JHUGen":
-            ProcExec += "SelfDefine_spin0"
+            if parsed_prob_dict['SPIN'] == 0:
+              ProcExec += "SelfDefine_spin0"
+            elif parsed_prob_dict['SPIN'] == 1:
+              ProcExec += "SelfDefine_spin1"
+            elif parsed_prob_dict['SPIN'] == 2:
+              ProcExec += "SelfDefine_spin2"
+            else:
+              raise "Invalid Spin type!"
         
         try:
             exec(ProcExec,ns)
