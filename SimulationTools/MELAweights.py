@@ -438,6 +438,14 @@ def addprobabilities(infile,outfile,probabilities,TreePath,**kwargs):
               elif key == "ghz4":
                 m.ghz4 = parsed_prob_dict['coupl_dict'][key]
                 bkg_prob_dict[key] = parsed_prob_dict['coupl_dict'][key]
+              elif key == "ghw1":
+                m.ghw1 = parsed_prob_dict['coupl_dict'][key]
+              elif key == "ghw2":
+                m.ghw2 = parsed_prob_dict['coupl_dict'][key]
+                bkg_prob_dict[key] = parsed_prob_dict['coupl_dict'][key]
+              elif key == "ghw4":
+                m.ghw4 = parsed_prob_dict['coupl_dict'][key]
+                bkg_prob_dict[key] = parsed_prob_dict['coupl_dict'][key]
               elif key == "gha2":
                 m.ghgsgs2 = parsed_prob_dict['coupl_dict'][key]
                 bkg_prob_dict[key] = parsed_prob_dict['coupl_dict'][key]
