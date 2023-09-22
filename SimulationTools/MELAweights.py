@@ -510,7 +510,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath,
                 print(parsed_prob_dict['coupl_dict'])
                 raise ValueError(str(key) + " is not a supported coupling!")
         
-        if ZPrimeHiggs != None:
+        if ZPrime != None:
           m.Ga_Zprime = zPrimeWidth
           m.M_Zprime = zPrimeMass
           m.setMelaHiggsMassWidth(higgsMass, 0.001, 0)
