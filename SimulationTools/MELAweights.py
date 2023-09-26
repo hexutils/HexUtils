@@ -500,11 +500,14 @@ def addprobabilities(infile,outfile,probabilities,TreePath,
                 m.ghz1_prime2 = parsed_prob_dict['coupl_dict'][key]
                 m.ghw1_prime2 = parsed_prob_dict['coupl_dict'][key]
                 bkg_prob_dict["ghz1prime2"] = parsed_prob_dict['coupl_dict'][key]
-                
               elif key == "ghzpzp1":
                 m.ghzpzp1 = parsed_prob_dict['coupl_dict'][key]
               elif key == "ghzpzp4":
                 m.ghzpzp4 = parsed_prob_dict['coupl_dict'][key]
+              elif key == "dazlepleft":
+                m.daz_Lep_left = parsed_prob_dict['coupl_dict'][key]
+              elif key == "dazlepright":
+                m.daz_Lep_right = parsed_prob_dict['coupl_dict'][key]
               else:
                 print(str(key))
                 print(parsed_prob_dict['coupl_dict'])
