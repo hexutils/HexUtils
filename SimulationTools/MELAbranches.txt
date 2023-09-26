@@ -1,2 +1,2 @@
-p_GG_SIG_ghg2_1_gha2_1_JHUGen
-p_GG_SIG_ghg2_1_ghz2_1_JHUGen
+p_GG_SIG_ghg2_1_gha2_1_JHUGen_dazlepleft_0p46238
+p_GG_SIG_ghg2_1_ghz2_1_JHUGen_dazlepright_0p46238
