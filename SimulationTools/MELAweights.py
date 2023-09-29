@@ -1,5 +1,7 @@
-from ..JHUGenMELA.MELA.python.mela import Mela, TVar, SimpleParticle_t, SimpleParticleCollection_t
+# from ..JHUGenMELA.MELA.python.mela import Mela, TVar, SimpleParticle_t, SimpleParticleCollection_t
 import ROOT, os, sys, re, numpy as np
+sys.path.append('../JHUGenMELA/MELA/python/')
+from mela import Mela, TVar, SimpleParticle_t, SimpleParticleCollection_t
 
 def tlv(pt, eta, phi, m):
   result = ROOT.TLorentzVector()
@@ -504,10 +506,10 @@ def addprobabilities(infile,outfile,probabilities,TreePath,
                 m.ghzpzp1 = parsed_prob_dict['coupl_dict'][key]
               elif key == "ghzpzp4":
                 m.ghzpzp4 = parsed_prob_dict['coupl_dict'][key]
-              elif key == "dazlepleft":
-                m.daz_Lep_left = parsed_prob_dict['coupl_dict'][key]
-              elif key == "dazlepright":
-                m.daz_Lep_right = parsed_prob_dict['coupl_dict'][key]
+              elif key == "rez":
+                m.reZ = parsed_prob_dict['coupl_dict'][key]
+              elif key == "lez":
+                m.leZ = parsed_prob_dict['coupl_dict'][key]
               else:
                 print(str(key))
                 print(parsed_prob_dict['coupl_dict'])
