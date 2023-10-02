@@ -435,19 +435,25 @@ def addprobabilities(infile,outfile,probabilities,TreePath,
                 m.ghg4 = parsed_prob_dict['coupl_dict'][key]
               elif key == "ghz1":
                 m.ghz1 = parsed_prob_dict['coupl_dict'][key]
+                m.ghw1 = 0
               elif key == "ghz2":
                 m.ghz2 = parsed_prob_dict['coupl_dict'][key]
+                m.ghw2 = 0
                 bkg_prob_dict[key] = parsed_prob_dict['coupl_dict'][key]
               elif key == "ghz4":
                 m.ghz4 = parsed_prob_dict['coupl_dict'][key]
+                m.ghw4 = 0
                 bkg_prob_dict[key] = parsed_prob_dict['coupl_dict'][key]
               elif key == "ghw1":
                 m.ghw1 = parsed_prob_dict['coupl_dict'][key]
+                m.ghz1 = 0
               elif key == "ghw2":
                 m.ghw2 = parsed_prob_dict['coupl_dict'][key]
+                m.ghz2 = 0
                 bkg_prob_dict[key] = parsed_prob_dict['coupl_dict'][key]
               elif key == "ghw4":
                 m.ghw4 = parsed_prob_dict['coupl_dict'][key]
+                m.ghz4 = 0
                 bkg_prob_dict[key] = parsed_prob_dict['coupl_dict'][key]
               elif key == "gha2":
                 m.ghgsgs2 = parsed_prob_dict['coupl_dict'][key]
