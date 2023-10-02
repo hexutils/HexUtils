@@ -180,7 +180,7 @@ from tqdm import tqdm
 def addprobabilities(infile,outfile,probabilities,TreePath, 
                     hasJets=False, 
                     SampleHypothesisMCFM=None, SampleHypothesisJHUGen=None,
-                    ZPrime=None, higgsMass=125, couplings=[None], verbosity=0, 
+                    higgsMass=125, couplings=[None], verbosity=0, 
                     **kwargs):
   
   HasMCFMSampleHypothesis = False
@@ -189,16 +189,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath,
   SampleHypothesisJHUGen = kwargs.get('SampleHypothesisJHUGen', None)
   
   higgsMass = 125
-  zPrimeMass = None
-  zPrimeWidth = None
   
-  if ZPrime != None:
-    #input should be of form ZPrime-(Mass)-(Width)_Higgs-(Mass)
-    
-    zPrimeMass, zPrimeWidth = ZPrime
-    
-    zPrimeMass = float(zPrimeMass)
-    zPrimeWidth = float(zPrimeWidth)
     
   
   if SampleHypothesisMCFM != None:
@@ -222,9 +213,6 @@ def addprobabilities(infile,outfile,probabilities,TreePath,
   #Use it as another argument if you'd like to debug code
   #Always initialize MELA at m=125 GeV
   print('\nThis is the mass of the "Higgs":', higgsMass)
-  if ZPrime != None:
-    m.Ga_Zprime = zPrimeWidth
-    m.M_Zprime = zPrimeMass
   
   f = ROOT.TFile(infile)
   t = f.Get(TreePath)
@@ -510,17 +498,22 @@ def addprobabilities(infile,outfile,probabilities,TreePath,
                 m.reZ = parsed_prob_dict['coupl_dict'][key]
               elif key == "lez":
                 m.leZ = parsed_prob_dict['coupl_dict'][key]
+              elif key == 'rezpmu':
+                m.ezp_Mu_right = parsed_prob_dict['coupl_dict'][key]
+              elif key == 'lezpmu':
+                m.ezp_Mu_left = parsed_prob_dict['coupl_dict'][key]
+              elif key == "mz":
+                m.M_Z = parsed_prob_dict['coupl_dict'][key]
+              elif key == "gaz":
+                m.Ga_Z = parsed_prob_dict['coupl_dict'][key]
+              elif key == 'mzp':
+                m.M_Zprime = parsed_prob_dict['coupl_dict'][key]
+              elif key == 'gazp':
+                m.Ga_Zprime = parsed_prob_dict['coupl_dict'][key]
               else:
                 print(str(key))
                 print(parsed_prob_dict['coupl_dict'])
                 raise ValueError(str(key) + " is not a supported coupling!")
-        
-        if ZPrime != None:
-          m.Ga_Zprime = zPrimeWidth
-          m.M_Zprime = zPrimeMass
-          m.setMelaHiggsMassWidth(higgsMass, 0.001, 0)
-          # m.setMelaHiggsWidth(0.001,0)
-          # print("\nzPrime set to width and mass of", m.Ga_Zprime, "&", m.M_Zprime, '\n')
         
         # setting gauge boson self couplings for BKG prob calc
         # only includes Z couplings
