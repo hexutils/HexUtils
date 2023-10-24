@@ -1,9 +1,9 @@
-executable              = condorbatchscript_UL.sh
+executable              = condorbatchscript_MELA.sh
 arguments               = $(Item) SAMPLENAME
 
-output                  = JHUGen_gridpacks_UL/SAMPLENAME_output/Out_$(Item).grid.out
-error                   = JHUGen_gridpacks_UL/SAMPLENAME_output/Out_$(Item).grid.err
-log                     = JHUGen_gridpacks_UL/SAMPLENAME_output/Out_$(Item).grid.log
+output                  = output/SAMPLENAME_output/Out_$(Item).grid.out
+error                   = output/SAMPLENAME_output/Out_$(Item).grid.err
+log                     = output/SAMPLENAME_output/Out_$(Item).grid.log
 
 request_memory          = 4000M
 +JobFlavour             = "nextweek"
