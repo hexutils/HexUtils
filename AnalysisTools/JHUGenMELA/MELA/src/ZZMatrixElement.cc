@@ -130,6 +130,9 @@ void ZZMatrixElement::set_Process(TVar::Process process_, TVar::MatrixElement me
   processProduction = production_;
   Xcal2.SetProcess(processModel, processME, processProduction);
 }
+void ZZMatrixElement::get_Process(){
+  Xcal2.GetProcess();
+}
 void ZZMatrixElement::set_Verbosity(TVar::VerbosityLevel verbosity_){ processVerbosity = verbosity_; Xcal2.SetVerbosity(verbosity_); }
 void ZZMatrixElement::set_LeptonInterference(TVar::LeptonInterference lepInterf_){ processLeptonInterference = lepInterf_; Xcal2.SetLeptonInterf(processLeptonInterference); }
 // Set-functions that set variables that exclusively belong to Xcal2

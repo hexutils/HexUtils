@@ -1,2 +1,9 @@
 AnalysisTools/JHUGenMELA/
 __pycache__/
+TaggerOutput_202*
+old/TaggerOutput_202*
+ParquetOutput_*
+200205_CutBased
+TEST_MELA/
+AddMELAbranch_logs/
+MELAcalc/

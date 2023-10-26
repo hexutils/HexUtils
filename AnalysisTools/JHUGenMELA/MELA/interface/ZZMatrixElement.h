@@ -45,6 +45,7 @@ public:
 
   // Set-functions
   void set_Process(TVar::Process process_, TVar::MatrixElement me_, TVar::Production production_); // Sets variables in Xcal2 as well
+  void get_Process();
   void set_Verbosity(TVar::VerbosityLevel verbosity_); // Sets variables in Xcal2 as well
   void set_LeptonInterference(TVar::LeptonInterference myLepInterf); // Sets variables in Xcal2 as well
   //

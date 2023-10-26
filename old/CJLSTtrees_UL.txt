@@ -1,0 +1,14 @@
+/eos/user/l/lkang/Active_Research/TaggedTrees/PROD_ULminimalsamplestest_e2c98351/Trees/ggTo2e2mu_0PHH125Contin_MCFM701/ZZ4lAnalysis.root
+/eos/user/l/lkang/Active_Research/TaggedTrees/PROD_ULminimalsamplestest_e2c98351/Trees/ggTo2e2mu_0PMH125_MCFM701/ZZ4lAnalysis.root
+/eos/user/l/lkang/Active_Research/TaggedTrees/PROD_ULminimalsamplestest_e2c98351/Trees/ggTo2e2mu_Contin_MCFM701/ZZ4lAnalysis.root
+/eos/user/l/lkang/Active_Research/TaggedTrees/PROD_ULminimalsamplestest_e2c98351/Trees/ggTo4e_0PHH125Contin_MCFM701/ZZ4lAnalysis.root
+/eos/user/l/lkang/Active_Research/TaggedTrees/PROD_ULminimalsamplestest_e2c98351/Trees/ggTo4e_0PMH125_MCFM701/ZZ4lAnalysis.root
+/eos/user/l/lkang/Active_Research/TaggedTrees/PROD_ULminimalsamplestest_e2c98351/Trees/ggTo4e_Contin_MCFM701/ZZ4lAnalysis.root
+/eos/user/l/lkang/Active_Research/TaggedTrees/PROD_ULminimalsamplestest_e2c98351/Trees/ggTo4mu_0PHH125Contin_MCFM701/ZZ4lAnalysis.root
+/eos/user/l/lkang/Active_Research/TaggedTrees/PROD_ULminimalsamplestest_e2c98351/Trees/ggTo4mu_0PMH125_MCFM701/ZZ4lAnalysis.root
+/eos/user/l/lkang/Active_Research/TaggedTrees/PROD_ULminimalsamplestest_e2c98351/Trees/ggTo4mu_Contin_MCFM701/ZZ4lAnalysis.root
+/eos/user/l/lkang/Active_Research/TaggedTrees/PROD_ULminimalsamplestest_e2c98351/Trees/VBFToContinToZZTo4l/ZZ4lAnalysis.root
+/eos/user/l/lkang/Active_Research/TaggedTrees/PROD_ULminimalsamplestest_e2c98351/Trees/VBFToHiggs0PHContinToZZTo4l_M125_GaSM/ZZ4lAnalysis.root
+/eos/user/l/lkang/Active_Research/TaggedTrees/PROD_ULminimalsamplestest_e2c98351/Trees/VBFToHiggs0PHToZZTo4l_M125_GaSM/ZZ4lAnalysis.root
+/eos/user/l/lkang/Active_Research/TaggedTrees/PROD_ULminimalsamplestest_e2c98351/Trees/VBFToHiggs0PMToZZTo4l_M125_GaSM/ZZ4lAnalysis.root
+/eos/user/l/lkang/Active_Research/TaggedTrees/PROD_ULminimalsamplestest_e2c98351/Trees/ZZTo4l/ZZ4lAnalysis.root

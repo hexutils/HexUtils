@@ -1,0 +1,18 @@
+executable              = condorbatchscript_POWHEG.sh
+arguments               = $(i)
+
+output                  = TaggerOutput_2022-05-05_POWHEG/Out_$(i).out
+error                   = TaggerOutput_2022-05-05_POWHEG/Out_$(i).err
+log                     = TaggerOutput_2022-05-05_POWHEG/Out_$(i).log
+
+notification            = complete
+notify_user             = lkang@jhu.edu
+
+request_memory          = 4000M
++JobFlavour             = "nextweek"
+
+#https://www-auth.cs.wisc.edu/lists/htcondor-users/2010-September/msg00009.shtml
+periodic_remove         = JobStatus == 5
+WhenToTransferOutput    = ON_EXIT_OR_EVICT
+
+queue i in 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48

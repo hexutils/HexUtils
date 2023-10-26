@@ -279,6 +279,9 @@ void Mela::setProcess(TVar::Process myModel, TVar::MatrixElement myME, TVar::Pro
   myModel_ = myModel;
   if (ZZME!=0) ZZME->set_Process(myModel_, myME_, myProduction_);
 }
+void Mela::getProcess(){
+  ZZME->get_Process();
+}
 void Mela::setVerbosity(TVar::VerbosityLevel verbosity_){
   myVerbosity_=verbosity_;
   if (ZZME) ZZME->set_Verbosity(myVerbosity_);

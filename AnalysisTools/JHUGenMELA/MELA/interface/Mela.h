@@ -47,6 +47,7 @@ public:
   void build(double mh_);
 
   void setProcess(TVar::Process myModel, TVar::MatrixElement myME, TVar::Production myProduction);
+  void getProcess();
   void setVerbosity(TVar::VerbosityLevel verbosity_=TVar::ERROR);
   TVar::VerbosityLevel getVerbosity();
   void setMelaLeptonInterference(TVar::LeptonInterference myLepInterf=TVar::DefaultLeptonInterf);

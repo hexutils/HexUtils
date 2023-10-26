@@ -60,6 +60,7 @@ public:
   //----------------------
   void Set_LHAgrid(const char* path, int pdfmember=0);
   void SetProcess(TVar::Process proc, TVar::MatrixElement me, TVar::Production prod);
+  void GetProcess();
   void SetVerbosity(TVar::VerbosityLevel tmp);
   void SetLeptonInterf(TVar::LeptonInterference tmp);
 

@@ -203,6 +203,12 @@ void TEvtProb::SetProcess(TVar::Process proc, TVar::MatrixElement me, TVar::Prod
   }
   process = proc;
 }
+void TEvtProb::GetProcess(){
+//  MELAout << "TVar::Process is: " << TVar::ProcessName(process) << endl;
+//  MELAout << "TVar::MatrixElement is: " << matrixElement << endl;
+//  MELAout << "TVar::Production is: " << production << endl;
+  MELAout << "Process: " << TVar::ProcessName(process) << ", Production: " << TVar::ProductionName(production) << ", and ME: " << TVar::MatrixElementName(matrixElement) << endl;
+}
 void TEvtProb::SetVerbosity(TVar::VerbosityLevel tmp){ verbosity = tmp; }
 void TEvtProb::SetLeptonInterf(TVar::LeptonInterference tmp){ leptonInterf = tmp; }
 void TEvtProb::SetCandidateDecayMode(TVar::CandidateDecayMode mode){ PDGHelpers::setCandidateDecayMode(mode); }

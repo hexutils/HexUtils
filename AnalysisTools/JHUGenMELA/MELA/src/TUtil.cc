@@ -2212,6 +2212,7 @@ bool TUtil::MCFM_chooser(
 
   }
   else{
+    MELAerr << "TUtil::MCFM_chooser: bkgZZ: " << TVar::bkgZZ << "\tHSMHiggs: " << TVar::HSMHiggs << "\tbkgZZ_SMHiggs: " << TVar::bkgZZ_SMHiggs << endl;
     MELAerr << "TUtil::MCFM_chooser: Can't identify (process, production) = (" << process << ", " << production << ")" << endl;
     MELAerr << "TUtil::MCFM_chooser: ndau: " << ndau << '\t';
     MELAerr << "TUtil::MCFM_chooser: isZZ: " << isZZ << '\t';

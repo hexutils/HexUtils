@@ -1,0 +1,16 @@
+executable              = condorbatchscript_PhenoVH.sh
+arguments               = $(Item)
+
+output                  = PTreeOutput_20220719_PhenoVH/Out_$(Item).out
+error                   = PTreeOutput_20220719_PhenoVH/Out_$(Item).err
+log                     = PTreeOutput_20220719_PhenoVH/Out_$(Item).log
+
+request_memory          = 4000M
++JobFlavour             = "nextweek"
+
+#https://www-auth.cs.wisc.edu/lists/htcondor-users/2010-September/msg00009.shtml
+periodic_remove         = JobStatus == 5
+WhenToTransferOutput    = ON_EXIT_OR_EVICT
+
+queue from seq 1 225 |
+
