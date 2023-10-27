@@ -209,7 +209,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath,
 
   exportPath()
   
-  m = Mela(13, 125)#, TVar.DEBUG_MECHECK) #<- this is the debugger! 
+  m = Mela(13, 125, verbosity)#, TVar.DEBUG_MECHECK) #<- this is the debugger! 
   #Use it as another argument if you'd like to debug code
   #Always initialize MELA at m=125 GeV
   print('\nThis is the mass of the "Higgs":', higgsMass)
@@ -429,31 +429,28 @@ def addprobabilities(infile,outfile,probabilities,TreePath,
         else:
             # Sort Couplings
             for key in parsed_prob_dict['coupl_dict']:
+              if 'ghw' in key or 'ghz' in key:
+                m.differentiate_HWW_HZZ = True
+              
               if key == "ghg2":
                 m.ghg2 = parsed_prob_dict['coupl_dict'][key]
               elif key == "ghg4":
                 m.ghg4 = parsed_prob_dict['coupl_dict'][key]
               elif key == "ghz1":
                 m.ghz1 = parsed_prob_dict['coupl_dict'][key]
-                m.ghw1 = 0
               elif key == "ghz2":
                 m.ghz2 = parsed_prob_dict['coupl_dict'][key]
-                m.ghw2 = 0
                 bkg_prob_dict[key] = parsed_prob_dict['coupl_dict'][key]
               elif key == "ghz4":
                 m.ghz4 = parsed_prob_dict['coupl_dict'][key]
-                m.ghw4 = 0
                 bkg_prob_dict[key] = parsed_prob_dict['coupl_dict'][key]
               elif key == "ghw1":
                 m.ghw1 = parsed_prob_dict['coupl_dict'][key]
-                m.ghz1 = 0
               elif key == "ghw2":
                 m.ghw2 = parsed_prob_dict['coupl_dict'][key]
-                m.ghz2 = 0
                 bkg_prob_dict[key] = parsed_prob_dict['coupl_dict'][key]
               elif key == "ghw4":
                 m.ghw4 = parsed_prob_dict['coupl_dict'][key]
-                m.ghz4 = 0
                 bkg_prob_dict[key] = parsed_prob_dict['coupl_dict'][key]
               elif key == "gha2":
                 m.ghgsgs2 = parsed_prob_dict['coupl_dict'][key]
@@ -509,9 +506,9 @@ def addprobabilities(infile,outfile,probabilities,TreePath,
               elif key == 'lezpmu':
                 m.ezp_Mu_left = parsed_prob_dict['coupl_dict'][key]
               elif key == "mz":
-                m.M_Z = parsed_prob_dict['coupl_dict'][key]
+                m.resetMass(parsed_prob_dict['coupl_dict'][key], 12) #For some stupid reason Ulas made the Z=12
               elif key == "gaz":
-                m.Ga_Z = parsed_prob_dict['coupl_dict'][key]
+                m.resetWidth(parsed_prob_dict['coupl_dict'][key], 12)
               elif key == 'mzp':
                 m.M_Zprime = parsed_prob_dict['coupl_dict'][key]
               elif key == 'gazp':
