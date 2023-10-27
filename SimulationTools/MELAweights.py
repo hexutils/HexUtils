@@ -2,6 +2,7 @@
 import ROOT, os, sys, re, numpy as np
 sys.path.append('../JHUGenMELA/MELA/python/')
 from mela import Mela, TVar, SimpleParticle_t, SimpleParticleCollection_t
+from tqdm import tqdm
 
 def tlv(pt, eta, phi, m):
   result = ROOT.TLorentzVector()
@@ -175,8 +176,6 @@ def parse_prob(probability):
 def exportPath():
   os.system("export LD_LIBRARY_PATH=../JHUGenMELA/MELA/data/$SCRAM_ARCH/:${LD_LIBRARY_PATH}")
 
-from tqdm import tqdm
-
 def addprobabilities(infile,outfile,probabilities,TreePath, 
                     hasJets=False, 
                     SampleHypothesisMCFM=None, SampleHypothesisJHUGen=None,
@@ -247,7 +246,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath,
     
     #sys.exit()
 
-    for i, entry in enumerate(tqdm(t), start=1):
+    for i, entry in enumerate(tqdm(t), start=1, position=0, leave=True):
       #####################################################
       # RECO probabilities, for reweighting Discriminants #
       #####################################################
@@ -385,23 +384,23 @@ def addprobabilities(infile,outfile,probabilities,TreePath,
         except:
             print("Current Process Not Supported")
         
-        #print("\n\n", parsed_prob_dict, "\n\n")
+        # print("\n\n", parsed_prob_dict, "\n\n")
 
         # print("\n\n", parsed_prob_dict, "\n\n")
 
-        #print("\n\n", ns, "\n\n")
+        # print("\n\n", ns, "\n\n")
 
-        #print("\n\n", ns['Process'],ns['MatrixElement'],ns['Production'], "\n\n")
+        # print("\n\n", ns['Process'],ns['MatrixElement'],ns['Production'], "\n\n")
 
-        #print("\n\n", ns, "\n\n")
+        # print("\n\n", ns, "\n\n")
 
-        #print("\n\n===========================================================================================================================================================\n\n")
+        # print("\n\n===========================================================================================================================================================\n\n")
 
 
         #print(parsed_prob_dict['coupl_dict'])
         m.setProcess(ns['Process'],ns['MatrixElement'],ns['Production'])
         
-
+        print(parsed_prob_dict)
         bkg_prob_dict = {"gha2":0, "ghz2":0, "ghza2":0, "gha4":0, "ghz4":0, "ghza4":0, "ghz1prime2":0} 
         if parsed_prob_dict["Process"] == "BKG":
             # Sort Couplings
@@ -513,6 +512,12 @@ def addprobabilities(infile,outfile,probabilities,TreePath,
                 m.M_Zprime = parsed_prob_dict['coupl_dict'][key]
               elif key == 'gazp':
                 m.Ga_Zprime = parsed_prob_dict['coupl_dict'][key]
+              elif key == 'a1':
+                m.a1 = parsed_prob_dict['coupl_dict'][key]
+              elif key == 'b1':
+                m.b1 = parsed_prob_dict['coupl_dict'][key]
+              elif key == 'b5':
+                m.b5 = parsed_prob_dict['coupl_dict'][key]
               else:
                 print(str(key))
                 print(parsed_prob_dict['coupl_dict'])
