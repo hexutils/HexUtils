@@ -246,7 +246,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath,
     
     #sys.exit()
 
-    for i, entry in enumerate(tqdm(t), start=1, position=0, leave=True):
+    for i, entry in enumerate(tqdm(t, position=0, leave=True), start=1):
       #####################################################
       # RECO probabilities, for reweighting Discriminants #
       #####################################################
@@ -400,7 +400,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath,
         #print(parsed_prob_dict['coupl_dict'])
         m.setProcess(ns['Process'],ns['MatrixElement'],ns['Production'])
         
-        print(parsed_prob_dict)
+        # print(parsed_prob_dict)
         bkg_prob_dict = {"gha2":0, "ghz2":0, "ghza2":0, "gha4":0, "ghz4":0, "ghza4":0, "ghz1prime2":0} 
         if parsed_prob_dict["Process"] == "BKG":
             # Sort Couplings
