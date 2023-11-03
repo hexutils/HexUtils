@@ -26,7 +26,7 @@ def main(raw_args=None):
     parser.add_argument('-hm', '--hmass', type=float, default=125, help="The mass of the Higgs")
     parser.add_argument('-z', '--zprime', type=float, nargs=2, default=0, help="The mass and width of a Z Prime as 2 arguments")
     parser.add_argument('-c', '--couplings', type=str, default='', help="A file containing the Zff couplings you are using")
-    parser.add_argument('-v', '--verbose', type=int, default=-1, choices=[-1,0,1,2,3,4,5], help="The verbosity level of MELA")
+    parser.add_argument('-v', '--verbose', type=int, default=0, choices=[100,0,1,2,3,4,5], help="The verbosity level of MELA")
     parser.add_argument('-ow', '--overwrite', action="store_true", help="Enable if you want to overwrite files in the output folder")
     args = parser.parse_args(raw_args)
     
@@ -43,7 +43,7 @@ def main(raw_args=None):
     pthsubdirs = args.subdr if args.subdr else inputfiles
     outputdir = args.outdr
     branchfile = args.bfile
-    tbranch = args.tBranch
+    tbranch = args.tBranch.strip() #nasty extra spaces make us sad!
     lhe2root = args.lhe2root
     mcfmprob = args.mcfmprob
     jhuprob = args.jhuprob
