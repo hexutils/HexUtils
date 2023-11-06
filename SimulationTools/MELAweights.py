@@ -53,6 +53,10 @@ def parse_prob(probability):
     parsed_dict["ProdMode"] = "GG"
     parsed_dict["Prod"] = False
     parsed_dict["Dec"] = True
+  elif "QQ" in probability:
+    parsed_dict["ProdMode"] = "QQ"
+    parsed_dict["Prod"] = False
+    parsed_dict["Dec"] = True
   elif "LepZH" in probability:
     parsed_dict["ProdMode"] = "LepZH"
     parsed_dict["Prod"] = True
@@ -121,6 +125,10 @@ def parse_prob(probability):
     parsed_dict["ProdMode"] = "bbH"
     parsed_dict["Prod"] = True
     parsed_dict["Dec"] = False
+  elif "IND" in probability:
+    parsed_dict["ProdMode"] = "IND"
+    parsed_dict["Prod"] = False
+    parsed_dict["Dec"] = True
   # Sort MatrixElement #
   if "JHUGen" in probability:
     parsed_dict["MatrixElement"] = "JHUGen"
@@ -208,7 +216,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath,
 
   exportPath()
   
-  m = Mela(13, 125, verbosity)#, TVar.DEBUG_MECHECK) #<- this is the debugger! 
+  m = Mela(13, 125, TVar.DEBUG_MECHECK) #<- this is the debugger! 
   #Use it as another argument if you'd like to debug code
   #Always initialize MELA at m=125 GeV
   print('\nThis is the mass of the "Higgs":', higgsMass)
@@ -298,6 +306,10 @@ def addprobabilities(infile,outfile,probabilities,TreePath,
         ProdExec = "Production = TVar."
         if parsed_prob_dict["ProdMode"] == "GG":
           ProdExec+="ZZGG"
+        elif parsed_prob_dict["ProdMode"] == "QQ":
+          ProdExec+="ZZQQB"
+        elif parsed_prob_dict["ProdMode"] == "IND":
+          ProdExec+="ZZINDEPENDENT"
         else:
           ProdExec+=parsed_prob_dict["ProdMode"]
         #print("\n\n", ProdExec, "\n\n")
