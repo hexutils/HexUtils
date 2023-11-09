@@ -1,7 +1,7 @@
 # from ..JHUGenMELA.MELA.python.mela import Mela, TVar, SimpleParticle_t, SimpleParticleCollection_t
 import ROOT, os, sys, re, numpy as np
 sys.path.append('../JHUGenMELA/MELA/python/')
-from mela import Mela, TVar, SimpleParticle_t, SimpleParticleCollection_t, TUtil
+from mela import Mela, TVar, SimpleParticle_t, SimpleParticleCollection_t
 from tqdm import tqdm
 
 def tlv(pt, eta, phi, m):
@@ -10,7 +10,6 @@ def tlv(pt, eta, phi, m):
   return result
 
 def parse_prob(probability):
-#  print(probability)
   ## Functionality only tested for ggH mode ##
   parsed_dict={"Process":None,"ProdMode":None,"MatrixElement":None,"coupl_dict":{},"isReco":None,"Prod":None,"Dec":None,"JES":None,"JEC":None,"JER":None,
                "BSM":None, "SPIN":0}
@@ -517,11 +516,9 @@ def addprobabilities(infile,outfile,probabilities,TreePath,
               elif key == 'lezpmu':
                 m.ezp_Mu_left = parsed_prob_dict['coupl_dict'][key]
               elif key == "mz":
-                # m.resetMass(parsed_prob_dict['coupl_dict'][key], 12) #For some stupid reason Ulas made the Z=12
-                TUtil.SetMass(parsed_prob_dict['coupl_dict'][key], 23)
+                m.resetMass(parsed_prob_dict['coupl_dict'][key], 12) #For some stupid reason Ulas made the Z=12
               elif key == "gaz":
-                # m.resetWidth(parsed_prob_dict['coupl_dict'][key], 12)
-                TUtil.SetDecayWidth(parsed_prob_dict['coupl_dict'][key], 23)
+                m.resetWidth(parsed_prob_dict['coupl_dict'][key], 12)
               elif key == 'mzp':
                 m.M_Zprime = parsed_prob_dict['coupl_dict'][key]
               elif key == 'gazp':
@@ -530,10 +527,6 @@ def addprobabilities(infile,outfile,probabilities,TreePath,
                 m.zprime_qq_left = parsed_prob_dict['coupl_dict'][key]
               elif key == 'zprimeqqright':
                 m.zprime_qq_right = parsed_prob_dict['coupl_dict'][key]
-              elif key == "zprimezz1":
-                m.zprime_zz_1 = parsed_prob_dict['coupl_dict'][key]
-              elif key == "zprimezz2":
-                m.zprime_zz_2 = parsed_prob_dict['coupl_dict'][key]
               elif key == 'a1':
                 m.a1 = parsed_prob_dict['coupl_dict'][key]
               elif key == 'b1':
