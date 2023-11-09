@@ -1,7 +1,7 @@
 # from ..JHUGenMELA.MELA.python.mela import Mela, TVar, SimpleParticle_t, SimpleParticleCollection_t
 import ROOT, os, sys, re, numpy as np
 sys.path.append('../JHUGenMELA/MELA/python/')
-from mela import Mela, TVar, SimpleParticle_t, SimpleParticleCollection_t
+from mela import Mela, TVar, SimpleParticle_t, SimpleParticleCollection_t, TUtil
 from tqdm import tqdm
 
 def tlv(pt, eta, phi, m):
@@ -517,13 +517,23 @@ def addprobabilities(infile,outfile,probabilities,TreePath,
               elif key == 'lezpmu':
                 m.ezp_Mu_left = parsed_prob_dict['coupl_dict'][key]
               elif key == "mz":
-                m.resetMass(parsed_prob_dict['coupl_dict'][key], 12) #For some stupid reason Ulas made the Z=12
+                # m.resetMass(parsed_prob_dict['coupl_dict'][key], 12) #For some stupid reason Ulas made the Z=12
+                TUtil.SetMass(parsed_prob_dict['coupl_dict'][key], 23)
               elif key == "gaz":
-                m.resetWidth(parsed_prob_dict['coupl_dict'][key], 12)
+                # m.resetWidth(parsed_prob_dict['coupl_dict'][key], 12)
+                TUtil.SetDecayWidth(parsed_prob_dict['coupl_dict'][key], 23)
               elif key == 'mzp':
                 m.M_Zprime = parsed_prob_dict['coupl_dict'][key]
               elif key == 'gazp':
                 m.Ga_Zprime = parsed_prob_dict['coupl_dict'][key]
+              elif key == 'zprimeqqleft':
+                m.zprime_qq_left = parsed_prob_dict['coupl_dict'][key]
+              elif key == 'zprimeqqright':
+                m.zprime_qq_right = parsed_prob_dict['coupl_dict'][key]
+              elif key == "zprimezz1":
+                m.zprime_zz_1 = parsed_prob_dict['coupl_dict'][key]
+              elif key == "zprimezz2":
+                m.zprime_zz_2 = parsed_prob_dict['coupl_dict'][key]
               elif key == 'a1':
                 m.a1 = parsed_prob_dict['coupl_dict'][key]
               elif key == 'b1':
