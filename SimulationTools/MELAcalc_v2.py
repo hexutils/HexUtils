@@ -24,6 +24,7 @@ def fragment_to_dict(input_line):
         param_name = param[:param_name_loc].lower()
         param_values = param[param_name_loc + 1:]
         param_values = param_values.strip().split(';')
+        
         if param_name == "options" or param_name == 'couplings':
             options_dict = {}
             for i in param_values:
@@ -34,8 +35,9 @@ def fragment_to_dict(input_line):
                     coupling_val = map(float, i[1].split(','))
                     options_dict[i[0]] = complex(*coupling_val)
                 else:
-                    options_dict[i[0]] = i[1]
+                    options_dict[i[0].lower()] = i[1]
             param_values = options_dict
+        
         elif param_name in ["prod", "dec"]:
             param_values = bool(int(param_values[0]))
         else:
@@ -59,6 +61,7 @@ def main(raw_args=None):
     parser.add_argument('-l', '--lhe2root', action="store_true", help="Enable this if you want to use lhe2root naming")
     parser.add_argument('-ow', '--overwrite', action="store_true", help="Enable if you want to overwrite files in the output folder")
     parser.add_argument('-v', '--verbose', choices=[0,1,2,3,4,5], type=int, default=0)
+    parser.add_argument('-vl', '--verbose_local', choices=[0,1,2], type=int, default=0)
     args = parser.parse_args(raw_args)
     
     template_input = parser.format_help()
@@ -77,6 +80,7 @@ def main(raw_args=None):
     lhe2root = args.lhe2root
     overwrite = args.overwrite
     verbosity = args.verbose
+    local_verbosity = args.verbose_local
     
     if not os.environ.get("LD_LIBRARY_PATH"):
         errortext = "\nPlease setup MELA first using the following command:"
@@ -160,10 +164,7 @@ def main(raw_args=None):
         print("Read '"+inputfile+"'\n")
         print("Write '"+outtreefilename+"'\n")
         
-        print(branchlist)
-        
-        
-        MW.addprobabilities(branchlist, inputfile, tbranch, outtreefilename, verbosity, lhe2root, False)
+        MW.addprobabilities(branchlist, inputfile, tbranch, outtreefilename, verbosity, lhe2root, local_verbosity)
         
 if __name__ == "__main__":
     main()
