@@ -4,11 +4,199 @@ import os
 from pathlib import Path
 import argparse
 import warnings
-import sys
+import sys, re, json
 import MELAweights_v2 as MW
 
 sys.path.append('../')
 import generic_helpers as help
+
+
+def parse_prob(probability):
+    ## Functionality only tested for ggH mode ##
+    parsed_dict = {
+        "process":None,
+        "production":None,
+        "matrixelement":None,
+        "prod":None,
+        "dec":None,
+        "options":{
+            "jes":None, 
+            "jec":None, 
+            "jer":None, 
+            "bsm":None, 
+            "dividep":None
+            },
+        "couplings":{}
+        }
+    # Sort whether to use Jet systematics #
+    if "JES" in probability: 
+        if "Up" in probability:
+            parsed_dict['options']["jes"] = "JetPt_JESUp"
+        elif "Down" in probability:
+            parsed_dict['options']["jes"] = "JetPt_JESDown"
+    else:
+        raise ValueError("Invalid JES option")
+    if "JEC" in probability:
+        if "Nominal" in probability: 
+            parsed_dict["JEC"] = "Nominal"
+    else:
+        raise ValueError("Invalid JEC option")
+    if "JER" in probability:
+        if "Up" in probability:
+            parsed_dict["JER"] = "Up"
+        elif "Down" in probability:
+            parsed_dict["JER"] = "Down"
+    else:
+        raise ValueError("Invalid JER option")
+    if [parsed_dict["JES"], parsed_dict["JEC"], parsed_dict["JER"]].count(None) < 2:
+        raise ValueError("Invalid combination of JES,JEC,JER!")
+    # Sort Process over #
+    if "SIG" in probability:
+        parsed_dict["Process"] = "SIG"
+    elif "BKG" in probability:
+        parsed_dict["Process"] = "BKG"
+    elif "BSI" in probability:
+        parsed_dict["Process"] = "BSI"
+    #Sort Reco Or Not#
+    if "_Gen" in probability:
+        parsed_dict["isReco"] = False
+    else:
+        parsed_dict["isReco"] = True
+    # Sort Production Mode #
+    if "GG" in probability:
+        parsed_dict["ProdMode"] = "GG"
+        parsed_dict["Prod"] = False
+        parsed_dict["Dec"] = True
+    elif "QQ" in probability:
+        parsed_dict["ProdMode"] = "QQ"
+        parsed_dict["Prod"] = False
+        parsed_dict["Dec"] = True
+    elif "LepZH" in probability:
+        parsed_dict["ProdMode"] = "LepZH"
+        parsed_dict["Prod"] = True
+        parsed_dict["Dec"] = False
+    elif "HadZH" in probability:
+        parsed_dict["ProdMode"] = "HadZH"
+        if "JHUGen" in probability:
+            parsed_dict["Prod"] = True
+            parsed_dict["Dec"] = False
+        elif "MCFM" in probability:
+            parsed_dict["Prod"] = True
+            parsed_dict["Dec"] = True
+        else:
+            raise ValueError("Choose correct Matrix element for HadZH")
+
+    elif "LepWH" in probability:
+        parsed_dict["ProdMode"] = "LepWH"
+        parsed_dict["Prod"] = True
+        parsed_dict["Dec"] = False
+    elif "HadWH" in probability:
+        parsed_dict["ProdMode"] = "HadWH"
+        if "JHUGen" in probability:
+            parsed_dict["Prod"] = True
+            parsed_dict["Dec"] = False
+        elif "MCFM" in probability:
+            parsed_dict["Prod"] = True
+            parsed_dict["Dec"] = True
+        else:
+            raise ValueError("Choose correct Matrix element for HadWH")
+    elif "JJEW" in probability:
+        parsed_dict["ProdMode"] = "JJEW"
+        parsed_dict["Prod"] = True
+        parsed_dict["Dec"] = True
+    elif "JJVBF" in probability:
+        parsed_dict["ProdMode"] = "JJVBF"
+        if "JHUGen" in probability:
+            parsed_dict["Prod"] = True
+            parsed_dict["Dec"] = False
+        elif "MCFM" in probability:
+            parsed_dict["Prod"] = True
+            parsed_dict["Dec"] = True
+        else:
+            raise ValueError("Choose correct Matrix element for JJVBF")
+    
+    elif "JVBF" in probability:
+        parsed_dict["ProdMode"] = "JJEWQCD"
+        parsed_dict["Prod"] = True
+        parsed_dict["Dec"] = False
+    elif "JJQCD" in probability:
+        parsed_dict["ProdMode"] = "JJQCD"
+        if "JHUGen" in probability:
+            parsed_dict["Prod"] = True
+            parsed_dict["Dec"] = False
+        elif "MCFM" in probability:
+            parsed_dict["Prod"] = True
+            parsed_dict["Dec"] = True
+        else:
+            raise ValueError("Choose correct Matrix element for JJQCD")
+        
+    elif "JQCD" in probability:
+        parsed_dict["ProdMode"] = "JQCD"
+        parsed_dict["Prod"] = True
+        parsed_dict["Dec"] = False
+    elif "ttH" in probability:
+        parsed_dict["ProdMode"] = "ttH"
+        parsed_dict["Prod"] = True
+        parsed_dict["Dec"] = False
+    elif "bbH" in probability:
+        parsed_dict["ProdMode"] = "bbH"
+        parsed_dict["Prod"] = True
+        parsed_dict["Dec"] = False
+    elif "IND" in probability:
+        parsed_dict["ProdMode"] = "IND"
+        parsed_dict["Prod"] = False
+        parsed_dict["Dec"] = True
+    # Sort MatrixElement #
+    if "JHUGen" in probability:
+        parsed_dict["MatrixElement"] = "JHUGen"
+    elif "MCFM" in probability:
+        parsed_dict["MatrixElement"] = "MCFM"
+    # Raise Anomalous Coupling Flag #
+    if "AC" in probability:
+        parsed_dict["BSM"] = "AC"
+    # Sort Couplings #
+    coupling_names = re.findall(r"[a-zA-Z0-9]+_(?:m)*[0-9]?(?:p)*?[0-9]", probability)
+    coupling_value_tuples = re.findall("[a-zA-Z0-9]+_((?:m)*[0-9]?(?:p)*?[0-9]+)(?:[eE]([+-]?\d+))?",probability)
+    for i in range(len(coupling_names)):
+        coupling = coupling_names[i].split("_")[0]
+        if coupling_value_tuples[i][1] == '':
+            if "p" in coupling_value_tuples[i][0]:
+                if "m" in coupling_value_tuples[i][0]:
+                    value = -float(coupling_value_tuples[i][0].split("m")[1].split("p")[0] + "." + coupling_value_tuples[i][0].split("m")[1].split("p")[1])
+                else:
+                    value = float(coupling_value_tuples[i][0].split("p")[0] + "." + coupling_value_tuples[i][0].split("p")[1])
+            else:
+                if "m" in coupling_value_tuples[i][0]:
+                    value = -float(coupling_value_tuples[i][0].split("m")[1])
+                else:
+                    value = float(coupling_value_tuples[i][0])
+        else:
+            if "p" in coupling_value_tuples[i][0]:
+                if "m" in coupling_value_tuples[i][0]:
+                    value = -float(coupling_value_tuples[i][0].split("m")[1].split("p")[0] + "." + coupling_value_tuples[i][0].split("m")[1].split("p")[1])* 10 ** float(coupling_value_tuples[i][1])
+                else:
+                    value = float(coupling_value_tuples[i][0].split("p")[0] + "." + coupling_value_tuples[i][0].split("p")[1]) * 10 ** float(coupling_value_tuples[i][1])
+            else:
+                if "m" in coupling_value_tuples[i][0]:
+                    value = -float(coupling_value_tuples[i][0]).split("m")[1] * 10 ** float(coupling_value_tuples[i][1])
+                else:
+                    value = float(coupling_value_tuples[i][0]) * 10 ** float(coupling_value_tuples[i][1])
+        parsed_dict["coupl_dict"][coupling] = value
+
+    if "spin1" in probability:
+        parsed_dict['SPIN'] = 1
+    elif "spin2" in probability:
+        parsed_dict['SPIN'] = 2
+
+    if parsed_dict["ProdMode"] == None:
+        raise ValueError("Coupling does not have a valid Production Mode")
+    if parsed_dict["MatrixElement"] == None:
+        raise ValueError("Coupling does not have a valid MatrixElement")
+    if parsed_dict["Process"] == None:
+        print('\n',parsed_dict,'\n')
+        raise ValueError("Coupling does not have a valid Process")
+    
+    return parsed_dict
 
 
 def fragment_to_dict(input_line):
@@ -46,7 +234,29 @@ def fragment_to_dict(input_line):
         output[param_name] = param_values
     print(output)
     return output
-    
+
+
+def json_to_dict(json_file):
+    with open(json_file) as json_data:
+        data = json.load(json_data)
+
+        returnable_list_of_probs = [{} for _ in range(len(data))]
+        
+        for n, prob_name in enumerate(data.keys()):
+            returnable_list_of_probs[n]["name"] = prob_name
+            
+            for input_val in data[prob_name]:
+                new_input_val = input_val.lower()
+                if new_input_val == 'couplings':
+                    returnable_list_of_probs[n][new_input_val] = {}
+                    for coupling in data[prob_name][input_val]:
+                        returnable_list_of_probs[n][new_input_val][coupling] = complex(*data[prob_name][input_val][coupling])
+                else:
+                    returnable_list_of_probs[n][new_input_val] = data[prob_name][input_val]
+        
+        return returnable_list_of_probs
+                
+        
 
 def main(raw_args=None):
     parser = argparse.ArgumentParser()
@@ -57,7 +267,13 @@ def main(raw_args=None):
     parser.add_argument('-o', '--outdr', type=str, required=True, help="The output folder")
     parser.add_argument('-t', '--tBranch', type=str, default="eventTree", help="The name of the TBranch you are using")
     parser.add_argument('-s', '--subdr', nargs=1, type=str, default="", help="Optional subdirectory, otherwise will default to the input files")
-    parser.add_argument('-b', '--bfile', type=str, required=True, help="The file containing your branch names")
+    
+    config_possibilities = parser.add_mutually_exclusive_group(required=True)
+    config_possibilities.add_argument('-p', '--pyfragment', type=str, help="The pyfragment containing your branch names")
+    config_possibilities.add_argument('-b', '--bfile', type=str, help="The file containing your branch names")
+    config_possibilities.add_argument('-j', '--jsonFile', type=str, help="The JSON file containing your branch names")
+    
+    
     parser.add_argument('-l', '--lhe2root', action="store_true", help="Enable this if you want to use lhe2root naming")
     parser.add_argument('-ow', '--overwrite', action="store_true", help="Enable if you want to overwrite files in the output folder")
     parser.add_argument('-v', '--verbose', choices=[0,1,2,3,4,5], type=int, default=0)
@@ -75,7 +291,19 @@ def main(raw_args=None):
     
     pthsubdirs = args.subdr if args.subdr else inputfiles
     outputdir = args.outdr
+    
     branchfile = args.bfile
+    pyfragment = args.pyfragment
+    json = args.jsonFile
+    
+    inputFile = None
+    if branchfile:
+        inputFile = branchfile
+    elif pyfragment:
+        inputFile = pyfragment
+    elif json:
+        inputFile = json
+    
     tbranch = args.tBranch.strip() #nasty extra spaces make us sad!
     lhe2root = args.lhe2root
     overwrite = args.overwrite
@@ -91,18 +319,27 @@ def main(raw_args=None):
     if not outputdir.endswith("/"):
         outputdir = outputdir+"/"
     
-    if not os.path.exists(branchfile):
-        errortext = "Branches file '" + branchfile + "' cannot be located. Please try again with valid input.\n"
+    if not os.path.exists(inputFile):
+        errortext = "File '" + branchfile + "' cannot be located. Please try again with valid input.\n"
         errortext = help.print_msg_box(errortext, title="ERROR")
         print(template_input)
         raise FileNotFoundError("\n" + errortext)
     
-    branchlist = []
-    with open(branchfile) as f:
-        branchlist = [line.strip() for line in f]
-        branchlist = [fragment_to_dict(branch) for branch in branchlist]
-        branchlist = [x for x in branchlist if x != None]
-        # print(*branchlist, sep='\n')
+    
+    if pyfragment:
+        branchlist = []
+        with open(pyfragment) as f:
+            branchlist = [line.strip() for line in f]
+            branchlist = [fragment_to_dict(branch) for branch in branchlist]
+            branchlist = [x for x in branchlist if x != None]
+    elif json:
+        branchlist = json_to_dict(json)
+    elif branchfile:
+        print("WIP")
+        exit()
+        
+    
+    
     
     for inputfile, pthsubdir in zip(inputfiles, pthsubdirs):
         if not pthsubdir.endswith("/"):
