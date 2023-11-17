@@ -154,7 +154,7 @@ def addprobabilities(list_of_prob_dicts, infile, tTree, outfile, verbosity,
                 infotext = print_msg_box(infotext, title="Couplings")
                 gigabox.append(infotext)
                 
-                infotext = "prod = " + str(calc_production) + "dec = " + str(calc_decay)
+                infotext = "prod = " + str(calc_production) + " Dec = " + str(calc_decay)
                 infotext += "\nRunning "
                 if calc_production and calc_decay:
                     infotext += "ComputeProdDecP()"
