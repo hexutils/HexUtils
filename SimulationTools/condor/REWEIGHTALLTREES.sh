@@ -1,12 +1,12 @@
 #!/bin/bash
 
-file="ALLSAMPLENAMES.txt"
+file="MELAtrees.txt"
 
 while read -r line; do
 
 echo -e "$line\n"
 
-sed -e "s/SAMPLENAME/$line/g" condor_UL.sub > tempcondor.sub
+sed -e "s/SAMPLENAME/$line/g" condor_MELA.sub > tempcondor.sub
 
 condor_submit tempcondor.sub
 
