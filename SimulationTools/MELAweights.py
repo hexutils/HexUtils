@@ -195,7 +195,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath,
   SampleHypothesisMCFM = kwargs.get('SampleHypothesisMCFM', None)
   SampleHypothesisJHUGen = kwargs.get('SampleHypothesisJHUGen', None)
   
-  higgsMass = 125
+  # higgsMass = 125
   
     
   
@@ -216,7 +216,7 @@ def addprobabilities(infile,outfile,probabilities,TreePath,
 
   exportPath()
   
-  m = Mela(13, 125, verbosity)#TVar.DEBUG_MECHECK) #<- this is the debugger! 
+  m = Mela(13, higgsMass, verbosity)#TVar.DEBUG_MECHECK) #<- this is the debugger! 
   #Use it as another argument if you'd like to debug code
   #Always initialize MELA at m=125 GeV
   print('\nThis is the mass of the "Higgs":', higgsMass)
