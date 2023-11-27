@@ -251,6 +251,10 @@ def json_to_dict(json_file):
                     returnable_list_of_probs[n][new_input_val] = {}
                     for coupling in data[prob_name][input_val]:
                         returnable_list_of_probs[n][new_input_val][coupling] = complex(*data[prob_name][input_val][coupling])
+                elif new_input_val == 'options':
+                    returnable_list_of_probs[n][new_input_val] = {}
+                    for option in data[prob_name][input_val]:
+                        returnable_list_of_probs[n][new_input_val][option.lower()] = data[prob_name][input_val][option]
                 else:
                     returnable_list_of_probs[n][new_input_val] = data[prob_name][input_val]
         
@@ -273,11 +277,11 @@ def main(raw_args=None):
     config_possibilities.add_argument('-b', '--bfile', type=str, help="The file containing your branch names")
     config_possibilities.add_argument('-j', '--jsonFile', type=str, help="The JSON file containing your branch names")
     
-    
     parser.add_argument('-l', '--lhe2root', action="store_true", help="Enable this if you want to use lhe2root naming")
     parser.add_argument('-ow', '--overwrite', action="store_true", help="Enable if you want to overwrite files in the output folder")
     parser.add_argument('-v', '--verbose', choices=[0,1,2,3,4,5], type=int, default=0)
     parser.add_argument('-vl', '--verbose_local', choices=[0,1,2], type=int, default=0)
+    parser.add_argument('-n', '--number', type=int, default=-1)
     args = parser.parse_args(raw_args)
     
     template_input = parser.format_help()
@@ -309,6 +313,7 @@ def main(raw_args=None):
     overwrite = args.overwrite
     verbosity = args.verbose
     local_verbosity = args.verbose_local
+    n_events = args.number
     
     if not os.environ.get("LD_LIBRARY_PATH"):
         errortext = "\nPlease setup MELA first using the following command:"
@@ -401,7 +406,7 @@ def main(raw_args=None):
         print("Read '"+inputfile+"'\n")
         print("Write '"+outtreefilename+"'\n")
         
-        MW.addprobabilities(branchlist, inputfile, tbranch, outtreefilename, verbosity, lhe2root, local_verbosity)
+        MW.addprobabilities(branchlist, inputfile, tbranch, outtreefilename, verbosity, lhe2root, local_verbosity, n_events)
         
 if __name__ == "__main__":
     main()

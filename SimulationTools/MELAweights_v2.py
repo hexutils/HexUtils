@@ -7,7 +7,6 @@ from mela import Mela, TVar, SimpleParticle_t, SimpleParticleCollection_t, TUtil
 from tqdm import tqdm
 from generic_helpers import print_msg_box
 
-
 def tlv(pt, eta, phi, m):
     result = ROOT.TLorentzVector()
     result.SetPtEtaPhiM(pt, eta, phi, m)
@@ -17,7 +16,7 @@ def exportPath():
     os.system("export LD_LIBRARY_PATH=../JHUGenMELA/MELA/data/$SCRAM_ARCH/:${LD_LIBRARY_PATH}")
 
 def addprobabilities(list_of_prob_dicts, infile, tTree, outfile, verbosity, 
-                    is_gen=False, local_verbose=False):
+                    is_gen=False, local_verbose=False, N_events=-1):
     
     
     assert os.path.exists(infile)
@@ -36,10 +35,14 @@ def addprobabilities(list_of_prob_dicts, infile, tTree, outfile, verbosity,
     #Use it as another argument if you'd like to debug code
     #Always initialize MELA at m=125 GeV
     
-    # shutil.copy2(infile, outfile)
+    shutil.copy2(infile, outfile)
     
     f = uproot.open(infile)
     t = f[tTree]
+    
+    if N_events < 0:
+        N_events = t.num_entries
+    
     if is_gen:
         relevant_branches = [
             "LHEDaughterId", 
@@ -68,10 +71,14 @@ def addprobabilities(list_of_prob_dicts, infile, tTree, outfile, verbosity,
             "JetMass"
         ]
     if np.any([x not in t.keys() for x in relevant_branches]):
-        os.remove(outfile)
-        raise KeyError("Invalid keys for MELAcalc!")
+        try:
+            os.remove(outfile)
+        except:
+            pass
+        finally:
+            raise KeyError("Invalid keys for MELAcalc!")
 
-    t_data = t.arrays(library='np')
+    t_data = t.arrays(relevant_branches, library='np')
     if local_verbose:
         print("The branches being used are:")
         print(*relevant_branches, sep='\n')
@@ -81,173 +88,287 @@ def addprobabilities(list_of_prob_dicts, infile, tTree, outfile, verbosity,
     
     for prob_dict in list_of_prob_dicts:
         probabilities[prob_dict['name']] = np.full(t.num_entries, -1, dtype=np.float64)
-    
-    
-    for i in tqdm(range(t.num_entries), position=0, leave=True):
         
-        for prob_dict in list_of_prob_dicts:
-            #The following quantities are single valued
-            prob_name      = prob_dict['name']
-            process        = prob_dict['process']
-            production     = prob_dict['production']
-            matrix_element = prob_dict['matrixelement']
-            
-            
-            if 'hmass' in prob_dict.keys() and 'hwidth' in prob_dict.keys(): #sets the higgs mass and width
-                hmass  = float(prob_dict['hmass'])
-                hwidth = float(prob_dict['hwidth'])
-                m.setMelaHiggsMassWidth(hmass,hwidth,0)
+        prob_name      = prob_dict['name']
+        process        = prob_dict['process']
+        production     = prob_dict['production']
+        matrix_element = prob_dict['matrixelement']
 
-            elif 'hmass' in prob_dict.keys() or 'hwidth' in prob_dict.keys():
-                raise ValueError("Need both mass and width of the Higgs!")
+
+        if 'hmass' in prob_dict.keys() and 'hwidth' in prob_dict.keys(): #sets the higgs mass and width
+            hmass  = float(prob_dict['hmass'])
+            hwidth = float(prob_dict['hwidth'])
+        elif 'hmass' in prob_dict.keys() or 'hwidth' in prob_dict.keys():
+            raise ValueError("Need both mass and width of the Higgs!")
+        else:
+            hmass  = 125
+            hwidth = 0.004
+        
+        
+        if 'zmass' in prob_dict.keys() and 'zwidth' in prob_dict.keys():
+            zmass  = float(prob_dict['zmass'])
+            zwidth = float(prob_dict['zwidth'])
+        elif 'zmass' in prob_dict.keys() or 'zwidth' in prob_dict.keys():
+            raise ValueError("Need both mass and width of the Z!")
+        else:
+            zmass = 91.1876
+            zwidth = 2.4952
+        
+        calc_production = prob_dict['prod']
+        calc_decay = prob_dict['dec']
+        
+        #The following quantities can be multi valued (i.e. you can have multiple couplings)
+        couplings = prob_dict['couplings']
+        
+        
+        if 'options' in prob_dict.keys():
+            options = prob_dict['options']
+        else:
+            options = {'dummy':'you stupid'}
+        
+        
+        if local_verbose: #This is the verbose printout area
+            gigabox = []
+            
+            titular = "PROBABILITY BRANCH"
+            infotext = "NAME = " + prob_name
+            
+            
+            if 'hmass' in prob_dict.keys() and 'hwidth' in prob_dict.keys():
+                infotext += f"\nM_H={hmass}, Ga_H={hwidth}"
+            else:
+                infotext += f"\nM_H=125, Ga_H=DEFAULT"
             
             if 'zmass' in prob_dict.keys() and 'zwidth' in prob_dict.keys():
-                zmass  = float(prob_dict['zmass'])
-                zwidth = float(prob_dict['zwidth'])
-                TUtil.SetMass(zmass, 23)
-                TUtil.SetDecayWidth(zwidth, 23)
-            
-            elif 'zmass' in prob_dict.keys() or 'zwidth' in prob_dict.keys():
-                raise ValueError("Need both mass and width of the Z!")
-            
-            calc_production = prob_dict['prod']
-            calc_decay = prob_dict['dec']
-            
-            #The following quantities can be multi valued (i.e. you can have multiple couplings)
-            couplings = prob_dict['couplings']
-            
-            
-            if 'options' in prob_dict.keys():
-                options = prob_dict['options']
+                infotext += f"\nM_Z={zmass}, Ga_Z={zwidth}"
             else:
-                options = {'dummy':'you stupid'}
+                infotext += f"\nM_Z=91.1876, Ga_Z=2.4952"
             
-            if i == 0 and local_verbose:
-                
-                gigabox = []
-                
-                titular = "PROBABILITY BRANCH"
-                infotext = "NAME = " + prob_name
-                
-                
-                if 'hmass' in prob_dict.keys() and 'hwidth' in prob_dict.keys():
-                    infotext += f"\nM_H={hmass}, Ga_H={hwidth}"
-                else:
-                    infotext += f"\nM_H=125, Ga_H=0.004"
-                
-                if 'zmass' in prob_dict.keys() and 'zwidth' in prob_dict.keys():
-                    infotext += f"\nM_Z={zmass}, Ga_Z={zwidth}"
-                else:
-                    infotext += f"\nM_Z=91.1876, Ga_Z=2.4952"
-                
-                infotext = print_msg_box(infotext, title=titular)
-                
-                gigabox.append(infotext)
-                
-                infotext = print_msg_box(process + ", " + matrix_element + ", " + production, title="Process, Matrix Element, Production")
-                gigabox.append(infotext)
-                
-                infotext = []
-                for coupl in couplings:
-                    infotext.append(coupl + f" = {couplings[coupl]}")
-                infotext = "\n".join(infotext)
-                infotext = print_msg_box(infotext, title="Couplings")
-                gigabox.append(infotext)
-                
-                infotext = "prod = " + str(calc_production) + " Dec = " + str(calc_decay)
-                infotext += "\nRunning "
-                if calc_production and calc_decay:
-                    infotext += "ComputeProdDecP()"
-                elif calc_production:
-                    infotext += "ComputeProdP()"
-                elif calc_decay:
-                    infotext += "ComputeP()"
-                else:
-                    raise ValueError("Need to select a probability calculation!")
-                
-                infotext = print_msg_box(infotext, title="Calculation Function")
-                gigabox.append(infotext)
-                
-                
-                gigabox = print_msg_box("\n".join(gigabox), title=prob_name)
-                print(gigabox)
-                
-                print('\n\n')
+            infotext = print_msg_box(infotext, title=titular)
             
-            if 'jetpt' in options.keys(): #JetPt_{JES,JER}_{Up,Down}
-                JetPt = t[options['jetpt']].array(library='np')
-            elif is_gen:
-                JetPt = t_data['LHEAssociatedParticlePt']
+            gigabox.append(infotext)
+            
+            infotext = print_msg_box(process + ", " + matrix_element + ", " + production, title="Process, Matrix Element, Production")
+            gigabox.append(infotext)
+            
+            infotext = []
+            for coupl in couplings:
+                infotext.append(coupl + f" = {couplings[coupl]}")
+            infotext = "\n".join(infotext)
+            infotext = print_msg_box(infotext, title="Couplings")
+            gigabox.append(infotext)
+            
+            infotext = "prod = " + str(calc_production) + "\nDec = " + str(calc_decay)
+            infotext += "\nRunning "
+            if calc_production and calc_decay:
+                infotext += "ComputeProdDecP()"
+            elif calc_production:
+                infotext += "ComputeProdP()"
+            elif calc_decay:
+                infotext += "ComputeP()"
             else:
-                JetPt = t_data["JetPt"]
+                raise ValueError("Need to select a probability calculation!")
             
-            # Setup event information depending on RECO or LHE level #
-            if not is_gen:
-                leptons = SimpleParticleCollection_t(SimpleParticle_t(pid, tlv(pt, eta, phi, 0)) for pid, pt, eta, phi in zip(
-                t_data["LepLepId"][i], t_data["LepPt"][i], t_data["LepEta"][i], t_data["LepPhi"][i]
-                ))
+            infotext = print_msg_box(infotext, title="Calculation Function")
+            gigabox.append(infotext)
+            
+            infotext = []
+            for option in options.keys():
+                infotext += [f"{option} = {options[option]}"]
+                # infotext += "\n"+option + "=" + options[option]
+            infotext = print_msg_box("\n".join(infotext), title="Options set")
+            gigabox.append(infotext)
+            
+            infotext = []
+            for coupl in couplings.keys():
+                infotext += [f"{coupl} = {couplings[coupl]}"]
+            infotext = print_msg_box("\n".join(infotext), title="Couplings")
+            gigabox.append(infotext)
+            
+            gigabox = print_msg_box("\n".join(gigabox), title=prob_name)
+            print(gigabox)
+            
+            print('\n\n')
+    
+        try:
+            MELA_process = eval("TVar." + process)
+        except:
+            errortext = process + " is not a valid TVar!"
+            raise KeyError("\n" + print_msg_box(errortext, title="ERROR"))
+        
+        try: 
+            MELA_matrix_element = eval("TVar." + matrix_element)
+        except:
+            errortext = matrix_element + " is not a valid TVar!"
+            raise KeyError("\n" + print_msg_box(errortext, title="ERROR"))
+        
+        try:
+            MELA_production = eval("TVar." + production)
+        except:
+            errortext = production + " is not a valid TVar!"
+            raise KeyError("\n" + print_msg_box(errortext, title="ERROR"))
+        
+        if 'jetpt' in options.keys(): #JetPt_{JES,JER}_{Up,Down}
+            JetPt = t[options['jetpt']].array(library='np')
+        elif is_gen:
+            JetPt = t_data['LHEAssociatedParticlePt']
+        else:
+            JetPt = t_data["JetPt"]
+        
+        match_hmass_exactly = False
+        if "matchmh" in options.keys():
+            match_hmass_exactly = t[options['matchmh']].array(library='np')
+        
+        for i in tqdm(range(N_events), position=0, leave=True, desc=prob_name):
+            if is_gen:
+                inputEventNum = 1
                 
-                jets = SimpleParticleCollection_t(SimpleParticle_t(0, tlv(pt, eta, phi, m)) for pt, eta, phi, m in zip(
-                JetPt[i], t_data["JetEta"][i], t_data["JetPhi"][i], t_data["JetMass"][i]
-                ))
+                leptons = [
+                    SimpleParticle_t(
+                        pid,
+                        tlv(
+                            pt,
+                            eta,
+                            phi,
+                            m
+                            )
+                        ) for pid, pt, eta, phi, m in zip(
+                            t_data["LHEDaughterId"][i],
+                            t_data["LHEDaughterPt"][i], 
+                            t_data["LHEDaughterEta"][i], 
+                            t_data["LHEDaughterPhi"][i], 
+                            t_data["LHEDaughterMass"][i]
+                            )
+                        ]
+                leptons = SimpleParticleCollection_t(leptons)
+                
+                jets = [
+                    SimpleParticle_t(
+                        pid, 
+                        tlv(
+                            pt,
+                            eta,
+                            phi,
+                            m
+                            )
+                        ) for pid, pt, eta, phi, m in zip(
+                            t_data["LHEAssociatedParticleId"][i],
+                            JetPt[i], 
+                            t_data["LHEAssociatedParticleEta"][i], 
+                            t_data["LHEAssociatedParticlePhi"][i], 
+                            t_data["LHEAssociatedParticleMass"][i]
+                        )
+                    ]
+                jets = SimpleParticleCollection_t(jets)
+        
+                mothers = [
+                    SimpleParticle_t(
+                        pid,
+                        ROOT.TLorentzVector(
+                            0, 
+                            0, 
+                            pz,
+                            e
+                            )
+                        ) for pid, pz, e in zip(
+                            t_data["LHEMotherId"][i], 
+                            t_data["LHEMotherPz"][i], 
+                            t_data["LHEMotherE"][i]
+                        )
+                    ]
+                mothers = SimpleParticleCollection_t(mothers)
+            else:
+                inputEventNum = 0
+                
+                leptons = [
+                    SimpleParticle_t(
+                        pid,
+                        tlv(
+                            pt,
+                            eta, 
+                            phi,
+                            0
+                            )
+                        ) for pid, pt, eta, phi in zip(
+                            t_data["LepLepId"][i], 
+                            t_data["LepPt"][i], 
+                            t_data["LepEta"][i], 
+                            t_data["LepPhi"][i], 
+                        )
+                ]
+                leptons = SimpleParticleCollection_t(leptons)
+                
+                jets = [
+                    SimpleParticle_t(
+                        0, 
+                        tlv(
+                            pt,
+                            eta,
+                            phi,
+                            m
+                            )
+                        ) for pt, eta, phi, m in zip(
+                            JetPt[i], 
+                            t_data["JetEta"][i], 
+                            t_data["JetPhi"][i], 
+                            t_data["JetMass"][i]
+                        )
+                    ]
+                jets = SimpleParticleCollection_t(jets)
                 
                 mothers = 0
-                
-                m.setInputEvent(leptons, jets, mothers, 0)
+            
+            if np.any(match_hmass_exactly):
+                m.setMelaHiggsMassWidth(match_hmass_exactly[i], hwidth, 0) #Use the tree specified in matchmh to match the mass
             else:
-                leptons = SimpleParticleCollection_t(SimpleParticle_t(pid, tlv(pt, eta, phi, m)) for pid, pt, eta, phi, m in zip(
-                t_data["LHEDaughterId"][i], t_data["LHEDaughterPt"][i], t_data["LHEDaughterEta"][i], t_data["LHEDaughterPhi"][i], t_data["LHEDaughterMass"][i]
-                ))
-                
-                # print("leptons:", t_data["LHEDaughterId"][i], t_data["LHEDaughterPt"][i], t_data["LHEDaughterEta"][i], t_data["LHEDaughterPhi"][i], t_data["LHEDaughterMass"][i])
-                
-                jets = SimpleParticleCollection_t(SimpleParticle_t(pid, tlv(pt, eta, phi, m)) for pid, pt, eta, phi, m in zip(
-                t_data["LHEAssociatedParticleId"][i], JetPt[i], t_data["LHEAssociatedParticleEta"][i], 
-                t_data["LHEAssociatedParticlePhi"][i], t_data["LHEAssociatedParticleMass"][i]
-                ))
-        
-                mothers = SimpleParticleCollection_t(SimpleParticle_t(pid, ROOT.TLorentzVector(0, 0, pz, e)) for pid, pz, e in zip(
-                t_data["LHEMotherId"][i], t_data["LHEMotherPz"][i], t_data["LHEMotherE"][i]
-                ))
-        
-                m.setInputEvent(leptons, jets, mothers, 1)
+                m.setMelaHiggsMassWidth(hmass,hwidth,0)
             
-            try:
-                MELA_process = eval("TVar." + process)
-            except:
-                errortext = process + " is not a valid TVar!"
-                raise KeyError("\n" + print_msg_box(errortext, title="ERROR"))
+            # if z_changed:
+            TUtil.SetMass(zmass, 23)
+            TUtil.SetDecayWidth(zwidth, 23)
             
-            try: 
-                MELA_matrix_element = eval("TVar." + matrix_element)
-            except:
-                errortext = matrix_element + " is not a valid TVar!"
-                raise KeyError("\n" + print_msg_box(errortext, title="ERROR"))
-            
-            try:
-                MELA_production = eval("TVar." + production)
-            except:
-                errortext = production + " is not a valid TVar!"
-                raise KeyError("\n" + print_msg_box(errortext, title="ERROR"))
+            # Setup event information depending on RECO or LHE level #
+            m.setInputEvent(leptons, jets, mothers, inputEventNum)
             
             m.setProcess(MELA_process, MELA_matrix_element, MELA_production)
             
-            
+            # set_couplings_list = []
             special_cases = {"ghv1", "ghv2", "ghv4"}
             for coupl in couplings:
-                if not hasattr(m, coupl) and coupl not in special_cases:
+                if coupl not in dir(m) and coupl not in special_cases:
                     errortext = "Attribute " + coupl + " does not exist!"
                     raise ModuleNotFoundError("\n" + print_msg_box(errortext, title="ERROR"))
                     
                 if 'ghz' or 'ghw' in coupl:
+                    # set_couplings_list.append("m.differentiate_HWW_HZZ = True")
                     m.differentiate_HWW_HZZ = True
                 
                 if coupl not in special_cases:
+                    # set_couplings_list.append("m." + coupl + " = couplings[coupl]")
                     setattr(m, coupl, couplings[coupl])
+                ###### NOW BEGINS THE SPECIAL CASES ######
+                elif 'ghv1' in coupl:
+                    # set_couplings_list.append("m.ghz1 = couplings[coupl]")
+                    # set_couplings_list.append("m.ghw1 = couplings[coupl]")
+                    setattr(m, 'ghz1', couplings[coupl])
+                    setattr(m, 'ghw1', couplings[coupl])
+                elif 'ghv2' in coupl:
+                    # set_couplings_list.append("m.ghz2 = couplings[coupl]")
+                    # set_couplings_list.append("m.ghw2 = couplings[coupl]")
+                    setattr(m, 'ghz2', couplings[coupl])
+                    setattr(m, 'ghw2', couplings[coupl])
+                elif 'ghv4' in coupl:
+                    # set_couplings_list.append("m.ghz4 = couplings[coupl]")
+                    # set_couplings_list.append("m.ghw4 = couplings[coupl]")
+                    setattr(m, 'ghz4', couplings[coupl])
+                    setattr(m, 'ghw4', couplings[coupl])
                 else:
                     errortext = coupl + " Is an unhandled special case!"
                     raise ValueError("\n" + print_msg_box(errortext, title="ERROR")) #handles the "special cases"
-            
+        
+            # set_couplings_str = "\n".join(set_couplings_list)
+            # compiled_couplings = compile(set_couplings_str, "<string>", "exec")
+
             
             if 'BSM' in options.keys() and options['BSM'] == "AC": #jerry-rigged BSM calculation
                 gha2_cpl       = couplings["gha2"]
@@ -287,26 +408,23 @@ def addprobabilities(list_of_prob_dicts, infile, tTree, outfile, verbosity,
         
             m.resetInputEvent()
     
-            if 'dividep' in options.keys():
-                if local_verbose > 1:
-                    print("Dividing probability", prob_name, "by", options['dividep'])
-                    print(f"old: {probabilities[prob_name][i]:.3f}")
-                
-                divisor_name = options['dividep']
-                
-                if divisor_name == prob_name:
-                    
-                    if i == 0:
-                        probabilities[prob_name + "_scaled"] = probabilities[prob_name].copy()
-                    
-                    probabilities[prob_name + "_scaled"][i] = 1
-                else:
-                    probabilities[prob_name][i] /= probabilities[divisor_name][i]
-                
-                if local_verbose > 1:
-                    print(f"new: {probabilities[prob_name][i]:.3f}")
+        if 'dividep' in options.keys():
+            if local_verbose > 1:
+                print("Dividing probability", prob_name, "by", options['dividep'])
+                old = probabilities[prob_name]
+            
+            divisor_name = options['dividep']
+            
+            if divisor_name == prob_name:
+                probabilities[prob_name + "_scaled"] = np.ones(probabilities[prob_name].shape, dtype=np.float64)
+            else:
+                probabilities[prob_name] /= probabilities[divisor_name]
+            
+            if local_verbose > 1:
+                new = probabilities[prob_name]
+                print(f"{'old':^9} {'new':^9}")
+                print(*[(i,j) for i,j in zip(old, new)], sep='\n')
     
     
-    newf = uproot.recreate(outfile)
-    t_data = dict(t_data, **probabilities)
-    newf[tTree] = t_data
+    newf = uproot.update(outfile)
+    newf[tTree + "_MELAcalc"] = probabilities
