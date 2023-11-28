@@ -101,22 +101,11 @@ def addprobabilities(list_of_prob_dicts, infile, tTree, outfile, verbosity,
             particles = set()
         
         if 25 in particles.keys(): #sets the higgs mass and width
-            hmass  = float(prob_dict['hmass'])
-            hwidth = float(prob_dict['hwidth'])
+            hmass, hwidth  = particles[25]
             del particles[25] #higgs is a special case!
         else:
             hmass  = 125
             hwidth = 0.004
-        
-        
-        if 'zmass' in prob_dict.keys() and 'zwidth' in prob_dict.keys():
-            zmass  = float(prob_dict['zmass'])
-            zwidth = float(prob_dict['zwidth'])
-        elif 'zmass' in prob_dict.keys() or 'zwidth' in prob_dict.keys():
-            raise ValueError("Need both mass and width of the Z!")
-        else:
-            zmass = 91.1876
-            zwidth = 2.4952
         
         calc_production = prob_dict['prod']
         calc_decay = prob_dict['dec']

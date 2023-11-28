@@ -402,7 +402,7 @@ def main(raw_args=None):
 
         if os.path.exists(outtreefilename):
             if overwrite:
-                warningtext =  "Overwriting"+outtreefilename+"\n"
+                warningtext =  "Overwriting "+outtreefilename+"\n"
                 warnings.warn("\n" + help.print_msg_box(warningtext, title="WARNING"))
                 os.remove(outtreefilename)
             else:
