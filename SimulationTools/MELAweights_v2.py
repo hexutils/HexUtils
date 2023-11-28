@@ -98,7 +98,7 @@ def addprobabilities(list_of_prob_dicts, infile, tTree, outfile, verbosity,
         if 'particles' in prob_dict.keys():
             particles = prob_dict['particles']
         else:
-            particles = set()
+            particles = dict()
         
         if 25 in particles.keys(): #sets the higgs mass and width
             hmass, hwidth  = particles[25]
