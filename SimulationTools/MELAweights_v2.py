@@ -95,11 +95,15 @@ def addprobabilities(list_of_prob_dicts, infile, tTree, outfile, verbosity,
         matrix_element = prob_dict['matrixelement']
 
 
-        if 'hmass' in prob_dict.keys() and 'hwidth' in prob_dict.keys(): #sets the higgs mass and width
+        if 'particles' in prob_dict.keys():
+            particles = prob_dict['particles']
+        else:
+            particles = set()
+        
+        if 25 in particles.keys(): #sets the higgs mass and width
             hmass  = float(prob_dict['hmass'])
             hwidth = float(prob_dict['hwidth'])
-        elif 'hmass' in prob_dict.keys() or 'hwidth' in prob_dict.keys():
-            raise ValueError("Need both mass and width of the Higgs!")
+            del particles[25] #higgs is a special case!
         else:
             hmass  = 125
             hwidth = 0.004
@@ -139,10 +143,8 @@ def addprobabilities(list_of_prob_dicts, infile, tTree, outfile, verbosity,
             else:
                 infotext += f"\nM_H=125, Ga_H=DEFAULT"
             
-            if 'zmass' in prob_dict.keys() and 'zwidth' in prob_dict.keys():
-                infotext += f"\nM_Z={zmass}, Ga_Z={zwidth}"
-            else:
-                infotext += f"\nM_Z=91.1876, Ga_Z=2.4952"
+            for particle in particles.keys():
+                infotext += f"\nM and Ga of {particle} = {particles[particle][0]}, {particles[particle][1]}"
             
             infotext = print_msg_box(infotext, title=titular)
             
@@ -324,8 +326,9 @@ def addprobabilities(list_of_prob_dicts, infile, tTree, outfile, verbosity,
                 m.setMelaHiggsMassWidth(hmass,hwidth,0)
             
             # if z_changed:
-            TUtil.SetMass(zmass, 23)
-            TUtil.SetDecayWidth(zwidth, 23)
+            for particle in particles: #particle sets the ID
+                TUtil.SetMass(particles[particle][0], particle)
+                TUtil.SetDecayWidth(particles[particle][1], particle)
             
             # Setup event information depending on RECO or LHE level #
             m.setInputEvent(leptons, jets, mothers, inputEventNum)
@@ -335,7 +338,7 @@ def addprobabilities(list_of_prob_dicts, infile, tTree, outfile, verbosity,
             # set_couplings_list = []
             special_cases = {"ghv1", "ghv2", "ghv4"}
             for coupl in couplings:
-                if coupl not in dir(m) and coupl not in special_cases:
+                if i == 0 and coupl not in dir(m) and coupl not in special_cases:
                     errortext = "Attribute " + coupl + " does not exist!"
                     raise ModuleNotFoundError("\n" + print_msg_box(errortext, title="ERROR"))
                     

@@ -250,17 +250,29 @@ def json_to_dict(json_file):
                 if new_input_val == 'couplings':
                     returnable_list_of_probs[n][new_input_val] = {}
                     for coupling in data[prob_name][input_val]:
+                        if len(data[prob_name][input_val][coupling]) != 2:
+                            errortext = "Length of input for " + coupling + f" is {len(data[prob_name][input_val][coupling])}!"
+                            errortext += "\nInput for couplings should be <name>:[<real>, <imaginary>]"
+                            errortext = help.print_msg_box(errortext, title="ERROR")
+                            raise ValueError("\n" + errortext)
+                        
                         returnable_list_of_probs[n][new_input_val][coupling] = complex(*data[prob_name][input_val][coupling])
+                        
                 elif new_input_val == 'options':
                     returnable_list_of_probs[n][new_input_val] = {}
                     for option in data[prob_name][input_val]:
                         returnable_list_of_probs[n][new_input_val][option.lower()] = data[prob_name][input_val][option]
+                        
+                elif new_input_val == "particles":
+                    returnable_list_of_probs[n][new_input_val] = {}
+                    for particle in data[prob_name][input_val]:
+                        p_id, p_mass, p_width = particle
+                        returnable_list_of_probs[n][new_input_val][p_id] = (p_mass, p_width)
                 else:
                     returnable_list_of_probs[n][new_input_val] = data[prob_name][input_val]
-        
         return returnable_list_of_probs
-                
-        
+
+
 
 def main(raw_args=None):
     parser = argparse.ArgumentParser()
@@ -409,5 +421,123 @@ def main(raw_args=None):
         MW.addprobabilities(branchlist, inputfile, tbranch, outtreefilename, verbosity, lhe2root, local_verbosity, n_events)
         
 if __name__ == "__main__":
+    
+    VALID_MATRIXELEMENT = {
+        "MCFM",
+        "JHUGen",
+        "ANALYTICAL"
+    }
+    
+    VALID_PRODUCTION = {
+        "ZZGG",
+        "ZZQQB",
+        "ZZQQB_STU", #// Should be the same as ZZQQB, just for crosscheck
+        "ZZINDEPENDENT",
+
+        "ttH", #// ttH
+        "bbH", #// bbH
+
+        "JQCD", #// ? + 1 jet
+
+        "JJQCD",# // SBF
+        "JJVBF",# // VBF
+        "JJEW",# // VBF+VH (had.)
+        "JJEWQCD",# // VBF+VH+QCD, all hadronic
+        "Had_ZH",# // ZH, Z->uu/dd
+        "Had_WH",# // W(+/-)H, W->ud
+        "Lep_ZH",# // ZH, Z->ll/nunu
+        "Lep_WH",# // W(+/-)H, W->lnu
+
+        # // s-channel contributions
+        "ZZQQB_S",
+        "JJQCD_S",
+        "JJVBF_S",
+        "JJEW_S",
+        "JJEWQCD_S",
+        "Had_ZH_S",
+        "Had_WH_S",
+        "Lep_ZH_S",
+        "Lep_WH_S",
+
+        # // t+u-channel contributions
+        "ZZQQB_TU",
+        "JJQCD_TU",
+        "JJVBF_TU",
+        "JJEW_TU",
+        "JJEWQCD_TU",
+        "Had_ZH_TU",
+        "Had_WH_TU",
+        "Lep_ZH_TU",
+        "Lep_WH_TU",
+
+        "GammaH", #// gammaH, stable A (could implement S and TU in the future
+    }
+    
+    VALID_PROCESS = {
+        "HSMHiggs", #// Call this for any MCFM |H|**2-only ME.
+        "H0_g1prime2",
+        "H0hplus",
+        "H0minus",
+        "H0_Zgsg1prime2",
+        "H0_Zgs",
+        "H0_Zgs_PS",
+        "H0_gsgs",
+        "H0_gsgs_PS",
+
+        "D_g1g1prime2",
+        "D_g1g2",
+        "D_g1g2_pi_2",
+        "D_g1g4",
+        "D_g1g4_pi_2",
+        "D_zzzg",
+        "D_zzgg",
+        "D_zzzg_PS",
+        "D_zzgg_PS",
+        "D_zzzg_g1prime2",
+        "D_zzzg_g1prime2_pi_2",
+
+        "H1minus", #// 1-
+        "H1plus", #// 1+
+
+        "H2_g1", #// 2m+, Zg, gg
+        "H2_g2", #// 2h2+
+        "H2_g3", #// 2h3+
+        "H2_g4", #// 2h+
+        "H2_g5", #// 2b+
+        "H2_g1g5", #// 2m+
+        "H2_g6", #// 2h6+
+        "H2_g7", #// 2h7+
+        "H2_g8", #// 2h-
+        "H2_g9", #// 2h9-
+        "H2_g10", #// 2h10-
+
+        "bkgGammaGamma", #// gamma+gamma cont.
+        "bkgZGamma", #// Z+gamma cont.
+        "bkgZJets", #// Z + 0/1/2 jets (ZZGG, JQCD, JJQCD)
+        "bkgZZ", #// qq/gg->ZZ cont.
+        "bkgWW", #// qq/gg->WW cont.
+        "bkgWWZZ", #// gg->ZZ+WW cont.
+
+        "bkgZZ_SMHiggs", #// ggZZ cont. + SMHigg
+        "bkgWW_SMHiggs", #// ggWW cont. + SMHiggs
+        "bkgWWZZ_SMHiggs", #// ggZZ+WW cont. + SMHiggs
+
+        "HSMHiggs_WWZZ", #// MCFM |H|**2 ZZ+WW with ZZ-WW interference
+
+        # /**** For width ***/
+        "D_gg10",
+
+        # /***** Self Defined******/
+        "SelfDefine_spin0",
+        "SelfDefine_spin1",
+        "SelfDefine_spin2",
+    }
+    
+    VALID_OPTION = {
+        "dividep",
+        "matchmh",
+        "jetpt"
+    }
+    
     main()
     
