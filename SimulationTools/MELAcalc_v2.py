@@ -289,7 +289,7 @@ def main(raw_args=None):
     config_possibilities.add_argument('-b', '--bfile', type=str, help="The file containing your branch names")
     config_possibilities.add_argument('-j', '--jsonFile', type=str, help="The JSON file containing your branch names")
     
-    parser.add_argument('-l', '--lhe2root', action="store_true", help="Enable this if you want to use lhe2root naming")
+    parser.add_argument('-l', '--lhe2root', action="store_true", help="Enable this if you want to use lhe2root/GEN level naming from LHE2ROOT")
     parser.add_argument('-ow', '--overwrite', action="store_true", help="Enable if you want to overwrite files in the output folder")
     parser.add_argument('-v', '--verbose', choices=[0,1,2,3,4,5], type=int, default=0)
     parser.add_argument('-vl', '--verbose_local', choices=[0,1,2], type=int, default=0)
@@ -418,7 +418,8 @@ def main(raw_args=None):
         print("Read '"+inputfile+"'\n")
         print("Write '"+outtreefilename+"'\n")
         
-        MW.addprobabilities(branchlist, inputfile, tbranch, outtreefilename, verbosity, lhe2root, local_verbosity, n_events)
+        calculated_probabilities = MW.addprobabilities(branchlist, inputfile, tbranch, verbosity, lhe2root, local_verbosity, n_events)
+        MW.dump(inputfile, tbranch, outtreefilename, calculated_probabilities)
         
 if __name__ == "__main__":
     
