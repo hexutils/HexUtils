@@ -13,12 +13,10 @@
         "Prod":false,
         "Dec":true,
         "Particles":[
-            [23, 3.09689, 0.0009],
-            [25, 6.78, 0.161]
+            [23, 3.09689, 0.0009]
         ],
         "Options":{
-            "DivideP":"ghz1",
-            "MatchmH":"M4L"
+            "DivideP":"ghz1"
         }
     },
 
@@ -36,12 +34,10 @@
         "Prod":false,
         "Dec":true,
         "Particles":[
-            [23, 3.09689, 0.0009],
-            [25, 6.78, 0.161]
+            [23, 3.09689, 0.0009]
         ],
         "Options":{
-            "DivideP":"ghz1",
-            "MatchmH":"M4L"
+            "DivideP":"ghz1"
         }
     }
 }
