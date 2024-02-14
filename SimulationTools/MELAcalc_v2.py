@@ -282,6 +282,7 @@ def main(raw_args=None):
     input_possibilities.add_argument('-id', '--idirectory', type=str, help="An entire folder you want weights applied to")
     
     parser.add_argument('-o', '--outdr', type=str, required=True, help="The output folder")
+    parser.add_argument('-fp', '--prefix', type=str, default="", help="Optional prefix to the output file name")
     parser.add_argument('-nt', '--newTree', type=str, default="", help="Write down a new tree name if you want to dump the results to a new tree")
     parser.add_argument('-t', '--tBranch', type=str, default="eventTree", help="The name of the TBranch you are using")
     parser.add_argument('-s', '--subdr', nargs=1, type=str, default="", help="Optional subdirectory, otherwise will default to the input files")
@@ -308,6 +309,7 @@ def main(raw_args=None):
         inputfiles = help.recurse_through_folder(input_directory, ".root")
     
     pthsubdirs = args.subdr if args.subdr else inputfiles
+    output_file_prefix = args.prefix
     outputdir = args.outdr
     newTree = args.newTree
     
@@ -401,7 +403,7 @@ def main(raw_args=None):
         ind = inputfile.split("/").index(pthsubdir)
 
         tagtreefile = "/".join(inputfile.split("/")[ind:])
-        outtreefilename = outputdir+tagtreefile
+        outtreefilename = outputdir+output_file_prefix+tagtreefile
 
         print("\n================ Processing user input ================\n")
 

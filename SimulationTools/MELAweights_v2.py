@@ -16,6 +16,12 @@ def tlv(pt, eta, phi, m):
 def exportPath():
     os.system("export LD_LIBRARY_PATH=../JHUGenMELA/MELA/data/$SCRAM_ARCH/:${LD_LIBRARY_PATH}")
 
+def special_cases(coupl): #set all of your special case couplings here!
+    if 'ghv' in coupl:
+        return True
+    
+    return False
+
 def addprobabilities(list_of_prob_dicts, infile, tTree, verbosity, 
                     is_gen=False, local_verbose=0, N_events=-1):
     
@@ -188,7 +194,7 @@ def addprobabilities(list_of_prob_dicts, infile, tTree, verbosity,
     [make_MELA_input_lists(i) for i in tqdm(range(N_events), total=N_events, position=0, leave=True, desc="MELA pre-processing")]
     
     del t_data
-    f.close()
+    # f.close()
     
     if is_gen:
         inputEventNum = 1
@@ -225,13 +231,18 @@ def addprobabilities(list_of_prob_dicts, infile, tTree, verbosity,
         calc_production = prob_dict['prod']
         calc_decay = prob_dict['dec']
         
-        #The following quantities can be multi valued (i.e. you can have multiple couplings)
-        # couplings = prob_dict['couplings']
-        
-        
+        ren_scale = 0.5
+        fac_scale = 0.5
+        scale_scheme = 0
         if isinstance(options, dict):
             if 'dividep' in options.keys() and options['dividep'] == prob_dict['name']:
                 options['dividep'] = prob_name
+            if "fac_scale" in options.keys():
+                fac_scale = options['fac_scale']
+            if "ren_scale" in options.keys():
+                ren_scale = options['ren_scale']
+            if "scale_scheme" in options.keys():
+                scale_scheme = options["scale_scheme"]
         else:
             options = {'dummy':'you stupid'}
         
@@ -330,17 +341,13 @@ def addprobabilities(list_of_prob_dicts, infile, tTree, verbosity,
                 TUtil.SetMass(particles[particle][0], particle)
                 TUtil.SetDecayWidth(particles[particle][1], particle)
             
+            m.setRenFacScaleMode(scale_scheme, scale_scheme, ren_scale, fac_scale)
+            
             # Setup event information depending on RECO or LHE level #
             m.setInputEvent(lepton_list[i], jets_list[i], mothers_list[i], inputEventNum)
             
             m.setProcess(MELA_process, MELA_matrix_element, MELA_production)
             
-            # set_couplings_list = []
-            def special_cases(coupl): #set all of your couplings here!
-                if 'ghv' in coupl:
-                    return True
-                
-                return False
             for coupl in couplings:
                 if i == 0 and coupl not in dir(m) and not special_cases(coupl):
                     errortext = "Coupling " + coupl + " does not exist!"
@@ -353,8 +360,22 @@ def addprobabilities(list_of_prob_dicts, infile, tTree, verbosity,
                     setattr(m, coupl, couplings[coupl])
                 ###### NOW BEGINS THE SPECIAL CASES ######
                 elif 'ghv' in coupl:
-                    setattr(m, coupl.replace('v', 'z'), couplings[coupl])
-                    setattr(m, coupl.replace('v', 'w'), couplings[coupl])
+                    coupl_1 = coupl.replace('v', 'z')
+                    coupl_2 = coupl.replace('v', 'w')
+                    
+                    if coupl_1 not in dir(m):
+                        errortext = "Coupling " + coupl_1 + " does not exist"
+                        raise ModuleNotFoundError("\n" + print_msg_box(errortext, title="ERROR"))
+                    
+                    if coupl_2 not in dir(m):
+                        errortext = "Coupling " + coupl_2 + " does not exist"
+                        raise ModuleNotFoundError("\n" + print_msg_box(errortext, title="ERROR"))
+                    
+                    if local_verbose > 1 and i == 0:
+                        print("Special case " + coupl + " -> " + coupl_1 + " and " + coupl_2)
+                        
+                    setattr(m, coupl_1, couplings[coupl])
+                    setattr(m, coupl_2, couplings[coupl])
                 else:
                     errortext = coupl + " Is an unhandled special case!"
                     raise ValueError("\n" + print_msg_box(errortext, title="ERROR")) #handles the "special cases"
@@ -407,7 +428,12 @@ def addprobabilities(list_of_prob_dicts, infile, tTree, verbosity,
             
             divisor_name = options['dividep']
             
-            if divisor_name == prob_name:
+            if divisor_name not in probabilities.keys():
+                errortext = f"Unable to divide {prob_name} by {divisor_name}"
+                errortext += f"\nProbability {divisor_name} should be calculated first!"
+                raise KeyError("\n" + errortext, title="ERROR")
+            
+            elif divisor_name == prob_name:
                 probabilities[prob_name + "_scaled"] = np.ones(probabilities[prob_name].shape, dtype=np.float64)
             else:
                 probabilities[prob_name + "_scaled"] = probabilities[prob_name].copy()/probabilities[divisor_name]
@@ -449,4 +475,6 @@ def dump(infile, tTree, outfile, probabilities, newTree="", N_events=-1):
             root_input[n][0] = probabilities[prob][i]
         newt.Fill()
     newf.Write()
+    newf.Close()
+    f.Close()
     return
