@@ -158,7 +158,7 @@ def make_legend_label(data, name, extra_space=True):
     
     return labelstr
 
-def scale(scaleto, counts, bins=[], return_scale_factor=False):
+def scale(scaleto, counts, bins=None, return_scale_factor=False):
     """This function scales histograms according to their absolute area under the curve
 
     Parameters
@@ -187,7 +187,7 @@ def scale(scaleto, counts, bins=[], return_scale_factor=False):
     
     new_counts = signs*counts*scaleto/np.sum(counts)
     new_counts[~np.isfinite(new_counts)] = 0
-    if any(bins):
+    if bins is not None:
         if return_scale_factor:
             return new_counts, bins, scaleto/np.sum(counts)
         
@@ -197,3 +197,16 @@ def scale(scaleto, counts, bins=[], return_scale_factor=False):
         return new_counts, scaleto/np.sum(counts)
     
     return new_counts
+
+def unroll_ND_histogram(N_dimension_counts, isbkg=False):
+    unrolled_arr = N_dimension_counts.ravel()
+    if isbkg:
+        hist_integral = unrolled_arr.sum()
+        fill_val = hist_integral*0.1/len(unrolled_arr)
+        unrolled_arr[unrolled_arr <= 0] = fill_val
+    else:
+        unrolled_arr[unrolled_arr < 0] = 0
+    
+    bins = np.arange(len(unrolled_arr) + 1)
+
+    return unrolled_arr, bins
