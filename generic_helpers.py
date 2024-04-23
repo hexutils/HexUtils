@@ -49,6 +49,11 @@ def get_spatial(four_vector):
         }
     )
 
+def MELA_simpleParticle_toVector(simpleParticle):
+    id = simpleParticle.id
+    vec = simpleParticle.PxPyPzE_vector
+    return id, vector.obj(px=vec[0], py=vec[1], pz=vec[2], E=vec[3])
+
 def print_msg_box(msg, indent=1, width=0, title=""):
     """returns message-box with optional title.
     Ripped from https://stackoverflow.com/questions/39969064/how-to-print-a-message-box-in-python
@@ -204,9 +209,10 @@ def unroll_ND_histogram(N_dimension_counts, isbkg=False):
         hist_integral = unrolled_arr.sum()
         fill_val = hist_integral*0.1/len(unrolled_arr)
         unrolled_arr[unrolled_arr <= 0] = fill_val
-    else:
-        unrolled_arr[unrolled_arr < 0] = 0
+
+    pos_arr = np.where(unrolled_arr > 0, unrolled_arr, 0)
+    neg_arr = -1*np.where(unrolled_arr < 0, unrolled_arr, 0)
     
     bins = np.arange(len(unrolled_arr) + 1)
 
-    return unrolled_arr, bins
+    return (pos_arr, neg_arr), bins
