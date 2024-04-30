@@ -259,7 +259,7 @@ def main(raw_args=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("outputfile")
     parser.add_argument("inputfile", nargs="+")
-    g = parser.add_mutually_exclusive_group(required=True)
+    g = parser.add_mutually_exclusive_group()
     g.add_argument("--vbf", action="store_true")
     g.add_argument("--vbf_withdecay", action="store_true")
     g.add_argument("--zh", action="store_true")
@@ -271,12 +271,10 @@ def main(raw_args=None):
     g.add_argument("--wh", action="store_true")
     g.add_argument("--ggH4l", action="store_true") # for ggH 4l JHUGen and prophecy  
     g.add_argument("--ggH4lMG", action="store_true") # for ggH4l Madgraph with weights
-    parser.add_argument("--remove_flavor", action="store_false")
+    parser.add_argument("--remove_flavor", action="store_true")
     parser.add_argument("--merge_photon", action="store_true") # for ggH 4l JHUGen and prophecy
-    parser.add_argument("--calc_prodprob", action="store_true")
-    parser.add_argument("--calc_decayprob", action="store_true")
     parser.add_argument("--CJLST", action="store_true")
-    parser.add_argument("--MELAcalc", action="store_true")
+    parser.add_argument("--no_mothers", action="store_true")
     parser.add_argument('-v', '--verbose', action="store_true") #if enabled it will be verbose
     parser.add_argument('-n', '--n_events', type=int, default=-1)
     parser.add_argument("-t", "--tree_name", type=str, default="tree")
@@ -312,7 +310,7 @@ def main(raw_args=None):
     )
     
     branchnames_vector = tuple()
-    if args.MELAcalc:
+    if not args.no_mothers:
         branchnames_vector += ("LHEDaughterId","LHEDaughterPt","LHEDaughterEta","LHEDaughterPhi","LHEDaughterMass")
         branchnames_vector += ("LHEAssociatedParticleId","LHEAssociatedParticlePt","LHEAssociatedParticleEta","LHEAssociatedParticlePhi","LHEAssociatedParticleMass")
         branchnames_vector += ("LHEMotherId","LHEMotherPx","LHEMotherPy", "LHEMotherPz", "LHEMotherE")
@@ -372,7 +370,7 @@ def main(raw_args=None):
         
         associated_list = [MELA_simpleParticle_toVector(particle) for particle in the_event.associated.toList()]
         daughter_list = [MELA_simpleParticle_toVector(particle) for particle in the_event.daughters.toList()]
-        mothers_list = [MELA_simpleParticle_toVector(particle) for particle in the_event.mothers.toList()] if args.remove)flavor else []
+        mothers_list = [MELA_simpleParticle_toVector(particle) for particle in the_event.mothers.toList()] if not args.remove_flavor else []
         
         t["weight"][i] = the_event.weight
         for rwgt_id in the_event.weights.keys():
@@ -408,7 +406,7 @@ def main(raw_args=None):
                 t[f"pzj{p+1}"][i] =  vec.pz
                 t[f"Ej{p+1}"][i] = vec.E
         
-        if args.MELAcalc:
+        if not args.no_mothers:
             for p, id_and_vec in enumerate(associated_list):
                 id, vec = id_and_vec
                 t["LHEAssociatedParticleId"][i][p] =   id
