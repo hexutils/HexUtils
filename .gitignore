@@ -1,2 +1,8 @@
 JHUGenMELA/
 __pycache__/
+**/*.DAT
+**/*.dat
+**/*.root
+**/*.sm*
+**/*Pdfdata*
+**/*.lhe
