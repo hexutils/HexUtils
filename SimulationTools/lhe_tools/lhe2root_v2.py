@@ -97,7 +97,7 @@ class LHEEvent_Hwithdecay(LHEEvent):
         if not self.isgen: mothers = None
         return daughters, associated, mothers
 
-class LHEEvent_HwithdecayOnly(LHEEvent):
+class LHEEvent_DecayOnly(LHEEvent):
     def __init__(self, event, isgen):
         super().__init__(event, isgen)
 
@@ -119,10 +119,10 @@ class LHEEvent_HwithdecayOnly(LHEEvent):
             mother2s.append(mother2)
             if status == -1:
                 mothers.append(line)
-            if(abs(id) == 22 ):
-                associated.append(line)
-            if ( 11 <= abs(id) <= 16 ):
+            elif ( 11 <= abs(id) <= 16 ):
                 daughters.append(line)
+            else:
+                associated.append(line)
 
         if not self.isgen: mothers = []
         return daughters, associated, mothers
@@ -237,7 +237,7 @@ class LHEEvent_StableHiggsZHHAWK(LHEEvent):
                 mothers.append(line)
             if id == 25:
                 if status != 1:
-                    raise ValueError("Higgs has status {}, expected it to be 1\n\n".format(status) + "\n".join(lines))
+                    raise ValueError("Higgs has status {}, expected it to be 1\n\n".format(status) + "\n".join(self.lines))
                 daughters.append(line)
             
             if abs(id) in (0, 1, 2, 3, 4, 5, 11, 12, 13, 14, 15, 16, 21,22) and status == 1:
@@ -246,7 +246,7 @@ class LHEEvent_StableHiggsZHHAWK(LHEEvent):
         if len(daughters) != 1:
             raise ValueError("More than one H in the event??\n\n"+"\n".join(self.lines))
         if self.nassociatedparticles is not None and len(associated) != self.nassociatedparticles:
-            raise ValueError("Wrong number of associated particles (expected {}, found {})\n\n".format(self.nassociatedparticles, len(associated))+"\n".join(lines))
+            raise ValueError("Wrong number of associated particles (expected {}, found {})\n\n".format(self.nassociatedparticles, len(associated))+"\n".join(self.lines))
         if len(mothers) != 2:
             raise ValueError("{} mothers in the event??\n\n".format(len(mothers))+"\n".join(self.lines))
 
@@ -271,7 +271,7 @@ def main(raw_args=None):
     g.add_argument("--wh", action="store_true")
     g.add_argument("--ggH4l", action="store_true") # for ggH 4l JHUGen and prophecy  
     g.add_argument("--ggH4lMG", action="store_true") # for ggH4l Madgraph with weights
-    parser.add_argument("--use_flavor", action="store_true")
+    parser.add_argument("--remove_flavor", action="store_false")
     parser.add_argument("--merge_photon", action="store_true") # for ggH 4l JHUGen and prophecy
     parser.add_argument("--calc_prodprob", action="store_true")
     parser.add_argument("--calc_decayprob", action="store_true")
@@ -330,7 +330,7 @@ def main(raw_args=None):
         t[branch] = np.zeros( (len(all_events), 4), dtype=np.single )
 
     if args.ggH4l:
-        inputfclass = LHEEvent_HwithdecayOnly
+        inputfclass = LHEEvent_Hwithdecay
     elif args.vbf or args.zh_lep or args.wh_lep:
         inputfclass = LHEEvent_StableHiggs
     elif args.zh or args.wh:
@@ -340,7 +340,7 @@ def main(raw_args=None):
     elif args.zh_lep_hawk:
         inputfclass = LHEEvent_StableHiggsZHHAWK
     else:
-        inputfclass = LHEEvent_Hwithdecay
+        inputfclass = LHEEvent_DecayOnly
 
     if args.n_events > 0:
         all_events = all_events[:min(len(all_events), args.n_events)]
@@ -365,14 +365,14 @@ def main(raw_args=None):
         
         m.setProcess(Mela.Process.SelfDefine_spin0, Mela.MatrixElement.JHUGen, production)
         the_event = inputfclass(event, True)
-        m.setInputEvent(the_event.daughters, the_event.associated, the_event.mothers, True, False)
+        m.setInputEvent(the_event.daughters, the_event.associated, the_event.mothers, True)
 
         if args.ggH4l or args.ggH4lMG:
             t['M4L'][i], t['MZ2'][i], t['MZ1'][i], t['costheta1d'][i], t['costheta2d'][i], t['Phid'][i], t['costhetastard'][i], t['Phi1d'][i] = m.computeDecayAngles()
         
         associated_list = [MELA_simpleParticle_toVector(particle) for particle in the_event.associated.toList()]
         daughter_list = [MELA_simpleParticle_toVector(particle) for particle in the_event.daughters.toList()]
-        mothers_list = [MELA_simpleParticle_toVector(particle) for particle in the_event.mothers.toList()] if args.use_flavor else []
+        mothers_list = [MELA_simpleParticle_toVector(particle) for particle in the_event.mothers.toList()] if args.remove)flavor else []
         
         t["weight"][i] = the_event.weight
         for rwgt_id in the_event.weights.keys():
