@@ -83,7 +83,12 @@ def plotScan(
     x_transform:function=None, ax:mpl.axes._axes.Axes=None, dashed:bool=False, 
     last_step:bool=False, color:str=None, linewidth:float=3
     ):
-    """Plots a scan for you
+    """Plots a scan for you. Run as follows:
+    fig = plt.figure()
+    plotScan(*parameters*)
+    plotScan(*parameters*)
+    plotScan(*parameters*, last_step=True)
+    fig.savefig(*filename*)
 
     Parameters
     ----------
