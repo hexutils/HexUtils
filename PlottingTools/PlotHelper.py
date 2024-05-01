@@ -4,12 +4,6 @@ import mplhep as hep
 import numpy as np
 import uproot
 import inspect
-
-plt.style.use(hep.style.CMS)
-mpl.rcParams['axes.labelsize'] = 40
-mpl.rcParams['xaxis.labellocation'] = 'center'
-mpl.rcParams['xtick.labelsize'] = 12
-mpl.rcParams['ytick.labelsize'] = 12
 import warnings
 from matplotlib.ticker import MaxNLocator
 
@@ -17,7 +11,12 @@ prop_cycle = plt.rcParams['axes.prop_cycle']
 colors = prop_cycle.by_key()['color']
 
 def ratioPlot(list_of_counts, bins, names=None, reference=0, histtype="step", list_of_count_errors = None, xlabel=None):
-    
+    plt.style.use(hep.style.CMS)
+    mpl.rcParams['axes.labelsize'] = 40
+    mpl.rcParams['xaxis.labellocation'] = 'center'
+    mpl.rcParams['xtick.labelsize'] = 20
+    mpl.rcParams['ytick.labelsize'] = 20
+    mpl.rcParams['mathtext.fontset'] = 'stix'
     if names is not None and len(names) != len(list_of_counts):
         raise ValueError("Names and data should be the same length!")
     
@@ -80,8 +79,9 @@ def ratioPlot(list_of_counts, bins, names=None, reference=0, histtype="step", li
 def plotScan(
     file:str, variable:str, 
     label:str=None, var_name:str=None, max_yval:float=10, 
-    x_transform:function=None, ax:mpl.axes._axes.Axes=None, dashed:bool=False, 
-    last_step:bool=False, color:str=None, linewidth:float=3
+    x_transform=None, ax:mpl.axes._axes.Axes=None, dashed:bool=False, 
+    last_step:bool=False, color:str=None, linewidth:float=3,
+    margin_mult_x:float=0.95, margin_add_y:float=0.3
     ):
     """Plots a scan for you. Run as follows:
     fig = plt.figure()
@@ -116,6 +116,12 @@ def plotScan(
         Sets the color of the line. If None, use the default colorscheme, by default None
     linewidth : float, optional
         Sets the width of the plotted lines, by default 3
+    margin_mult_x : float, optional
+        Sets the multiplier for the x location of the confidence text relative to the last point on the axis,
+        by default 0.95
+    margin_add_y : float, optional
+        Sets the value to be added to 1 and 4 to place the confidence text for the y value,
+        by default 0.3
 
     Returns
     -------
@@ -131,7 +137,7 @@ def plotScan(
     """
     if x_transform is None:
         pass
-    elif not isinstance(x_transform, function):
+    elif not callable(x_transform):
         raise TypeError(f"x_transform must be a function with 1 input!")
     elif len(inspect.signature(x_transform).parameters) != 1:
         raise TypeError(f"x_transform must be a function with 1 input!")
@@ -146,11 +152,12 @@ def plotScan(
         x_data = [x_transform(i) for i in data[variable][indices]]
     else:
         x_data = data[variable][indices]
+    y_data = 2*data['deltaNLL'][indices]
 
     if color is not None:
         ax.plot(
             x_data,
-            2*data['deltaNLL'][indices],
+            y_data,
             lw=linewidth,
             label=label,
             color=color,
@@ -159,13 +166,15 @@ def plotScan(
     else:
         ax.plot(
             x_data,
-            2*data['deltaNLL'][indices],
+            y_data,
             lw=linewidth,
             label=label,
             ls="dashed" if dashed else "solid"
         )
 
     if last_step:
+        ax.margins(0, 0)
+        max_xval = max(ax.get_xlim())
         ax.set_ylim(0, max_yval)
         hep.cms.text("Preliminary", ax=ax)
         hep.cms.lumitext(r"138 $fb^{-1}$ (13 TeV)")
@@ -175,10 +184,15 @@ def plotScan(
             ax.set_xlabel(var_name, fontsize=40, loc='center')
 
         ax.axhline(1, ls='dashed', color='black', lw=2, dashes=(8, 5))
-        ax.text(max(ax.get_xlim()), 1.1, "68% CL", horizontalalignment="right")
+        ax.text(max_xval*margin_mult_x, 1+margin_add_y, "68% CL", horizontalalignment="right")
         ax.axhline(4, ls='dashed', color='black', lw=2, dashes=(8, 5))
-        ax.text(max(ax.get_xlim()), 4.1, "95% CL", horizontalalignment="right")
+        ax.text(max_xval*margin_mult_x, 4+margin_add_y, "95% CL", horizontalalignment="right")
+        ax.set_xlim(0, max_xval)
         ax.legend()
+
+        plt.style.use(hep.style.CMS)
+        ax.tick_params(axis='both', which='both', labelsize=20, reset=True)
+        mpl.rcParams['mathtext.fontset'] = 'stix'
     else:
         if var_name is not None:
             print("WARNING: Need to set both last_step and var_name to make label!")
