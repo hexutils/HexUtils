@@ -11,6 +11,23 @@ import vector
 
 import Mela
 
+def check_enum(entry):
+    found = False
+    i = 0
+    possible_value = tuple(Mela.Production.__dict__['__entries'].keys())
+    while (not found) and (i < len(possible_value)):
+        if entry == possible_value[i].lower():
+            found = True
+            entry = possible_value[i]
+        i += 1
+    if not found:
+        possible_value = tuple(map(str.lower, possible_value))
+        errortext = "Unknown Production Mode given!"
+        errortext += "\nThe following are valid Production modes"
+        errortext += "\n" + "\n".join(possible_value)
+        raise ValueError("\n" + errortext)
+    return entry
+
 def LHE_line_to_simpleParticle_t(lhe_line):
     line_list = lhe_line.strip().split()
     id = int(line_list[0])
@@ -119,9 +136,9 @@ class LHEEvent_DecayOnly(LHEEvent):
             mother2s.append(mother2)
             if status == -1:
                 mothers.append(line)
-            elif ( 11 <= abs(id) <= 16 ):
+            elif (11 <= abs(id) <= 16) and status == 1:
                 daughters.append(line)
-            else:
+            elif status == 1:
                 associated.append(line)
 
         if not self.isgen: mothers = []
@@ -256,31 +273,36 @@ class LHEEvent_StableHiggsZHHAWK(LHEEvent):
     nassociatedparticles = None
 
 def main(raw_args=None):
+    LHE2ROOT_OPTIONS = [
+        "vbf", "vbf_withdecay", 
+        "zh", "zh_withdecay", "zh_lep", "zh_lep_hawk",
+        "wh_withdecay", "wh_lep", "wh",
+        "ggh4l", "ggh4lmg",
+        "decayonly_default"
+        ]
+    PRODUCTION_OPTIONS = [
+        "JJVBF", "ZZGG",
+        "Had_ZH", "Lep_ZH",
+        "Had_WH", "Lep_WH"
+    ]
     parser = argparse.ArgumentParser()
     parser.add_argument("outputfile")
     parser.add_argument("inputfile", nargs="+")
-    g = parser.add_mutually_exclusive_group()
-    g.add_argument("--vbf", action="store_true")
-    g.add_argument("--vbf_withdecay", action="store_true")
-    g.add_argument("--zh", action="store_true")
-    g.add_argument("--zh_withdecay", action="store_true")
-    g.add_argument("--zh_lep", action="store_true")
-    g.add_argument("--zh_lep_hawk", action="store_true")
-    g.add_argument("--wh_withdecay", action="store_true")
-    g.add_argument("--wh_lep", action="store_true")
-    g.add_argument("--wh", action="store_true")
-    g.add_argument("--ggH4l", action="store_true") # for ggH 4l JHUGen and prophecy  
-    g.add_argument("--ggH4lMG", action="store_true") # for ggH4l Madgraph with weights
+    parser.add_argument("-m", "--mode", default="decayonly_default", type=str, choices=[LHE2ROOT_OPTIONS])
+    parser.add_argument("-p", "--production", type=check_enum, required=True, choices=PRODUCTION_OPTIONS)
     parser.add_argument("--remove_flavor", action="store_true")
     parser.add_argument("--merge_photon", action="store_true") # for ggH 4l JHUGen and prophecy
     parser.add_argument("--CJLST", action="store_true")
     parser.add_argument("--no_mothers", action="store_true")
-    parser.add_argument('-v', '--verbose', action="store_true") #if enabled it will be verbose
     parser.add_argument('-n', '--n_events', type=int, default=-1)
     parser.add_argument("-t", "--tree_name", type=str, default="tree")
+    parser.add_argument("-ow", "--overwrite", action="store_true")
     args = parser.parse_args(raw_args) #This allows the parser to take in command line arguments if raw_args=None
 
-    if os.path.exists(args.outputfile): 
+    mode = args.mode
+    production = eval(f"Mela.Production.{args.production}")
+
+    if os.path.exists(args.outputfile) and not args.overwrite:
         raise IOError(args.outputfile+" already exists")
     
     for i in args.inputfile:
@@ -290,11 +312,12 @@ def main(raw_args=None):
     t = {}
     c = {}
 
-    branchnames_scalar = ("costheta1", "costheta2", "Phi1", "costhetastar", "Phi", "HJJpz","M4L","MZ1","MZ2","costheta1d","costheta2d","Phid","costhetastard","Phi1d")
-    if args.zh or args.wh or args.zh_withdecay or args.wh_withdecay or args.zh_lep or args.wh_lep or args.zh_lep_hawk:
-        branchnames_scalar += ("mV", "mVstar", "pxj1", "pyj1", "pzj1", "Ej1", "pxj2", "pyj2", "pzj2", "Ej2", "ptV")
-    elif args.vbf or args.vbf_withdecay:
-        branchnames_scalar += ("q2V1", "q2V2","Dphijj")
+    branchnames_scalar = ("costheta1", "costheta2", "Phi1", "costhetastar", "Phi", "M4L","MZ1","MZ2","costheta1d","costheta2d","Phid","costhetastard","Phi1d")
+
+    if production in (Mela.Production.Had_ZH, Mela.Production.Lep_ZH, Mela.Production.Had_WH, Mela.Production.Lep_WH):
+        branchnames_scalar += ("mV", "mVstar", "pxj1", "pyj1", "pzj1", "Ej1", "pxj2", "pyj2", "pzj2", "Ej2", "ptV", "rapHJJ")
+    elif production in (Mela.Production.JJVBF, ):
+        branchnames_scalar += ("q2V1", "q2V2","Dphijj", "rapHJJ", "HJJpz")
     
     branchnames_scalar += (
         "ptdau1","pxdau1","pydau1","pzdau1","Edau1","flavdau1", 
@@ -302,10 +325,9 @@ def main(raw_args=None):
         "ptdau3","pxdau3","pydau3","pzdau3","Edau3","flavdau3",
         "ptdau4","pxdau4","pydau4","pzdau4","Edau4","flavdau4",
         
-        "ptH", "pxH",  "pyH",  "pzH",  "EH","rapH","rapHJJ","decayMode","qfl1","qfl2","qfl1mom","qfl2mom",
+        "ptH", "pxH",  "pyH",  "pzH",  "EH", "rapH",
         "pxj1", "pyj1", "pzj1", "Ej1",
         "pxj2", "pyj2", "pzj2", "Ej2",
-        "pxph1","pyph1","pzph1","Eph1",
         "weight",
     )
     
@@ -327,53 +349,71 @@ def main(raw_args=None):
     for branch in branchnames_vector:
         t[branch] = np.zeros( (len(all_events), 4), dtype=np.single )
 
-    if args.ggH4l:
+    if mode in ("ggh4l", ):
         inputfclass = LHEEvent_Hwithdecay
-    elif args.vbf or args.zh_lep or args.wh_lep:
+    elif mode in ("vbf", "zh_lep", "wh_lep"):
         inputfclass = LHEEvent_StableHiggs
-    elif args.zh or args.wh:
+    elif mode in ("zh", "wh"):
         inputfclass = LHEEvent_StableHiggsVH
-    elif args.zh_withdecay or args.wh_withdecay:
+    elif mode in ("zh_withdecay", "wh_withdecay"):
         inputfclass = LHEEvent_VHHiggsdecay
-    elif args.zh_lep_hawk:
+    elif mode in ("zh_lep_hawk", ):
         inputfclass = LHEEvent_StableHiggsZHHAWK
     else:
         inputfclass = LHEEvent_DecayOnly
 
     if args.n_events > 0:
         all_events = all_events[:min(len(all_events), args.n_events)]
-    
+    all_events = tuple(all_events)
     m = Mela.Mela()
-    if args.zh or args.zh_withdecay:
-        production = Mela.Production.Had_ZH
-    elif args.wh or args.wh_withdecay:
-        production = Mela.Production.Had_WH
-    elif args.vbf or args.vbf_withdecay:
-        production = Mela.Production.JJVBF
-    elif args.zh_lep or args.zh_lep_hawk:
-        production = Mela.Production.Lep_ZH
-    elif args.wh_lep:
-        production = Mela.Production.Lep_WH
-    elif args.ggH4l or args.ggH4l_MG:
-        production = Mela.Production.ZZGG
+
+    # if mode in ("zh", "zh_withdecay"):
+    #     production = Mela.Production.Had_ZH
+    # elif mode in ("wh", "wh_withdecay"):
+    #     production = Mela.Production.Had_WH
+    # elif mode in ("vbf", "vbf_withdecay"):
+    #     production = Mela.Production.JJVBF
+    # elif mode in ("zh_lep", "zh_lep_hawk"):
+    #     production = Mela.Production.Lep_ZH
+    # elif mode in ("wh_lep", ):
+    #     production = Mela.Production.Lep_WH
+    # elif mode in ggH4l or args.ggH4l_MG:
+    #     production = Mela.Production.ZZGG
     
     
-    for i, event in tqdm.tqdm(enumerate(all_events), total=len(all_events)):
+    for i, event in tqdm.tqdm(enumerate(all_events), total=len(all_events), desc="Converting..."):
         
         
         m.setProcess(Mela.Process.SelfDefine_spin0, Mela.MatrixElement.JHUGen, production)
         the_event = inputfclass(event, True)
         m.setInputEvent(the_event.daughters, the_event.associated, the_event.mothers, True)
-
-        if args.ggH4l or args.ggH4lMG:
+        
+        associated_list = tuple([MELA_simpleParticle_toVector(particle) for particle in the_event.associated.toList()])
+        daughter_list   = tuple([MELA_simpleParticle_toVector(particle) for particle in the_event.daughters.toList()])
+        mothers_list    = tuple([MELA_simpleParticle_toVector(particle) for particle in the_event.mothers.toList()] if not args.remove_flavor else [])
+        
+        
+        if production == Mela.Production.ZZGG:
             t['M4L'][i], t['MZ2'][i], t['MZ1'][i], t['costheta1d'][i], t['costheta2d'][i], t['Phid'][i], t['costhetastard'][i], t['Phi1d'][i] = m.computeDecayAngles()
+            
+        elif production in (Mela.Production.Had_ZH, Mela.Production.Lep_ZH, Mela.Production.Had_WH, Mela.Production.Lep_WH):
+            t["mV"][i], t["mVstar"][i], t["costheta1"][i], t["costheta2"][i], t["Phi"][i], t["costhetastar"][i], t["Phi1"][i]= m.computeVHAngles(production)
+            t['M4L'][i], t['MZ2'][i], t['MZ1'][i], t['costheta1d'][i], t['costheta2d'][i], t['Phid'][i], t['costhetastard'][i], t['Phi1d'][i] = m.computeDecayAngles()
+
+        elif production == Mela.Production.JJVBF:
+            t["HJJpz"][i] = sum( [p[1] for p in daughter_list] + [p[1] for p in associated_list], vector.obj(px=0, py=0, pz=0, E=0)).pz
+            t["q2V1"][i], t["q2V2"][i], t["costheta1"][i], t["costheta2"][i], t["Phi"][i], t["costhetastar"][i], t["Phi1"][i]= m.computeVBFAngles()
+            
+            if associated_list[0][1].pt > associated_list[1][1].pt:
+                t["Dphijj"][i] = associated_list[0][1].deltaphi(associated_list[1][1])
+            else:
+                t["Dphijj"][i] = associated_list[1][1].deltaphi(associated_list[0][1])
+            
+            if mode in ("vbf_withdecay", "decayonly_default"):
+                t['M4L'][i], t['MZ2'][i], t['MZ1'][i], t['costheta1d'][i], t['costheta2d'][i], t['Phid'][i], t['costhetastard'][i], t['Phi1d'][i] = m.computeDecayAngles()    
         
-        associated_list = [MELA_simpleParticle_toVector(particle) for particle in the_event.associated.toList()]
-        daughter_list = [MELA_simpleParticle_toVector(particle) for particle in the_event.daughters.toList()]
-        mothers_list = [MELA_simpleParticle_toVector(particle) for particle in the_event.mothers.toList()] if not args.remove_flavor else []
-        
-        t["weight"][i] = the_event.weight
-        for rwgt_id in the_event.weights.keys():
+        t["weight"][i] = the_event.weight #This is the event weight
+        for rwgt_id in the_event.weights.keys(): #This is the madgraph weight
             if i == 0:
                 t[f"weight_{rwgt_id}"] = np.zeros( (len(all_events)), dtype=np.single )
 
@@ -387,24 +427,26 @@ def main(raw_args=None):
             t[f"flavdau{p+1}"][i] = id
             t[f"ptdau{p+1}"][i] =   vec.pt
             t[f"pxdau{p+1}"][i] =   vec.px
-            t[f"pydau{p+1}"][i] =  vec.py
-            t[f"pzdau{p+1}"][i] =  vec.pz
-            t[f"Edau{p+1}"][i] = vec.E
+            t[f"pydau{p+1}"][i] =   vec.py
+            t[f"pzdau{p+1}"][i] =   vec.pz
+            t[f"Edau{p+1}"][i] =    vec.E
         
-        t["ptH"][i] = higgs.pt
-        t["pxH"][i] = higgs.px
-        t["pyH"][i] = higgs.py
-        t["pzH"][i] = higgs.pz
-        t["EH"][i] = higgs.E
+        t["ptH"][i] =  higgs.pt
+        t["pxH"][i] =  higgs.px
+        t["pyH"][i] =  higgs.py
+        t["pzH"][i] =  higgs.pz
+        t["EH"][i] =   higgs.E
         t["rapH"][i] = higgs.rapidity
+        
+        if production in (Mela.Production.JJVBF, Mela.Production.Lep_ZH, Mela.Production.Had_ZH, Mela.Production.Had_WH, Mela.Production.Lep_WH):
+            t["rapHJJ"][i] = sum( [p[1] for p in daughter_list] + [p[1] for p in associated_list], vector.obj(px=0, py=0, pz=0, E=0)).rapidity
             
-        if args.vbf or args.zh or args.wh  or args.zh_lep_hawk:
-            for p, id_and_vec in enumerate(associated_list):
-                id, vec = id_and_vec
-                t[f"pxj{p+1}"][i] =   vec.px
-                t[f"pyj{p+1}"][i] =  vec.py
-                t[f"pzj{p+1}"][i] =  vec.pz
-                t[f"Ej{p+1}"][i] = vec.E
+        for p, id_and_vec in enumerate(associated_list):
+            id, vec = id_and_vec
+            t[f"pxj{p+1}"][i] =   vec.px
+            t[f"pyj{p+1}"][i] =   vec.py
+            t[f"pzj{p+1}"][i] =   vec.pz
+            t[f"Ej{p+1}"][i] =    vec.E
         
         if not args.no_mothers:
             for p, id_and_vec in enumerate(associated_list):
@@ -418,7 +460,7 @@ def main(raw_args=None):
             
             for p, id_and_vec in enumerate(daughter_list):
                 id, vec = id_and_vec
-                t["LHEDaughterId"][i][p] = id
+                t["LHEDaughterId"][i][p] =   id
                 t["LHEDaughterPt"][i][p] =   vec.pt
                 t["LHEDaughterEta"][i][p] =  vec.eta
                 t["LHEDaughterPhi"][i][p] =  vec.phi
@@ -435,7 +477,9 @@ def main(raw_args=None):
     
     with uproot.recreate(args.outputfile) as newf:
         newf[args.tree_name] = t
-        newf["CrossSection"] = c
+        for filename, (cross_section, err) in c.items():
+            f_dumped = filename.split("/")[-1]
+            newf[f"CrossSection/{f_dumped}"] = {"Value":[cross_section], "Uncertainty":[err]}
 
 if __name__ == "__main__":
     errorfile = open("error.txt", 'w+')
