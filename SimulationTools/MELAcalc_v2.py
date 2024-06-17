@@ -240,15 +240,15 @@ def json_to_dict(json_file):
     with open(json_file) as json_data:
         data = json.load(json_data)
 
-        returnable_list_of_probs = [{} for _ in range(len(data))]
+        returnable_list_of_probs = [({}, {}, {}, {}) for _ in range(len(data))] #MELA logistics, couplings, options, particles
         
         for n, prob_name in enumerate(data.keys()):
-            returnable_list_of_probs[n]["name"] = prob_name
+            returnable_list_of_probs[n][0]["name"] = prob_name
             
             for input_val in data[prob_name]:
                 new_input_val = input_val.lower()
                 if new_input_val == 'couplings':
-                    returnable_list_of_probs[n][new_input_val] = {}
+                    # returnable_list_of_probs[n][1][new_input_val] = {}
                     for coupling in data[prob_name][input_val]:
                         if len(data[prob_name][input_val][coupling]) != 2:
                             errortext = "Length of input for " + coupling + f" is {len(data[prob_name][input_val][coupling])}!"
@@ -256,20 +256,21 @@ def json_to_dict(json_file):
                             errortext = help.print_msg_box(errortext, title="ERROR")
                             raise ValueError("\n" + errortext)
                         
-                        returnable_list_of_probs[n][new_input_val][coupling] = complex(*data[prob_name][input_val][coupling])
+                        returnable_list_of_probs[n][1][coupling] = complex(*data[prob_name][input_val][coupling])
                         
                 elif new_input_val == 'options':
-                    returnable_list_of_probs[n][new_input_val] = {}
+                    # returnable_list_of_probs[n][new_input_val] = {}
                     for option in data[prob_name][input_val]:
-                        returnable_list_of_probs[n][new_input_val][option.lower()] = data[prob_name][input_val][option]
+                        returnable_list_of_probs[n][2][option.lower()] = data[prob_name][input_val][option]
                         
                 elif new_input_val == "particles":
-                    returnable_list_of_probs[n][new_input_val] = {}
+                    # returnable_list_of_probs[n][new_input_val] = {}
                     for particle in data[prob_name][input_val]:
                         p_id, p_mass, p_width = particle
-                        returnable_list_of_probs[n][new_input_val][p_id] = (p_mass, p_width)
+                        returnable_list_of_probs[n][3][p_id] = (p_mass, p_width)
                 else:
-                    returnable_list_of_probs[n][new_input_val] = data[prob_name][input_val]
+                    returnable_list_of_probs[n][0][new_input_val] = data[prob_name][input_val]
+
         return returnable_list_of_probs
 
 
@@ -281,6 +282,8 @@ def main(raw_args=None):
     input_possibilities.add_argument('-id', '--idirectory', type=str, help="An entire folder you want weights applied to")
     
     parser.add_argument('-o', '--outdr', type=str, required=True, help="The output folder")
+    parser.add_argument('-fp', '--prefix', type=str, default="", help="Optional prefix to the output file name")
+    parser.add_argument('-nt', '--newTree', type=str, default="", help="Write down a new tree name if you want to dump the results to a new tree")
     parser.add_argument('-t', '--tBranch', type=str, default="eventTree", help="The name of the TBranch you are using")
     parser.add_argument('-s', '--subdr', nargs=1, type=str, default="", help="Optional subdirectory, otherwise will default to the input files")
     
@@ -292,7 +295,7 @@ def main(raw_args=None):
     parser.add_argument('-l', '--lhe2root', action="store_true", help="Enable this if you want to use lhe2root/GEN level naming from LHE2ROOT")
     parser.add_argument('-ow', '--overwrite', action="store_true", help="Enable if you want to overwrite files in the output folder")
     parser.add_argument('-v', '--verbose', choices=[0,1,2,3,4,5], type=int, default=0)
-    parser.add_argument('-vl', '--verbose_local', choices=[0,1,2], type=int, default=0)
+    parser.add_argument('-vl', '--verbose_local', choices=[0,1,2,3], type=int, default=0)
     parser.add_argument('-n', '--number', type=int, default=-1)
     args = parser.parse_args(raw_args)
     
@@ -306,7 +309,9 @@ def main(raw_args=None):
         inputfiles = help.recurse_through_folder(input_directory, ".root")
     
     pthsubdirs = args.subdr if args.subdr else inputfiles
+    output_file_prefix = args.prefix
     outputdir = args.outdr
+    newTree = args.newTree
     
     branchfile = args.bfile
     pyfragment = args.pyfragment
@@ -344,11 +349,13 @@ def main(raw_args=None):
     
     
     if pyfragment:
-        branchlist = []
-        with open(pyfragment) as f:
-            branchlist = [line.strip() for line in f]
-            branchlist = [fragment_to_dict(branch) for branch in branchlist]
-            branchlist = [x for x in branchlist if x != None]
+        # branchlist = []
+        # with open(pyfragment) as f:
+        #     branchlist = [line.strip() for line in f]
+        #     branchlist = [fragment_to_dict(branch) for branch in branchlist]
+        #     branchlist = [x for x in branchlist if x != None]
+        print("WIP")
+        exit()
     elif json:
         branchlist = json_to_dict(json)
     elif branchfile:
@@ -388,7 +395,7 @@ def main(raw_args=None):
         else: User_text += "\nMELA parser expecting CJLST branch names"
         
         User_text += "\n\nThe following probabilities will be calculated:\n\n"
-        User_text += "\n".join(branch['name'] for branch in branchlist)
+        User_text += "\n".join(branch[0]['name'] for branch in branchlist)
 
         print(help.print_msg_box(User_text, title="Reading user input"))
         #================ Set input file path and output file path ================
@@ -396,7 +403,7 @@ def main(raw_args=None):
         ind = inputfile.split("/").index(pthsubdir)
 
         tagtreefile = "/".join(inputfile.split("/")[ind:])
-        outtreefilename = outputdir+tagtreefile
+        outtreefilename = outputdir+output_file_prefix+tagtreefile
 
         print("\n================ Processing user input ================\n")
 
@@ -419,7 +426,7 @@ def main(raw_args=None):
         print("Write '"+outtreefilename+"'\n")
         
         calculated_probabilities = MW.addprobabilities(branchlist, inputfile, tbranch, verbosity, lhe2root, local_verbosity, n_events)
-        MW.dump(inputfile, tbranch, outtreefilename, calculated_probabilities)
+        MW.dump(inputfile, tbranch, outtreefilename, calculated_probabilities, newTree, n_events)
         
 if __name__ == "__main__":
     

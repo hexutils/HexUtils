@@ -1,9 +1,10 @@
 # from ..JHUGenMELA.MELA.python.mela import Mela, TVar, SimpleParticle_t, SimpleParticleCollection_t
-import ROOT, os, sys, numpy as np, uproot
+import ROOT, os, sys, numpy as np, uproot, shutil
 sys.path.append('../JHUGenMELA/MELA/python/')
 sys.path.append('../')
 
-from mela import Mela, TVar, SimpleParticle_t, SimpleParticleCollection_t, TUtil
+from mela import Mela, SimpleParticle_t, SimpleParticleCollection_t
+from ROOT import TVar, TUtil
 from tqdm import tqdm
 from generic_helpers import print_msg_box
 
@@ -15,57 +16,31 @@ def tlv(pt, eta, phi, m):
 def exportPath():
     os.system("export LD_LIBRARY_PATH=../JHUGenMELA/MELA/data/$SCRAM_ARCH/:${LD_LIBRARY_PATH}")
 
+def special_cases(coupl): #set all of your special case couplings here!
+    if 'ghv' in coupl:
+        return True
+    
+    return False
+
 def addprobabilities(list_of_prob_dicts, infile, tTree, verbosity, 
                     is_gen=False, local_verbose=0, N_events=-1):
-    """_summary_
-
-    Parameters
-    ----------
-    list_of_prob_dicts : _type_
-        _description_
-    infile : _type_
-        _description_
-    tTree : _type_
-        _description_
-    verbosity : _type_
-        _description_
-    is_gen : bool, optional
-        _description_, by default False
-    local_verbose : int, optional
-        _description_, by default 0
-    N_events : int, optional
-        _description_, by default -1
-
-    Returns
-    -------
-    _type_
-        _description_
-
-    Raises
-    ------
-    KeyError
-        _description_
-    ValueError
-        _description_
-    KeyError
-        _description_
-    KeyError
-        _description_
-    KeyError
-        _description_
-    ModuleNotFoundError
-        _description_
-    ValueError
-        _description_
-    KeyError
-        _description_
-    """
     
-    assert os.path.exists(infile)
+    if not os.path.exists(infile):
+        errortext = print_msg_box(infile + " does not exist!", title="ERROR")
+        raise FileNotFoundError("\n" + errortext)
+    
+    if np.any( [len(p_dict_tuple) != 4 for p_dict_tuple in list_of_prob_dicts] ):
+        errortext = "The input list of probability dictionaries should be of length 4 containing:"
+        errortext += "\n0) A dictionary of logistic values for MELA"
+        errortext += "\n1) A dictionary of coupling values"
+        errortext += "\n2) A (possibly empty) dictionary of options for MELA"
+        errortext += "\n3) A (possibly empty) dictionary of particle masses"
+        errortext += "\nIN THAT ORDER!"
+        errortext = print_msg_box(errortext, title="ERROR")
+        raise ValueError("\n"+errortext)
     
     exportPath()
-    m = Mela(13, 125, verbosity)#TVar.DEBUG_MECHECK) #<- this is the debugger!
-    #Use it as another argument if you'd like to debug code
+    m = Mela(13, 125, verbosity)
     #Always initialize MELA at m=125 GeV
     
     # shutil.copy2(infile, outfile)
@@ -73,7 +48,7 @@ def addprobabilities(list_of_prob_dicts, infile, tTree, verbosity,
     f = uproot.open(infile)
     t = f[tTree]
     
-    if N_events < 0:
+    if (N_events < 0) or (N_events > t.num_entries):
         N_events = t.num_entries
     
     if is_gen:
@@ -106,7 +81,7 @@ def addprobabilities(list_of_prob_dicts, infile, tTree, verbosity,
     if np.any([x not in t.keys() for x in relevant_branches]):
         raise KeyError("Invalid keys for MELAcalc!")
 
-    t_data = t.arrays(relevant_branches, library='np')
+    t_data = t.arrays(relevant_branches, library='np', entry_stop=N_events + 1)
     if local_verbose:
         print("The branches being used are:")
         print(*relevant_branches, sep='\n')
@@ -219,14 +194,15 @@ def addprobabilities(list_of_prob_dicts, infile, tTree, verbosity,
     [make_MELA_input_lists(i) for i in tqdm(range(N_events), total=N_events, position=0, leave=True, desc="MELA pre-processing")]
     
     del t_data
-    f.close()
+    # f.close()
     
     if is_gen:
         inputEventNum = 1
     else:
         inputEventNum = 0
     
-    for prob_dict in list_of_prob_dicts:
+    # for prob_dict in list_of_prob_dicts:
+    def calculate_probabilities(prob_dict, couplings, options=None, particles=None):
         prob_name      = prob_dict['name']
         process        = prob_dict['process']
         production     = prob_dict['production']
@@ -235,10 +211,13 @@ def addprobabilities(list_of_prob_dicts, infile, tTree, verbosity,
         while prob_name in t.keys(): #do not overwrite things!
             prob_name = prob_name + "_new"
         
-        probabilities[prob_name] = np.full(t.num_entries, -1, dtype=np.float64)
+        probabilities[prob_name] = np.full(N_events, -1, dtype=np.float64)
 
-        if 'particles' in prob_dict.keys():
-            particles = prob_dict['particles']
+        if isinstance(particles, dict):
+            if np.any([len(particles[key]) != 2 for key in particles.keys()]):
+                errortext = "Particles provided should be in the form {id:(mass, width)}!"
+                errortext = print_msg_box(errortext, title="ERROR")
+                raise ValueError("\n"+errortext)
         else:
             particles = dict()
         
@@ -252,14 +231,18 @@ def addprobabilities(list_of_prob_dicts, infile, tTree, verbosity,
         calc_production = prob_dict['prod']
         calc_decay = prob_dict['dec']
         
-        #The following quantities can be multi valued (i.e. you can have multiple couplings)
-        couplings = prob_dict['couplings']
-        
-        
-        if 'options' in prob_dict.keys():
-            options = prob_dict['options']
+        ren_scale = 0.5
+        fac_scale = 0.5
+        scale_scheme = 0
+        if isinstance(options, dict):
             if 'dividep' in options.keys() and options['dividep'] == prob_dict['name']:
                 options['dividep'] = prob_name
+            if "fac_scale" in options.keys():
+                fac_scale = options['fac_scale']
+            if "ren_scale" in options.keys():
+                ren_scale = options['ren_scale']
+            if "scale_scheme" in options.keys():
+                scale_scheme = options["scale_scheme"]
         else:
             options = {'dummy':'you stupid'}
         
@@ -358,33 +341,41 @@ def addprobabilities(list_of_prob_dicts, infile, tTree, verbosity,
                 TUtil.SetMass(particles[particle][0], particle)
                 TUtil.SetDecayWidth(particles[particle][1], particle)
             
+            m.setRenFacScaleMode(scale_scheme, scale_scheme, ren_scale, fac_scale)
+            
             # Setup event information depending on RECO or LHE level #
             m.setInputEvent(lepton_list[i], jets_list[i], mothers_list[i], inputEventNum)
             
             m.setProcess(MELA_process, MELA_matrix_element, MELA_production)
             
-            # set_couplings_list = []
-            special_cases = {"ghv1", "ghv2", "ghv4"}
             for coupl in couplings:
-                if i == 0 and coupl not in dir(m) and coupl not in special_cases:
-                    errortext = "Attribute " + coupl + " does not exist!"
+                if i == 0 and coupl not in dir(m) and not special_cases(coupl):
+                    errortext = "Coupling " + coupl + " does not exist!"
                     raise ModuleNotFoundError("\n" + print_msg_box(errortext, title="ERROR"))
                     
                 if 'ghz' or 'ghw' in coupl:
                     m.differentiate_HWW_HZZ = True
                 
-                if coupl not in special_cases:
+                if not special_cases(coupl):
                     setattr(m, coupl, couplings[coupl])
                 ###### NOW BEGINS THE SPECIAL CASES ######
-                elif 'ghv1' in coupl:
-                    m.ghz1 = couplings[coupl]
-                    m.ghw1 = couplings[coupl]
-                elif 'ghv2' in coupl:
-                    m.ghz2 = couplings[coupl]
-                    m.ghw2 = couplings[coupl]
-                elif 'ghv4' in coupl:
-                    m.ghz4 = couplings[coupl]
-                    m.ghw4 = couplings[coupl]
+                elif 'ghv' in coupl:
+                    coupl_1 = coupl.replace('v', 'z')
+                    coupl_2 = coupl.replace('v', 'w')
+                    
+                    if coupl_1 not in dir(m):
+                        errortext = "Coupling " + coupl_1 + " does not exist"
+                        raise ModuleNotFoundError("\n" + print_msg_box(errortext, title="ERROR"))
+                    
+                    if coupl_2 not in dir(m):
+                        errortext = "Coupling " + coupl_2 + " does not exist"
+                        raise ModuleNotFoundError("\n" + print_msg_box(errortext, title="ERROR"))
+                    
+                    if local_verbose > 1 and i == 0:
+                        print("Special case " + coupl + " -> " + coupl_1 + " and " + coupl_2)
+                        
+                    setattr(m, coupl_1, couplings[coupl])
+                    setattr(m, coupl_2, couplings[coupl])
                 else:
                     errortext = coupl + " Is an unhandled special case!"
                     raise ValueError("\n" + print_msg_box(errortext, title="ERROR")) #handles the "special cases"
@@ -424,7 +415,10 @@ def addprobabilities(list_of_prob_dicts, infile, tTree, verbosity,
                 probabilities[prob_name][i] = np.float64(m.computeProdP())
             else:
                 raise KeyError("Need to specify either production or decay!")
-        
+            
+            if local_verbose > 2:
+                print(f"Probability {prob_name} for iteration {i} = {probabilities[prob_name][i]:.5e}")
+            
             m.resetInputEvent()
     
         if 'dividep' in options.keys():
@@ -434,7 +428,12 @@ def addprobabilities(list_of_prob_dicts, infile, tTree, verbosity,
             
             divisor_name = options['dividep']
             
-            if divisor_name == prob_name:
+            if divisor_name not in probabilities.keys():
+                errortext = f"Unable to divide {prob_name} by {divisor_name}"
+                errortext += f"\nProbability {divisor_name} should be calculated first!"
+                raise KeyError("\n" + errortext, title="ERROR")
+            
+            elif divisor_name == prob_name:
                 probabilities[prob_name + "_scaled"] = np.ones(probabilities[prob_name].shape, dtype=np.float64)
             else:
                 probabilities[prob_name + "_scaled"] = probabilities[prob_name].copy()/probabilities[divisor_name]
@@ -443,23 +442,39 @@ def addprobabilities(list_of_prob_dicts, infile, tTree, verbosity,
                 new = probabilities[prob_name]
                 print(f"{'old':^9} {'new':^9}")
                 print(*[(i,j) for i,j in zip(old, new)], sep='\n')
+    
+    [calculate_probabilities(*i) for i in list_of_prob_dicts]
     return probabilities
 
 
-def dump(infile, tTree, outfile, probabilities):
+def dump(infile, tTree, outfile, probabilities, newTree="", N_events=-1):
+    
+    if newTree != "":
+        shutil.copy2(infile, outfile)
+        newf = uproot.update(outfile)
+        newf[newTree] = probabilities
+        newf.close()
+        return
+    
     f = ROOT.TFile(infile)
     t = f.Get(tTree)
     newf = ROOT.TFile(outfile, "RECREATE")
     newt = t.CloneTree(0)
     
+    if (N_events < 0) or (N_events > t.GetEntries()):
+        N_events = t.GetEntries()
+    
     root_input = [None]*len(probabilities)
-    for n, prob in enumerate(probabilities):
+    for n, prob in enumerate(probabilities.keys()):
         root_input[n] = np.array([0.], dtype=float)
         newt.Branch(prob, root_input[n], prob+"/D")
     
-    for i in tqdm(range(t.GetEntries()), desc="Dumping"):
+    for i in tqdm(range(N_events), desc="Dumping"):
         for n, prob in enumerate(probabilities):
             t.GetEntry(i)
             root_input[n][0] = probabilities[prob][i]
         newt.Fill()
     newf.Write()
+    newf.Close()
+    f.Close()
+    return

@@ -49,6 +49,11 @@ def get_spatial(four_vector):
         }
     )
 
+def MELA_simpleParticle_toVector(simpleParticle):
+    id = simpleParticle.id
+    vec = simpleParticle.PxPyPzE_vector
+    return id, vector.obj(px=vec[0], py=vec[1], pz=vec[2], E=vec[3])
+
 def print_msg_box(msg, indent=1, width=0, title=""):
     """returns message-box with optional title.
     Ripped from https://stackoverflow.com/questions/39969064/how-to-print-a-message-box-in-python
@@ -158,7 +163,7 @@ def make_legend_label(data, name, extra_space=True):
     
     return labelstr
 
-def scale(scaleto, counts, bins=[], return_scale_factor=False):
+def scale(scaleto, counts, bins=None, return_scale_factor=False):
     """This function scales histograms according to their absolute area under the curve
 
     Parameters
@@ -187,7 +192,7 @@ def scale(scaleto, counts, bins=[], return_scale_factor=False):
     
     new_counts = signs*counts*scaleto/np.sum(counts)
     new_counts[~np.isfinite(new_counts)] = 0
-    if any(bins):
+    if bins is not None:
         if return_scale_factor:
             return new_counts, bins, scaleto/np.sum(counts)
         
@@ -197,3 +202,17 @@ def scale(scaleto, counts, bins=[], return_scale_factor=False):
         return new_counts, scaleto/np.sum(counts)
     
     return new_counts
+
+def unroll_ND_histogram(N_dimension_counts, isbkg=False):
+    unrolled_arr = N_dimension_counts.ravel()
+    if isbkg:
+        hist_integral = unrolled_arr.sum()
+        fill_val = hist_integral*0.1/len(unrolled_arr)
+        unrolled_arr[unrolled_arr <= 0] = fill_val
+
+    pos_arr = np.where(unrolled_arr > 0, unrolled_arr, 0)
+    neg_arr = -1*np.where(unrolled_arr < 0, unrolled_arr, 0)
+    
+    bins = np.arange(len(unrolled_arr) + 1)
+
+    return (pos_arr, neg_arr), bins

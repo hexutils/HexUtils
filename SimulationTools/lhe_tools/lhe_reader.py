@@ -114,7 +114,7 @@ class lhe_reader(object):
                 return True
         
         return False
-     
+
     def __str__(self) -> str:
         """Function toString that displays the number of events and the cross section of an LHE file
 
@@ -188,104 +188,3 @@ class lhe_reader(object):
             warnings.warn('\n'+dump + '.lhe already exists! Not dumping file.\n', UserWarning)
         
         return written_file #this would be placed directly into a file
-    
-    
-    def to_ROOT(self, argument, env, other_args=[], output_directory='./', output_prefix='LHE', verbose=False, replace=False,):
-        """Converts a single LHE file to ROOT using the lhe2root tool
-        This works best for Higgs->4l of some kind, as that is what lhe2root is made for
-
-        Parameters
-        ----------
-        argument : str
-            This should be one of the viable lhe2root options
-        env : dict
-            This contains the lhe2root environment variables by doing dict(os.environ) in a main method
-        other_args : list[str]
-            The other lhe2root arguments that can be used (see lhe_2_root_args in useful_funcs_and_constants), by default []
-        output_directory : str, optional
-            The directory to output the ROOT file to, by default './'
-        output_prefix : str, optional
-            The prefix attached to the ROOT file, by default 'LHE_'
-        verbose : bool, optional
-            If false, all output is suppressed, by default False
-        replace : bool, optional
-            If true, when an identical ROOT file is found it will overwrite the file, by default False
-
-        Raises
-        ------
-        FileNotFoundError
-            MELA pathways should be configured to use LHE2ROOT
-        ValueError
-            One of the specified lhe2root configurations should be used
-        ValueError
-            One of the specified lhe2root arguments should be used
-        FileNotFoundError
-            The output directory should be a valid directory
-        TypeError
-            The environment variables should be a dictionary
-        """
-        if not useful_funcs_and_constants.check_for_MELA(env):
-            raise FileNotFoundError("MELA Path not found in given environment!")
-        
-        if argument not in useful_funcs_and_constants.lhe_2_root_options:
-            raise ValueError("Invalid LHE2ROOT option!")
-        
-        if other_args:
-            print("Other arguments being used:", other_args)
-        for arg in other_args:
-            if arg not in useful_funcs_and_constants.lhe_2_root_args:
-                raise ValueError("Invalid LHE2ROOT option!")
-        
-        if not os.path.isdir(output_directory):
-            raise FileNotFoundError("Output Directory is invalid!")
-        
-        if not isinstance(env, dict):
-            raise TypeError("Environment should be a dictionary i.e. dict(os.environ)")
-        
-        output_directory = os.path.abspath(output_directory)
-        
-        if output_directory[-1] != '/':
-            output_directory += '/'
-        
-        input_filename = self.lhefile.split('/')[-1]
-        output_filename = output_prefix + '_' + input_filename[:input_filename.rfind('.')] + '.root'
-        
-        outfile = output_directory + output_filename
-        if os.path.isfile(outfile):
-            print(outfile, "already exists!")
-            if replace:
-                print("replacing", outfile)
-                useful_funcs_and_constants.safely_run_process("rm " + output_directory + output_filename, env)
-            else:
-                return outfile
-        
-        titlestr = "Generating ROOT file for " + os.path.relpath(self.lhefile)
-        
-        useful_funcs_and_constants.print_msg_box("Input name: " + self.lhefile.split('/')[-1] + #This is the big message box seen per LHE file found
-            "\nOutput: " + str(os.path.relpath(outfile)) + 
-            "\nArguments: " + argument +
-            (", " + ", ".join(other_args) if other_args else "") +
-            "\n\u03C3: " + "{:.4e}".format(self.cross_section[0]) + " \u00b1 " + "{:.2e}".format(self.cross_section[1]) + 
-            "\nN: " + "{:.4e}".format(self.num_events) + " events",
-            title=titlestr, width=len(titlestr))
-        
-        import lhe2root
-        
-        argList = [output_directory + output_filename, self.lhefile, '--' + argument]
-        argList += '--'.join(other_args)
-        
-        if not verbose:
-            argList += ['--verbose']
-        
-        print(argList)
-        lhe2root.main(argList)
-        # running_str = "python3 lhe2root.py --" + argument + " " + output_directory + output_filename + ' '
-        # running_str += self.lhefile #lhe2root takes in an argument, the outname, and the input file
-        
-        # if not verbose:
-        #     running_str += ' > /dev/null 2>&1'
-        
-        
-        # useful_funcs_and_constants.safely_run_process(running_str, env)
-        
-        return outfile

@@ -6,3 +6,9 @@ AnalysisTools/TemplateMaker/condor/
 AnalysisTools/TemplateMaker/condor_kappaQ/
 AnalysisTools/TemplateMaker/condor_kappaQ2/
 AnalysisTools/TemplateMaker/condor_QCDmuRV/
+**/*.DAT
+**/*.dat
+**/*.root
+**/*.sm*
+**/*Pdfdata*
+**/*.lhe
