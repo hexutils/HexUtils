@@ -1,0 +1,683 @@
+python3 POWHEGreweight_shape.py 2016 SIG 0 nom
+python3 POWHEGreweight_shape.py 2016 SIG 0 kfqcd_up
+python3 POWHEGreweight_shape.py 2016 SIG 0 kfqcd_dn
+python3 POWHEGreweight_shape.py 2016 SIG 0 kfpdf_up
+python3 POWHEGreweight_shape.py 2016 SIG 0 kfpdf_dn
+python3 POWHEGreweight_shape.py 2016 SIG 0 kfas_up
+python3 POWHEGreweight_shape.py 2016 SIG 0 kfas_dn
+python3 POWHEGreweight_shape.py 2016 SIG 0 pdfV_up
+python3 POWHEGreweight_shape.py 2016 SIG 0 pdfV_dn
+python3 POWHEGreweight_shape.py 2016 SIG 0 AsMZV_up
+python3 POWHEGreweight_shape.py 2016 SIG 0 AsMZV_dn
+python3 POWHEGreweight_shape.py 2016 SIG 0 QCDmuRV_up
+python3 POWHEGreweight_shape.py 2016 SIG 0 QCDmuRV_dn
+python3 POWHEGreweight_shape.py 2016 SIG 0 QCDmuFV_up
+python3 POWHEGreweight_shape.py 2016 SIG 0 QCDmuFV_dn
+python3 POWHEGreweight_shape.py 2016 SIG 1 nom
+python3 POWHEGreweight_shape.py 2016 SIG 1 kfqcd_up
+python3 POWHEGreweight_shape.py 2016 SIG 1 kfqcd_dn
+python3 POWHEGreweight_shape.py 2016 SIG 1 kfpdf_up
+python3 POWHEGreweight_shape.py 2016 SIG 1 kfpdf_dn
+python3 POWHEGreweight_shape.py 2016 SIG 1 kfas_up
+python3 POWHEGreweight_shape.py 2016 SIG 1 kfas_dn
+python3 POWHEGreweight_shape.py 2016 SIG 1 pdfV_up
+python3 POWHEGreweight_shape.py 2016 SIG 1 pdfV_dn
+python3 POWHEGreweight_shape.py 2016 SIG 1 AsMZV_up
+python3 POWHEGreweight_shape.py 2016 SIG 1 AsMZV_dn
+python3 POWHEGreweight_shape.py 2016 SIG 1 QCDmuRV_up
+python3 POWHEGreweight_shape.py 2016 SIG 1 QCDmuRV_dn
+python3 POWHEGreweight_shape.py 2016 SIG 1 QCDmuFV_up
+python3 POWHEGreweight_shape.py 2016 SIG 1 QCDmuFV_dn
+python3 POWHEGreweight_shape.py 2016 SIG 2 nom
+python3 POWHEGreweight_shape.py 2016 SIG 2 kfqcd_up
+python3 POWHEGreweight_shape.py 2016 SIG 2 kfqcd_dn
+python3 POWHEGreweight_shape.py 2016 SIG 2 kfpdf_up
+python3 POWHEGreweight_shape.py 2016 SIG 2 kfpdf_dn
+python3 POWHEGreweight_shape.py 2016 SIG 2 kfas_up
+python3 POWHEGreweight_shape.py 2016 SIG 2 kfas_dn
+python3 POWHEGreweight_shape.py 2016 SIG 2 pdfV_up
+python3 POWHEGreweight_shape.py 2016 SIG 2 pdfV_dn
+python3 POWHEGreweight_shape.py 2016 SIG 2 AsMZV_up
+python3 POWHEGreweight_shape.py 2016 SIG 2 AsMZV_dn
+python3 POWHEGreweight_shape.py 2016 SIG 2 QCDmuRV_up
+python3 POWHEGreweight_shape.py 2016 SIG 2 QCDmuRV_dn
+python3 POWHEGreweight_shape.py 2016 SIG 2 QCDmuFV_up
+python3 POWHEGreweight_shape.py 2016 SIG 2 QCDmuFV_dn
+python3 POWHEGreweight_shape.py 2016 BSI 0 nom
+python3 POWHEGreweight_shape.py 2016 BSI 0 kfqcd_up
+python3 POWHEGreweight_shape.py 2016 BSI 0 kfqcd_dn
+python3 POWHEGreweight_shape.py 2016 BSI 0 kfpdf_up
+python3 POWHEGreweight_shape.py 2016 BSI 0 kfpdf_dn
+python3 POWHEGreweight_shape.py 2016 BSI 0 kfas_up
+python3 POWHEGreweight_shape.py 2016 BSI 0 kfas_dn
+python3 POWHEGreweight_shape.py 2016 BSI 0 pdfV_up
+python3 POWHEGreweight_shape.py 2016 BSI 0 pdfV_dn
+python3 POWHEGreweight_shape.py 2016 BSI 0 AsMZV_up
+python3 POWHEGreweight_shape.py 2016 BSI 0 AsMZV_dn
+python3 POWHEGreweight_shape.py 2016 BSI 0 QCDmuRV_up
+python3 POWHEGreweight_shape.py 2016 BSI 0 QCDmuRV_dn
+python3 POWHEGreweight_shape.py 2016 BSI 0 QCDmuFV_up
+python3 POWHEGreweight_shape.py 2016 BSI 0 QCDmuFV_dn
+python3 POWHEGreweight_shape.py 2016 BSI 1 nom
+python3 POWHEGreweight_shape.py 2016 BSI 1 kfqcd_up
+python3 POWHEGreweight_shape.py 2016 BSI 1 kfqcd_dn
+python3 POWHEGreweight_shape.py 2016 BSI 1 kfpdf_up
+python3 POWHEGreweight_shape.py 2016 BSI 1 kfpdf_dn
+python3 POWHEGreweight_shape.py 2016 BSI 1 kfas_up
+python3 POWHEGreweight_shape.py 2016 BSI 1 kfas_dn
+python3 POWHEGreweight_shape.py 2016 BSI 1 pdfV_up
+python3 POWHEGreweight_shape.py 2016 BSI 1 pdfV_dn
+python3 POWHEGreweight_shape.py 2016 BSI 1 AsMZV_up
+python3 POWHEGreweight_shape.py 2016 BSI 1 AsMZV_dn
+python3 POWHEGreweight_shape.py 2016 BSI 1 QCDmuRV_up
+python3 POWHEGreweight_shape.py 2016 BSI 1 QCDmuRV_dn
+python3 POWHEGreweight_shape.py 2016 BSI 1 QCDmuFV_up
+python3 POWHEGreweight_shape.py 2016 BSI 1 QCDmuFV_dn
+python3 POWHEGreweight_shape.py 2016 BSI 2 nom
+python3 POWHEGreweight_shape.py 2016 BSI 2 kfqcd_up
+python3 POWHEGreweight_shape.py 2016 BSI 2 kfqcd_dn
+python3 POWHEGreweight_shape.py 2016 BSI 2 kfpdf_up
+python3 POWHEGreweight_shape.py 2016 BSI 2 kfpdf_dn
+python3 POWHEGreweight_shape.py 2016 BSI 2 kfas_up
+python3 POWHEGreweight_shape.py 2016 BSI 2 kfas_dn
+python3 POWHEGreweight_shape.py 2016 BSI 2 pdfV_up
+python3 POWHEGreweight_shape.py 2016 BSI 2 pdfV_dn
+python3 POWHEGreweight_shape.py 2016 BSI 2 AsMZV_up
+python3 POWHEGreweight_shape.py 2016 BSI 2 AsMZV_dn
+python3 POWHEGreweight_shape.py 2016 BSI 2 QCDmuRV_up
+python3 POWHEGreweight_shape.py 2016 BSI 2 QCDmuRV_dn
+python3 POWHEGreweight_shape.py 2016 BSI 2 QCDmuFV_up
+python3 POWHEGreweight_shape.py 2016 BSI 2 QCDmuFV_dn
+python3 POWHEGreweight_shape.py 2016 BKG 0 nom
+python3 POWHEGreweight_shape.py 2016 BKG 0 kfqcd_up
+python3 POWHEGreweight_shape.py 2016 BKG 0 kfqcd_dn
+python3 POWHEGreweight_shape.py 2016 BKG 0 kfpdf_up
+python3 POWHEGreweight_shape.py 2016 BKG 0 kfpdf_dn
+python3 POWHEGreweight_shape.py 2016 BKG 0 kfas_up
+python3 POWHEGreweight_shape.py 2016 BKG 0 kfas_dn
+python3 POWHEGreweight_shape.py 2016 BKG 0 pdfV_up
+python3 POWHEGreweight_shape.py 2016 BKG 0 pdfV_dn
+python3 POWHEGreweight_shape.py 2016 BKG 0 AsMZV_up
+python3 POWHEGreweight_shape.py 2016 BKG 0 AsMZV_dn
+python3 POWHEGreweight_shape.py 2016 BKG 0 QCDmuRV_up
+python3 POWHEGreweight_shape.py 2016 BKG 0 QCDmuRV_dn
+python3 POWHEGreweight_shape.py 2016 BKG 0 QCDmuFV_up
+python3 POWHEGreweight_shape.py 2016 BKG 0 QCDmuFV_dn
+python3 POWHEGreweight_shape.py 2016 BKG 1 nom
+python3 POWHEGreweight_shape.py 2016 BKG 1 kfqcd_up
+python3 POWHEGreweight_shape.py 2016 BKG 1 kfqcd_dn
+python3 POWHEGreweight_shape.py 2016 BKG 1 kfpdf_up
+python3 POWHEGreweight_shape.py 2016 BKG 1 kfpdf_dn
+python3 POWHEGreweight_shape.py 2016 BKG 1 kfas_up
+python3 POWHEGreweight_shape.py 2016 BKG 1 kfas_dn
+python3 POWHEGreweight_shape.py 2016 BKG 1 pdfV_up
+python3 POWHEGreweight_shape.py 2016 BKG 1 pdfV_dn
+python3 POWHEGreweight_shape.py 2016 BKG 1 AsMZV_up
+python3 POWHEGreweight_shape.py 2016 BKG 1 AsMZV_dn
+python3 POWHEGreweight_shape.py 2016 BKG 1 QCDmuRV_up
+python3 POWHEGreweight_shape.py 2016 BKG 1 QCDmuRV_dn
+python3 POWHEGreweight_shape.py 2016 BKG 1 QCDmuFV_up
+python3 POWHEGreweight_shape.py 2016 BKG 1 QCDmuFV_dn
+python3 POWHEGreweight_shape.py 2016 BKG 2 nom
+python3 POWHEGreweight_shape.py 2016 BKG 2 kfqcd_up
+python3 POWHEGreweight_shape.py 2016 BKG 2 kfqcd_dn
+python3 POWHEGreweight_shape.py 2016 BKG 2 kfpdf_up
+python3 POWHEGreweight_shape.py 2016 BKG 2 kfpdf_dn
+python3 POWHEGreweight_shape.py 2016 BKG 2 kfas_up
+python3 POWHEGreweight_shape.py 2016 BKG 2 kfas_dn
+python3 POWHEGreweight_shape.py 2016 BKG 2 pdfV_up
+python3 POWHEGreweight_shape.py 2016 BKG 2 pdfV_dn
+python3 POWHEGreweight_shape.py 2016 BKG 2 AsMZV_up
+python3 POWHEGreweight_shape.py 2016 BKG 2 AsMZV_dn
+python3 POWHEGreweight_shape.py 2016 BKG 2 QCDmuRV_up
+python3 POWHEGreweight_shape.py 2016 BKG 2 QCDmuRV_dn
+python3 POWHEGreweight_shape.py 2016 BKG 2 QCDmuFV_up
+python3 POWHEGreweight_shape.py 2016 BKG 2 QCDmuFV_dn
+python3 POWHEGreweight_shape.py 2017 SIG 0 nom
+python3 POWHEGreweight_shape.py 2017 SIG 0 kfqcd_up
+python3 POWHEGreweight_shape.py 2017 SIG 0 kfqcd_dn
+python3 POWHEGreweight_shape.py 2017 SIG 0 kfpdf_up
+python3 POWHEGreweight_shape.py 2017 SIG 0 kfpdf_dn
+python3 POWHEGreweight_shape.py 2017 SIG 0 kfas_up
+python3 POWHEGreweight_shape.py 2017 SIG 0 kfas_dn
+python3 POWHEGreweight_shape.py 2017 SIG 0 pdfV_up
+python3 POWHEGreweight_shape.py 2017 SIG 0 pdfV_dn
+python3 POWHEGreweight_shape.py 2017 SIG 0 AsMZV_up
+python3 POWHEGreweight_shape.py 2017 SIG 0 AsMZV_dn
+python3 POWHEGreweight_shape.py 2017 SIG 0 QCDmuRV_up
+python3 POWHEGreweight_shape.py 2017 SIG 0 QCDmuRV_dn
+python3 POWHEGreweight_shape.py 2017 SIG 0 QCDmuFV_up
+python3 POWHEGreweight_shape.py 2017 SIG 0 QCDmuFV_dn
+python3 POWHEGreweight_shape.py 2017 SIG 1 nom
+python3 POWHEGreweight_shape.py 2017 SIG 1 kfqcd_up
+python3 POWHEGreweight_shape.py 2017 SIG 1 kfqcd_dn
+python3 POWHEGreweight_shape.py 2017 SIG 1 kfpdf_up
+python3 POWHEGreweight_shape.py 2017 SIG 1 kfpdf_dn
+python3 POWHEGreweight_shape.py 2017 SIG 1 kfas_up
+python3 POWHEGreweight_shape.py 2017 SIG 1 kfas_dn
+python3 POWHEGreweight_shape.py 2017 SIG 1 pdfV_up
+python3 POWHEGreweight_shape.py 2017 SIG 1 pdfV_dn
+python3 POWHEGreweight_shape.py 2017 SIG 1 AsMZV_up
+python3 POWHEGreweight_shape.py 2017 SIG 1 AsMZV_dn
+python3 POWHEGreweight_shape.py 2017 SIG 1 QCDmuRV_up
+python3 POWHEGreweight_shape.py 2017 SIG 1 QCDmuRV_dn
+python3 POWHEGreweight_shape.py 2017 SIG 1 QCDmuFV_up
+python3 POWHEGreweight_shape.py 2017 SIG 1 QCDmuFV_dn
+python3 POWHEGreweight_shape.py 2017 SIG 2 nom
+python3 POWHEGreweight_shape.py 2017 SIG 2 kfqcd_up
+python3 POWHEGreweight_shape.py 2017 SIG 2 kfqcd_dn
+python3 POWHEGreweight_shape.py 2017 SIG 2 kfpdf_up
+python3 POWHEGreweight_shape.py 2017 SIG 2 kfpdf_dn
+python3 POWHEGreweight_shape.py 2017 SIG 2 kfas_up
+python3 POWHEGreweight_shape.py 2017 SIG 2 kfas_dn
+python3 POWHEGreweight_shape.py 2017 SIG 2 pdfV_up
+python3 POWHEGreweight_shape.py 2017 SIG 2 pdfV_dn
+python3 POWHEGreweight_shape.py 2017 SIG 2 AsMZV_up
+python3 POWHEGreweight_shape.py 2017 SIG 2 AsMZV_dn
+python3 POWHEGreweight_shape.py 2017 SIG 2 QCDmuRV_up
+python3 POWHEGreweight_shape.py 2017 SIG 2 QCDmuRV_dn
+python3 POWHEGreweight_shape.py 2017 SIG 2 QCDmuFV_up
+python3 POWHEGreweight_shape.py 2017 SIG 2 QCDmuFV_dn
+python3 POWHEGreweight_shape.py 2017 BSI 0 nom
+python3 POWHEGreweight_shape.py 2017 BSI 0 kfqcd_up
+python3 POWHEGreweight_shape.py 2017 BSI 0 kfqcd_dn
+python3 POWHEGreweight_shape.py 2017 BSI 0 kfpdf_up
+python3 POWHEGreweight_shape.py 2017 BSI 0 kfpdf_dn
+python3 POWHEGreweight_shape.py 2017 BSI 0 kfas_up
+python3 POWHEGreweight_shape.py 2017 BSI 0 kfas_dn
+python3 POWHEGreweight_shape.py 2017 BSI 0 pdfV_up
+python3 POWHEGreweight_shape.py 2017 BSI 0 pdfV_dn
+python3 POWHEGreweight_shape.py 2017 BSI 0 AsMZV_up
+python3 POWHEGreweight_shape.py 2017 BSI 0 AsMZV_dn
+python3 POWHEGreweight_shape.py 2017 BSI 0 QCDmuRV_up
+python3 POWHEGreweight_shape.py 2017 BSI 0 QCDmuRV_dn
+python3 POWHEGreweight_shape.py 2017 BSI 0 QCDmuFV_up
+python3 POWHEGreweight_shape.py 2017 BSI 0 QCDmuFV_dn
+python3 POWHEGreweight_shape.py 2017 BSI 1 nom
+python3 POWHEGreweight_shape.py 2017 BSI 1 kfqcd_up
+python3 POWHEGreweight_shape.py 2017 BSI 1 kfqcd_dn
+python3 POWHEGreweight_shape.py 2017 BSI 1 kfpdf_up
+python3 POWHEGreweight_shape.py 2017 BSI 1 kfpdf_dn
+python3 POWHEGreweight_shape.py 2017 BSI 1 kfas_up
+python3 POWHEGreweight_shape.py 2017 BSI 1 kfas_dn
+python3 POWHEGreweight_shape.py 2017 BSI 1 pdfV_up
+python3 POWHEGreweight_shape.py 2017 BSI 1 pdfV_dn
+python3 POWHEGreweight_shape.py 2017 BSI 1 AsMZV_up
+python3 POWHEGreweight_shape.py 2017 BSI 1 AsMZV_dn
+python3 POWHEGreweight_shape.py 2017 BSI 1 QCDmuRV_up
+python3 POWHEGreweight_shape.py 2017 BSI 1 QCDmuRV_dn
+python3 POWHEGreweight_shape.py 2017 BSI 1 QCDmuFV_up
+python3 POWHEGreweight_shape.py 2017 BSI 1 QCDmuFV_dn
+python3 POWHEGreweight_shape.py 2017 BSI 2 nom
+python3 POWHEGreweight_shape.py 2017 BSI 2 kfqcd_up
+python3 POWHEGreweight_shape.py 2017 BSI 2 kfqcd_dn
+python3 POWHEGreweight_shape.py 2017 BSI 2 kfpdf_up
+python3 POWHEGreweight_shape.py 2017 BSI 2 kfpdf_dn
+python3 POWHEGreweight_shape.py 2017 BSI 2 kfas_up
+python3 POWHEGreweight_shape.py 2017 BSI 2 kfas_dn
+python3 POWHEGreweight_shape.py 2017 BSI 2 pdfV_up
+python3 POWHEGreweight_shape.py 2017 BSI 2 pdfV_dn
+python3 POWHEGreweight_shape.py 2017 BSI 2 AsMZV_up
+python3 POWHEGreweight_shape.py 2017 BSI 2 AsMZV_dn
+python3 POWHEGreweight_shape.py 2017 BSI 2 QCDmuRV_up
+python3 POWHEGreweight_shape.py 2017 BSI 2 QCDmuRV_dn
+python3 POWHEGreweight_shape.py 2017 BSI 2 QCDmuFV_up
+python3 POWHEGreweight_shape.py 2017 BSI 2 QCDmuFV_dn
+python3 POWHEGreweight_shape.py 2017 BKG 0 nom
+python3 POWHEGreweight_shape.py 2017 BKG 0 kfqcd_up
+python3 POWHEGreweight_shape.py 2017 BKG 0 kfqcd_dn
+python3 POWHEGreweight_shape.py 2017 BKG 0 kfpdf_up
+python3 POWHEGreweight_shape.py 2017 BKG 0 kfpdf_dn
+python3 POWHEGreweight_shape.py 2017 BKG 0 kfas_up
+python3 POWHEGreweight_shape.py 2017 BKG 0 kfas_dn
+python3 POWHEGreweight_shape.py 2017 BKG 0 pdfV_up
+python3 POWHEGreweight_shape.py 2017 BKG 0 pdfV_dn
+python3 POWHEGreweight_shape.py 2017 BKG 0 AsMZV_up
+python3 POWHEGreweight_shape.py 2017 BKG 0 AsMZV_dn
+python3 POWHEGreweight_shape.py 2017 BKG 0 QCDmuRV_up
+python3 POWHEGreweight_shape.py 2017 BKG 0 QCDmuRV_dn
+python3 POWHEGreweight_shape.py 2017 BKG 0 QCDmuFV_up
+python3 POWHEGreweight_shape.py 2017 BKG 0 QCDmuFV_dn
+python3 POWHEGreweight_shape.py 2017 BKG 1 nom
+python3 POWHEGreweight_shape.py 2017 BKG 1 kfqcd_up
+python3 POWHEGreweight_shape.py 2017 BKG 1 kfqcd_dn
+python3 POWHEGreweight_shape.py 2017 BKG 1 kfpdf_up
+python3 POWHEGreweight_shape.py 2017 BKG 1 kfpdf_dn
+python3 POWHEGreweight_shape.py 2017 BKG 1 kfas_up
+python3 POWHEGreweight_shape.py 2017 BKG 1 kfas_dn
+python3 POWHEGreweight_shape.py 2017 BKG 1 pdfV_up
+python3 POWHEGreweight_shape.py 2017 BKG 1 pdfV_dn
+python3 POWHEGreweight_shape.py 2017 BKG 1 AsMZV_up
+python3 POWHEGreweight_shape.py 2017 BKG 1 AsMZV_dn
+python3 POWHEGreweight_shape.py 2017 BKG 1 QCDmuRV_up
+python3 POWHEGreweight_shape.py 2017 BKG 1 QCDmuRV_dn
+python3 POWHEGreweight_shape.py 2017 BKG 1 QCDmuFV_up
+python3 POWHEGreweight_shape.py 2017 BKG 1 QCDmuFV_dn
+python3 POWHEGreweight_shape.py 2017 BKG 2 nom
+python3 POWHEGreweight_shape.py 2017 BKG 2 kfqcd_up
+python3 POWHEGreweight_shape.py 2017 BKG 2 kfqcd_dn
+python3 POWHEGreweight_shape.py 2017 BKG 2 kfpdf_up
+python3 POWHEGreweight_shape.py 2017 BKG 2 kfpdf_dn
+python3 POWHEGreweight_shape.py 2017 BKG 2 kfas_up
+python3 POWHEGreweight_shape.py 2017 BKG 2 kfas_dn
+python3 POWHEGreweight_shape.py 2017 BKG 2 pdfV_up
+python3 POWHEGreweight_shape.py 2017 BKG 2 pdfV_dn
+python3 POWHEGreweight_shape.py 2017 BKG 2 AsMZV_up
+python3 POWHEGreweight_shape.py 2017 BKG 2 AsMZV_dn
+python3 POWHEGreweight_shape.py 2017 BKG 2 QCDmuRV_up
+python3 POWHEGreweight_shape.py 2017 BKG 2 QCDmuRV_dn
+python3 POWHEGreweight_shape.py 2017 BKG 2 QCDmuFV_up
+python3 POWHEGreweight_shape.py 2017 BKG 2 QCDmuFV_dn
+python3 POWHEGreweight_shape.py 2018 SIG 0 nom
+python3 POWHEGreweight_shape.py 2018 SIG 0 kfqcd_up
+python3 POWHEGreweight_shape.py 2018 SIG 0 kfqcd_dn
+python3 POWHEGreweight_shape.py 2018 SIG 0 kfpdf_up
+python3 POWHEGreweight_shape.py 2018 SIG 0 kfpdf_dn
+python3 POWHEGreweight_shape.py 2018 SIG 0 kfas_up
+python3 POWHEGreweight_shape.py 2018 SIG 0 kfas_dn
+python3 POWHEGreweight_shape.py 2018 SIG 0 pdfV_up
+python3 POWHEGreweight_shape.py 2018 SIG 0 pdfV_dn
+python3 POWHEGreweight_shape.py 2018 SIG 0 AsMZV_up
+python3 POWHEGreweight_shape.py 2018 SIG 0 AsMZV_dn
+python3 POWHEGreweight_shape.py 2018 SIG 0 QCDmuRV_up
+python3 POWHEGreweight_shape.py 2018 SIG 0 QCDmuRV_dn
+python3 POWHEGreweight_shape.py 2018 SIG 0 QCDmuFV_up
+python3 POWHEGreweight_shape.py 2018 SIG 0 QCDmuFV_dn
+python3 POWHEGreweight_shape.py 2018 SIG 1 nom
+python3 POWHEGreweight_shape.py 2018 SIG 1 kfqcd_up
+python3 POWHEGreweight_shape.py 2018 SIG 1 kfqcd_dn
+python3 POWHEGreweight_shape.py 2018 SIG 1 kfpdf_up
+python3 POWHEGreweight_shape.py 2018 SIG 1 kfpdf_dn
+python3 POWHEGreweight_shape.py 2018 SIG 1 kfas_up
+python3 POWHEGreweight_shape.py 2018 SIG 1 kfas_dn
+python3 POWHEGreweight_shape.py 2018 SIG 1 pdfV_up
+python3 POWHEGreweight_shape.py 2018 SIG 1 pdfV_dn
+python3 POWHEGreweight_shape.py 2018 SIG 1 AsMZV_up
+python3 POWHEGreweight_shape.py 2018 SIG 1 AsMZV_dn
+python3 POWHEGreweight_shape.py 2018 SIG 1 QCDmuRV_up
+python3 POWHEGreweight_shape.py 2018 SIG 1 QCDmuRV_dn
+python3 POWHEGreweight_shape.py 2018 SIG 1 QCDmuFV_up
+python3 POWHEGreweight_shape.py 2018 SIG 1 QCDmuFV_dn
+python3 POWHEGreweight_shape.py 2018 SIG 2 nom
+python3 POWHEGreweight_shape.py 2018 SIG 2 kfqcd_up
+python3 POWHEGreweight_shape.py 2018 SIG 2 kfqcd_dn
+python3 POWHEGreweight_shape.py 2018 SIG 2 kfpdf_up
+python3 POWHEGreweight_shape.py 2018 SIG 2 kfpdf_dn
+python3 POWHEGreweight_shape.py 2018 SIG 2 kfas_up
+python3 POWHEGreweight_shape.py 2018 SIG 2 kfas_dn
+python3 POWHEGreweight_shape.py 2018 SIG 2 pdfV_up
+python3 POWHEGreweight_shape.py 2018 SIG 2 pdfV_dn
+python3 POWHEGreweight_shape.py 2018 SIG 2 AsMZV_up
+python3 POWHEGreweight_shape.py 2018 SIG 2 AsMZV_dn
+python3 POWHEGreweight_shape.py 2018 SIG 2 QCDmuRV_up
+python3 POWHEGreweight_shape.py 2018 SIG 2 QCDmuRV_dn
+python3 POWHEGreweight_shape.py 2018 SIG 2 QCDmuFV_up
+python3 POWHEGreweight_shape.py 2018 SIG 2 QCDmuFV_dn
+python3 POWHEGreweight_shape.py 2018 BSI 0 nom
+python3 POWHEGreweight_shape.py 2018 BSI 0 kfqcd_up
+python3 POWHEGreweight_shape.py 2018 BSI 0 kfqcd_dn
+python3 POWHEGreweight_shape.py 2018 BSI 0 kfpdf_up
+python3 POWHEGreweight_shape.py 2018 BSI 0 kfpdf_dn
+python3 POWHEGreweight_shape.py 2018 BSI 0 kfas_up
+python3 POWHEGreweight_shape.py 2018 BSI 0 kfas_dn
+python3 POWHEGreweight_shape.py 2018 BSI 0 pdfV_up
+python3 POWHEGreweight_shape.py 2018 BSI 0 pdfV_dn
+python3 POWHEGreweight_shape.py 2018 BSI 0 AsMZV_up
+python3 POWHEGreweight_shape.py 2018 BSI 0 AsMZV_dn
+python3 POWHEGreweight_shape.py 2018 BSI 0 QCDmuRV_up
+python3 POWHEGreweight_shape.py 2018 BSI 0 QCDmuRV_dn
+python3 POWHEGreweight_shape.py 2018 BSI 0 QCDmuFV_up
+python3 POWHEGreweight_shape.py 2018 BSI 0 QCDmuFV_dn
+python3 POWHEGreweight_shape.py 2018 BSI 1 nom
+python3 POWHEGreweight_shape.py 2018 BSI 1 kfqcd_up
+python3 POWHEGreweight_shape.py 2018 BSI 1 kfqcd_dn
+python3 POWHEGreweight_shape.py 2018 BSI 1 kfpdf_up
+python3 POWHEGreweight_shape.py 2018 BSI 1 kfpdf_dn
+python3 POWHEGreweight_shape.py 2018 BSI 1 kfas_up
+python3 POWHEGreweight_shape.py 2018 BSI 1 kfas_dn
+python3 POWHEGreweight_shape.py 2018 BSI 1 pdfV_up
+python3 POWHEGreweight_shape.py 2018 BSI 1 pdfV_dn
+python3 POWHEGreweight_shape.py 2018 BSI 1 AsMZV_up
+python3 POWHEGreweight_shape.py 2018 BSI 1 AsMZV_dn
+python3 POWHEGreweight_shape.py 2018 BSI 1 QCDmuRV_up
+python3 POWHEGreweight_shape.py 2018 BSI 1 QCDmuRV_dn
+python3 POWHEGreweight_shape.py 2018 BSI 1 QCDmuFV_up
+python3 POWHEGreweight_shape.py 2018 BSI 1 QCDmuFV_dn
+python3 POWHEGreweight_shape.py 2018 BSI 2 nom
+python3 POWHEGreweight_shape.py 2018 BSI 2 kfqcd_up
+python3 POWHEGreweight_shape.py 2018 BSI 2 kfqcd_dn
+python3 POWHEGreweight_shape.py 2018 BSI 2 kfpdf_up
+python3 POWHEGreweight_shape.py 2018 BSI 2 kfpdf_dn
+python3 POWHEGreweight_shape.py 2018 BSI 2 kfas_up
+python3 POWHEGreweight_shape.py 2018 BSI 2 kfas_dn
+python3 POWHEGreweight_shape.py 2018 BSI 2 pdfV_up
+python3 POWHEGreweight_shape.py 2018 BSI 2 pdfV_dn
+python3 POWHEGreweight_shape.py 2018 BSI 2 AsMZV_up
+python3 POWHEGreweight_shape.py 2018 BSI 2 AsMZV_dn
+python3 POWHEGreweight_shape.py 2018 BSI 2 QCDmuRV_up
+python3 POWHEGreweight_shape.py 2018 BSI 2 QCDmuRV_dn
+python3 POWHEGreweight_shape.py 2018 BSI 2 QCDmuFV_up
+python3 POWHEGreweight_shape.py 2018 BSI 2 QCDmuFV_dn
+python3 POWHEGreweight_shape.py 2018 BKG 0 nom
+python3 POWHEGreweight_shape.py 2018 BKG 0 kfqcd_up
+python3 POWHEGreweight_shape.py 2018 BKG 0 kfqcd_dn
+python3 POWHEGreweight_shape.py 2018 BKG 0 kfpdf_up
+python3 POWHEGreweight_shape.py 2018 BKG 0 kfpdf_dn
+python3 POWHEGreweight_shape.py 2018 BKG 0 kfas_up
+python3 POWHEGreweight_shape.py 2018 BKG 0 kfas_dn
+python3 POWHEGreweight_shape.py 2018 BKG 0 pdfV_up
+python3 POWHEGreweight_shape.py 2018 BKG 0 pdfV_dn
+python3 POWHEGreweight_shape.py 2018 BKG 0 AsMZV_up
+python3 POWHEGreweight_shape.py 2018 BKG 0 AsMZV_dn
+python3 POWHEGreweight_shape.py 2018 BKG 0 QCDmuRV_up
+python3 POWHEGreweight_shape.py 2018 BKG 0 QCDmuRV_dn
+python3 POWHEGreweight_shape.py 2018 BKG 0 QCDmuFV_up
+python3 POWHEGreweight_shape.py 2018 BKG 0 QCDmuFV_dn
+python3 POWHEGreweight_shape.py 2018 BKG 1 nom
+python3 POWHEGreweight_shape.py 2018 BKG 1 kfqcd_up
+python3 POWHEGreweight_shape.py 2018 BKG 1 kfqcd_dn
+python3 POWHEGreweight_shape.py 2018 BKG 1 kfpdf_up
+python3 POWHEGreweight_shape.py 2018 BKG 1 kfpdf_dn
+python3 POWHEGreweight_shape.py 2018 BKG 1 kfas_up
+python3 POWHEGreweight_shape.py 2018 BKG 1 kfas_dn
+python3 POWHEGreweight_shape.py 2018 BKG 1 pdfV_up
+python3 POWHEGreweight_shape.py 2018 BKG 1 pdfV_dn
+python3 POWHEGreweight_shape.py 2018 BKG 1 AsMZV_up
+python3 POWHEGreweight_shape.py 2018 BKG 1 AsMZV_dn
+python3 POWHEGreweight_shape.py 2018 BKG 1 QCDmuRV_up
+python3 POWHEGreweight_shape.py 2018 BKG 1 QCDmuRV_dn
+python3 POWHEGreweight_shape.py 2018 BKG 1 QCDmuFV_up
+python3 POWHEGreweight_shape.py 2018 BKG 1 QCDmuFV_dn
+python3 POWHEGreweight_shape.py 2018 BKG 2 nom
+python3 POWHEGreweight_shape.py 2018 BKG 2 kfqcd_up
+python3 POWHEGreweight_shape.py 2018 BKG 2 kfqcd_dn
+python3 POWHEGreweight_shape.py 2018 BKG 2 kfpdf_up
+python3 POWHEGreweight_shape.py 2018 BKG 2 kfpdf_dn
+python3 POWHEGreweight_shape.py 2018 BKG 2 kfas_up
+python3 POWHEGreweight_shape.py 2018 BKG 2 kfas_dn
+python3 POWHEGreweight_shape.py 2018 BKG 2 pdfV_up
+python3 POWHEGreweight_shape.py 2018 BKG 2 pdfV_dn
+python3 POWHEGreweight_shape.py 2018 BKG 2 AsMZV_up
+python3 POWHEGreweight_shape.py 2018 BKG 2 AsMZV_dn
+python3 POWHEGreweight_shape.py 2018 BKG 2 QCDmuRV_up
+python3 POWHEGreweight_shape.py 2018 BKG 2 QCDmuRV_dn
+python3 POWHEGreweight_shape.py 2018 BKG 2 QCDmuFV_up
+python3 POWHEGreweight_shape.py 2018 BKG 2 QCDmuFV_dn
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+python3 POWHEGreweight_syst.py 2016 SIG btagD 0
+python3 POWHEGreweight_syst.py 2016 SIG btagD 1
+python3 POWHEGreweight_syst.py 2016 SIG btagD 2
+python3 POWHEGreweight_syst.py 2016 SIG btagU 0
+python3 POWHEGreweight_syst.py 2016 SIG btagU 1
+python3 POWHEGreweight_syst.py 2016 SIG btagU 2
+python3 POWHEGreweight_syst.py 2016 SIG jerD 0
+python3 POWHEGreweight_syst.py 2016 SIG jerD 1
+python3 POWHEGreweight_syst.py 2016 SIG jerD 2
+python3 POWHEGreweight_syst.py 2016 SIG jerU 0
+python3 POWHEGreweight_syst.py 2016 SIG jerU 1
+python3 POWHEGreweight_syst.py 2016 SIG jerU 2
+python3 POWHEGreweight_syst.py 2016 SIG jesD 0
+python3 POWHEGreweight_syst.py 2016 SIG jesD 1
+python3 POWHEGreweight_syst.py 2016 SIG jesD 2
+python3 POWHEGreweight_syst.py 2016 SIG jesU 0
+python3 POWHEGreweight_syst.py 2016 SIG jesU 1
+python3 POWHEGreweight_syst.py 2016 SIG jesU 2
+python3 POWHEGreweight_syst.py 2016 BSI btagD 0
+python3 POWHEGreweight_syst.py 2016 BSI btagD 1
+python3 POWHEGreweight_syst.py 2016 BSI btagD 2
+python3 POWHEGreweight_syst.py 2016 BSI btagU 0
+python3 POWHEGreweight_syst.py 2016 BSI btagU 1
+python3 POWHEGreweight_syst.py 2016 BSI btagU 2
+python3 POWHEGreweight_syst.py 2016 BSI jerD 0
+python3 POWHEGreweight_syst.py 2016 BSI jerD 1
+python3 POWHEGreweight_syst.py 2016 BSI jerD 2
+python3 POWHEGreweight_syst.py 2016 BSI jerU 0
+python3 POWHEGreweight_syst.py 2016 BSI jerU 1
+python3 POWHEGreweight_syst.py 2016 BSI jerU 2
+python3 POWHEGreweight_syst.py 2016 BSI jesD 0
+python3 POWHEGreweight_syst.py 2016 BSI jesD 1
+python3 POWHEGreweight_syst.py 2016 BSI jesD 2
+python3 POWHEGreweight_syst.py 2016 BSI jesU 0
+python3 POWHEGreweight_syst.py 2016 BSI jesU 1
+python3 POWHEGreweight_syst.py 2016 BSI jesU 2
+python3 POWHEGreweight_syst.py 2016 BKG btagD 0
+python3 POWHEGreweight_syst.py 2016 BKG btagD 1
+python3 POWHEGreweight_syst.py 2016 BKG btagD 2
+python3 POWHEGreweight_syst.py 2016 BKG btagU 0
+python3 POWHEGreweight_syst.py 2016 BKG btagU 1
+python3 POWHEGreweight_syst.py 2016 BKG btagU 2
+python3 POWHEGreweight_syst.py 2016 BKG jerD 0
+python3 POWHEGreweight_syst.py 2016 BKG jerD 1
+python3 POWHEGreweight_syst.py 2016 BKG jerD 2
+python3 POWHEGreweight_syst.py 2016 BKG jerU 0
+python3 POWHEGreweight_syst.py 2016 BKG jerU 1
+python3 POWHEGreweight_syst.py 2016 BKG jerU 2
+python3 POWHEGreweight_syst.py 2016 BKG jesD 0
+python3 POWHEGreweight_syst.py 2016 BKG jesD 1
+python3 POWHEGreweight_syst.py 2016 BKG jesD 2
+python3 POWHEGreweight_syst.py 2016 BKG jesU 0
+python3 POWHEGreweight_syst.py 2016 BKG jesU 1
+python3 POWHEGreweight_syst.py 2016 BKG jesU 2
+python3 POWHEGreweight_syst.py 2017 SIG btagD 0
+python3 POWHEGreweight_syst.py 2017 SIG btagD 1
+python3 POWHEGreweight_syst.py 2017 SIG btagD 2
+python3 POWHEGreweight_syst.py 2017 SIG btagU 0
+python3 POWHEGreweight_syst.py 2017 SIG btagU 1
+python3 POWHEGreweight_syst.py 2017 SIG btagU 2
+python3 POWHEGreweight_syst.py 2017 SIG jerD 0
+python3 POWHEGreweight_syst.py 2017 SIG jerD 1
+python3 POWHEGreweight_syst.py 2017 SIG jerD 2
+python3 POWHEGreweight_syst.py 2017 SIG jerU 0
+python3 POWHEGreweight_syst.py 2017 SIG jerU 1
+python3 POWHEGreweight_syst.py 2017 SIG jerU 2
+python3 POWHEGreweight_syst.py 2017 SIG jesD 0
+python3 POWHEGreweight_syst.py 2017 SIG jesD 1
+python3 POWHEGreweight_syst.py 2017 SIG jesD 2
+python3 POWHEGreweight_syst.py 2017 SIG jesU 0
+python3 POWHEGreweight_syst.py 2017 SIG jesU 1
+python3 POWHEGreweight_syst.py 2017 SIG jesU 2
+python3 POWHEGreweight_syst.py 2017 BSI btagD 0
+python3 POWHEGreweight_syst.py 2017 BSI btagD 1
+python3 POWHEGreweight_syst.py 2017 BSI btagD 2
+python3 POWHEGreweight_syst.py 2017 BSI btagU 0
+python3 POWHEGreweight_syst.py 2017 BSI btagU 1
+python3 POWHEGreweight_syst.py 2017 BSI btagU 2
+python3 POWHEGreweight_syst.py 2017 BSI jerD 0
+python3 POWHEGreweight_syst.py 2017 BSI jerD 1
+python3 POWHEGreweight_syst.py 2017 BSI jerD 2
+python3 POWHEGreweight_syst.py 2017 BSI jerU 0
+python3 POWHEGreweight_syst.py 2017 BSI jerU 1
+python3 POWHEGreweight_syst.py 2017 BSI jerU 2
+python3 POWHEGreweight_syst.py 2017 BSI jesD 0
+python3 POWHEGreweight_syst.py 2017 BSI jesD 1
+python3 POWHEGreweight_syst.py 2017 BSI jesD 2
+python3 POWHEGreweight_syst.py 2017 BSI jesU 0
+python3 POWHEGreweight_syst.py 2017 BSI jesU 1
+python3 POWHEGreweight_syst.py 2017 BSI jesU 2
+python3 POWHEGreweight_syst.py 2017 BKG btagD 0
+python3 POWHEGreweight_syst.py 2017 BKG btagD 1
+python3 POWHEGreweight_syst.py 2017 BKG btagD 2
+python3 POWHEGreweight_syst.py 2017 BKG btagU 0
+python3 POWHEGreweight_syst.py 2017 BKG btagU 1
+python3 POWHEGreweight_syst.py 2017 BKG btagU 2
+python3 POWHEGreweight_syst.py 2017 BKG jerD 0
+python3 POWHEGreweight_syst.py 2017 BKG jerD 1
+python3 POWHEGreweight_syst.py 2017 BKG jerD 2
+python3 POWHEGreweight_syst.py 2017 BKG jerU 0
+python3 POWHEGreweight_syst.py 2017 BKG jerU 1
+python3 POWHEGreweight_syst.py 2017 BKG jerU 2
+python3 POWHEGreweight_syst.py 2017 BKG jesD 0
+python3 POWHEGreweight_syst.py 2017 BKG jesD 1
+python3 POWHEGreweight_syst.py 2017 BKG jesD 2
+python3 POWHEGreweight_syst.py 2017 BKG jesU 0
+python3 POWHEGreweight_syst.py 2017 BKG jesU 1
+python3 POWHEGreweight_syst.py 2017 BKG jesU 2
+python3 POWHEGreweight_syst.py 2018 SIG btagD 0
+python3 POWHEGreweight_syst.py 2018 SIG btagD 1
+python3 POWHEGreweight_syst.py 2018 SIG btagD 2
+python3 POWHEGreweight_syst.py 2018 SIG btagU 0
+python3 POWHEGreweight_syst.py 2018 SIG btagU 1
+python3 POWHEGreweight_syst.py 2018 SIG btagU 2
+python3 POWHEGreweight_syst.py 2018 SIG jerD 0
+python3 POWHEGreweight_syst.py 2018 SIG jerD 1
+python3 POWHEGreweight_syst.py 2018 SIG jerD 2
+python3 POWHEGreweight_syst.py 2018 SIG jerU 0
+python3 POWHEGreweight_syst.py 2018 SIG jerU 1
+python3 POWHEGreweight_syst.py 2018 SIG jerU 2
+python3 POWHEGreweight_syst.py 2018 SIG jesD 0
+python3 POWHEGreweight_syst.py 2018 SIG jesD 1
+python3 POWHEGreweight_syst.py 2018 SIG jesD 2
+python3 POWHEGreweight_syst.py 2018 SIG jesU 0
+python3 POWHEGreweight_syst.py 2018 SIG jesU 1
+python3 POWHEGreweight_syst.py 2018 SIG jesU 2
+python3 POWHEGreweight_syst.py 2018 BSI btagD 0
+python3 POWHEGreweight_syst.py 2018 BSI btagD 1
+python3 POWHEGreweight_syst.py 2018 BSI btagD 2
+python3 POWHEGreweight_syst.py 2018 BSI btagU 0
+python3 POWHEGreweight_syst.py 2018 BSI btagU 1
+python3 POWHEGreweight_syst.py 2018 BSI btagU 2
+python3 POWHEGreweight_syst.py 2018 BSI jerD 0
+python3 POWHEGreweight_syst.py 2018 BSI jerD 1
+python3 POWHEGreweight_syst.py 2018 BSI jerD 2
+python3 POWHEGreweight_syst.py 2018 BSI jerU 0
+python3 POWHEGreweight_syst.py 2018 BSI jerU 1
+python3 POWHEGreweight_syst.py 2018 BSI jerU 2
+python3 POWHEGreweight_syst.py 2018 BSI jesD 0
+python3 POWHEGreweight_syst.py 2018 BSI jesD 1
+python3 POWHEGreweight_syst.py 2018 BSI jesD 2
+python3 POWHEGreweight_syst.py 2018 BSI jesU 0
+python3 POWHEGreweight_syst.py 2018 BSI jesU 1
+python3 POWHEGreweight_syst.py 2018 BSI jesU 2
+python3 POWHEGreweight_syst.py 2018 BKG btagD 0
+python3 POWHEGreweight_syst.py 2018 BKG btagD 1
+python3 POWHEGreweight_syst.py 2018 BKG btagD 2
+python3 POWHEGreweight_syst.py 2018 BKG btagU 0
+python3 POWHEGreweight_syst.py 2018 BKG btagU 1
+python3 POWHEGreweight_syst.py 2018 BKG btagU 2
+python3 POWHEGreweight_syst.py 2018 BKG jerD 0
+python3 POWHEGreweight_syst.py 2018 BKG jerD 1
+python3 POWHEGreweight_syst.py 2018 BKG jerD 2
+python3 POWHEGreweight_syst.py 2018 BKG jerU 0
+python3 POWHEGreweight_syst.py 2018 BKG jerU 1
+python3 POWHEGreweight_syst.py 2018 BKG jerU 2
+python3 POWHEGreweight_syst.py 2018 BKG jesD 0
+python3 POWHEGreweight_syst.py 2018 BKG jesD 1
+python3 POWHEGreweight_syst.py 2018 BKG jesD 2
+python3 POWHEGreweight_syst.py 2018 BKG jesU 0
+python3 POWHEGreweight_syst.py 2018 BKG jesU 1
+python3 POWHEGreweight_syst.py 2018 BKG jesU 2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+python3 RRtemplates_VBF.py 2016 SIG 0
+python3 RRtemplates_VBF.py 2016 SIG 1
+python3 RRtemplates_VBF.py 2016 SIG 2
+python3 RRtemplates_VBF.py 2016 BSI 0
+python3 RRtemplates_VBF.py 2016 BSI 1
+python3 RRtemplates_VBF.py 2016 BSI 2
+python3 RRtemplates_VBF.py 2016 BKG 0
+python3 RRtemplates_VBF.py 2016 BKG 1
+python3 RRtemplates_VBF.py 2016 BKG 2
+python3 RRtemplates_VBF.py 2017 SIG 0
+python3 RRtemplates_VBF.py 2017 SIG 1
+python3 RRtemplates_VBF.py 2017 SIG 2
+python3 RRtemplates_VBF.py 2017 BSI 0
+python3 RRtemplates_VBF.py 2017 BSI 1
+python3 RRtemplates_VBF.py 2017 BSI 2
+python3 RRtemplates_VBF.py 2017 BKG 0
+python3 RRtemplates_VBF.py 2017 BKG 1
+python3 RRtemplates_VBF.py 2017 BKG 2
+python3 RRtemplates_VBF.py 2018 SIG 0
+python3 RRtemplates_VBF.py 2018 SIG 1
+python3 RRtemplates_VBF.py 2018 SIG 2
+python3 RRtemplates_VBF.py 2018 BSI 0
+python3 RRtemplates_VBF.py 2018 BSI 1
+python3 RRtemplates_VBF.py 2018 BSI 2
+python3 RRtemplates_VBF.py 2018 BKG 0
+python3 RRtemplates_VBF.py 2018 BKG 1
+python3 RRtemplates_VBF.py 2018 BKG 2
