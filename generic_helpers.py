@@ -1,4 +1,5 @@
 import os
+import argparse
 from collections.abc import Iterable
 import numpy as np
 import vector
@@ -27,6 +28,12 @@ def nan_to_value(array, value=0):
     array = np.array(array)
     array[~np.isfinite(array)] = value
     return array
+
+def argparse_filepath_type(path):
+    if not os.path.exists(path):
+        raise argparse.ArgumentTypeError(f"The path {path} is invalid!")
+    else:
+        return path
 
 def get_spatial(four_vector):
     """Takes in a 4 vector and returns its spatial component. Identical to TLorentzVector.Vect()

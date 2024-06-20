@@ -288,7 +288,7 @@ def main(raw_args=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("outputfile")
     parser.add_argument("inputfile", nargs="+")
-    parser.add_argument("-m", "--mode", default="decayonly_default", type=str, choices=[LHE2ROOT_OPTIONS])
+    parser.add_argument("-m", "--mode", default="decayonly_default", type=str, choices=LHE2ROOT_OPTIONS)
     parser.add_argument("-p", "--production", type=check_enum, required=True, choices=PRODUCTION_OPTIONS)
     parser.add_argument("--remove_flavor", action="store_true")
     parser.add_argument("--merge_photon", action="store_true") # for ggH 4l JHUGen and prophecy
@@ -349,7 +349,7 @@ def main(raw_args=None):
     for branch in branchnames_vector:
         t[branch] = np.zeros( (len(all_events), 4), dtype=np.single )
 
-    if mode in ("ggh4l", ):
+    if mode in ("ggh4l", "vbf_withdecay"):
         inputfclass = LHEEvent_Hwithdecay
     elif mode in ("vbf", "zh_lep", "wh_lep"):
         inputfclass = LHEEvent_StableHiggs
