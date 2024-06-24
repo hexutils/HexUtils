@@ -349,6 +349,13 @@ def main(raw_args=None):
         all_events += reader.all_events
         del reader, inputfile
 
+    xsecs, sigmas = zip(*tuple(c.values()))
+    xsecs = np.array(xsecs)
+    sigmas = np.array(sigmas)
+    weights = (1/sigmas)**2
+    weighted_xsec = (xsecs*weights).sum()/weights.sum()
+    c["xsec"] = (weighted_xsec, 1/(np.sqrt(weights).sum()))
+
     for branch in branchnames_scalar:
         t[branch] = np.zeros(len(all_events), dtype=np.single)
     for branch in branchnames_vector:
