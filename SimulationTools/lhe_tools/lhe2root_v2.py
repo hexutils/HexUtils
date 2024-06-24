@@ -16,7 +16,7 @@ def check_enum(entry):
     i = 0
     possible_value = tuple(Mela.Production.__dict__['__entries'].keys())
     while (not found) and (i < len(possible_value)):
-        if entry == possible_value[i].lower():
+        if entry.lower() == possible_value[i].lower():
             found = True
             entry = possible_value[i]
         i += 1
@@ -340,8 +340,13 @@ def main(raw_args=None):
     all_events = []
     for inputfile in args.inputfile:
         reader = lhe_reader.lhe_reader(inputfile)
+        try:
+            c[inputfile] = reader.cross_section
+        except:
+            print(inputfile, " has a corrupted header and xsec cannot be read!")
+            del reader, inputfile
+            continue
         all_events += reader.all_events
-        c[inputfile] = reader.cross_section
         del reader, inputfile
 
     for branch in branchnames_scalar:
