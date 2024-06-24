@@ -16,7 +16,7 @@ def check_enum(entry):
     i = 0
     possible_value = tuple(Mela.Production.__dict__['__entries'].keys())
     while (not found) and (i < len(possible_value)):
-        if entry == possible_value[i].lower():
+        if entry.lower() == possible_value[i].lower():
             found = True
             entry = possible_value[i]
         i += 1
