@@ -45,12 +45,14 @@ class lhe_reader(object):
         head = self.non_event_portions[0] #The part before the events contains the cross section
         
         #This regex was made by the very very helpful https://pythex.org/ (shoutout UVA professor Upsorn Praphamontripong)
-        cross_finder = re.compile(r'<init>\n.+\n.+(\d+\.\d+E(\+|-)\d{2})\s+(\d+\.\d+E(\+|-)\d{2})\s+(\d+\.\d+E(\+|-)\d{2})(\d|\s)+</init>')
+        cross_finder = re.compile(
+            r'<init>\n.+\n(?:\s*)(?P<CROSS_SECTION>\d+\.\d+(?:E|e)(?:\+|-)\d+)\s+(?P<UNCERTAINTY>\d+\.\d+(?:E|e)(?:\+|-)\d+) (?:[\s\S]+)<\/init>'
+            )
         cross_section_match = re.search(cross_finder,head)
         
-        cross_section = cross_section_match.group(1)
+        cross_section = cross_section_match.group("CROSS_SECTION")
         
-        uncertainty = cross_section_match.group(3)
+        uncertainty = cross_section_match.group("UNCERTAINTY")
         
         return float(cross_section), float(uncertainty) #returns the cross section and its uncertainty
     
