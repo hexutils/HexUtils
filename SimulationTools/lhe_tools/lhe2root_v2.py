@@ -317,7 +317,7 @@ def main(raw_args=None):
     if production in (Mela.Production.Had_ZH, Mela.Production.Lep_ZH, Mela.Production.Had_WH, Mela.Production.Lep_WH):
         branchnames_scalar += ("mV", "mVstar", "pxj1", "pyj1", "pzj1", "Ej1", "pxj2", "pyj2", "pzj2", "Ej2", "ptV", "rapHJJ")
     elif production in (Mela.Production.JJVBF, ):
-        branchnames_scalar += ("q2V1", "q2V2","Dphijj", "rapHJJ", "HJJpz")
+        branchnames_scalar += ("q2V1", "q2V2","Dphijj", "rapHJJ", "HJJpz", "mJJ")
     
     branchnames_scalar += (
         "ptdau1","pxdau1","pydau1","pzdau1","Edau1","flavdau1", 
@@ -415,7 +415,8 @@ def main(raw_args=None):
         elif production == Mela.Production.JJVBF:
             t["HJJpz"][i] = sum( [p[1] for p in daughter_list] + [p[1] for p in associated_list], vector.obj(px=0, py=0, pz=0, E=0)).pz
             t["q2V1"][i], t["q2V2"][i], t["costheta1"][i], t["costheta2"][i], t["Phi"][i], t["costhetastar"][i], t["Phi1"][i]= m.computeVBFAngles()
-            
+            t["mJJ"][i] = (associated_list[0] + associated_list[1]).M
+
             if associated_list[0][1].pt > associated_list[1][1].pt:
                 t["Dphijj"][i] = associated_list[0][1].deltaphi(associated_list[1][1])
             else:
