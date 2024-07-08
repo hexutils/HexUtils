@@ -415,7 +415,7 @@ def main(raw_args=None):
         elif production == Mela.Production.JJVBF:
             t["HJJpz"][i] = sum( [p[1] for p in daughter_list] + [p[1] for p in associated_list], vector.obj(px=0, py=0, pz=0, E=0)).pz
             t["q2V1"][i], t["q2V2"][i], t["costheta1"][i], t["costheta2"][i], t["Phi"][i], t["costhetastar"][i], t["Phi1"][i]= m.computeVBFAngles()
-            t["mJJ"][i] = (associated_list[0] + associated_list[1]).M
+            t["mJJ"][i] = (associated_list[0][1] + associated_list[1][1]).M
 
             if associated_list[0][1].pt > associated_list[1][1].pt:
                 t["Dphijj"][i] = associated_list[0][1].deltaphi(associated_list[1][1])
