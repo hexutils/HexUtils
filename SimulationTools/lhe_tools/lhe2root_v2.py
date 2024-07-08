@@ -2,6 +2,7 @@
 import abc
 import re
 import argparse, os
+import warnings
 import numpy as np
 import tqdm
 
@@ -229,7 +230,7 @@ class LHEEvent_VHHiggsdecay(LHEEvent):
         
                 if mother1 is None or ids is None or mother1s[mother1] is None :
                     continue
-          
+
                 if mother1 == mother2 and abs(ids[mother1]) in (23,24) and  not ids[mother1s[mother1]] == 25 :
                     associated.append(line)
             
@@ -297,6 +298,9 @@ def main(raw_args=None):
     parser.add_argument('-n', '--n_events', type=int, default=-1)
     parser.add_argument("-t", "--tree_name", type=str, default="tree")
     parser.add_argument("-ow", "--overwrite", action="store_true")
+    parser.add_argument("-nAssoc", "--numAssociated", type=int, default=2, help="Allocates N associated particles. Default is 2.")
+    parser.add_argument("-nDaughters", "--numDaughters", type=int, default=4, help="Allocates N final-state leptons. Default is 4.")
+    parser.add_argument("-nMothers", "--numMothers", type=int, default=2, help="Allocates N mother particles. Default is 2.")
     args = parser.parse_args(raw_args) #This allows the parser to take in command line arguments if raw_args=None
 
     mode = args.mode
@@ -331,11 +335,29 @@ def main(raw_args=None):
         "weight",
     )
     
-    branchnames_vector = tuple()
+    branchnames_vector = dict()
     if not args.no_mothers:
-        branchnames_vector += ("LHEDaughterId","LHEDaughterPt","LHEDaughterEta","LHEDaughterPhi","LHEDaughterMass")
-        branchnames_vector += ("LHEAssociatedParticleId","LHEAssociatedParticlePt","LHEAssociatedParticleEta","LHEAssociatedParticlePhi","LHEAssociatedParticleMass")
-        branchnames_vector += ("LHEMotherId","LHEMotherPx","LHEMotherPy", "LHEMotherPz", "LHEMotherE")
+        branchnames_vector += {
+            "LHEDaughterId" : args.numDaughters,
+            "LHEDaughterPt" : args.numDaughters,
+            "LHEDaughterEta" : args.numDaughters,
+            "LHEDaughterPhi" : args.numDaughters,
+            "LHEDaughterMass" : args.numDaughters
+        }
+        branchnames_vector += {
+            "LHEAssociatedParticleId" : args.numAssociated,
+            "LHEAssociatedParticlePt" : args.numAssociated,
+            "LHEAssociatedParticleEta" : args.numAssociated,
+            "LHEAssociatedParticlePhi" : args.numAssociated,
+            "LHEAssociatedParticleMass" : args.numAssociated
+        }
+        branchnames_vector += {
+            "LHEMotherId" : args.numMothers,
+            "LHEMotherPx" : args.numMothers,
+            "LHEMotherPy" : args.numMothers,
+            "LHEMotherPz" : args.numMothers,
+            "LHEMotherE" : args.numMothers
+        }
 
     all_events = []
     for inputfile in args.inputfile:
@@ -343,7 +365,7 @@ def main(raw_args=None):
         try:
             c[inputfile] = reader.cross_section
         except:
-            print(inputfile, " has a corrupted header and xsec cannot be read!")
+            warnings.warn(inputfile, " has a corrupted header and xsec cannot be read!")
             del reader, inputfile
             continue
         all_events += reader.all_events
@@ -358,8 +380,9 @@ def main(raw_args=None):
 
     for branch in branchnames_scalar:
         t[branch] = np.zeros(len(all_events), dtype=np.single)
-    for branch in branchnames_vector:
-        t[branch] = np.zeros( (len(all_events), 4), dtype=np.single )
+    for branch, vector_length in branchnames_vector.items():
+        t[branch] = np.zeros( (len(all_events), vector_length), dtype=np.single )
+    del branch, vector_length
 
     if mode in ("ggh4l", "vbf_withdecay"):
         inputfclass = LHEEvent_Hwithdecay
