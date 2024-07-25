@@ -8,36 +8,55 @@ import warnings
 from matplotlib.ticker import MaxNLocator
 from typing import Union
 
-prop_cycle = plt.rcParams['axes.prop_cycle']
-
 def ratioPlot(
-    list_of_counts:list, bins:list, names:list=None, reference:int=0, histtype:str="step", 
-    list_of_count_errors:list=None, lw:Union[float, list]=None, 
-    xlabel:str=None, colors:list=None, 
-    use_tex_x_axis:bool=True, use_tex_y_axis:bool=True,
-    xtick_labelsize:float=20, ytick_labelsize:float=20, 
-    xmin:float=None, xmax:float=None, ymin:float=None, ymax:float=None,
-    reference_color:str='black'
+    list_of_counts:list, bins:list, names:list=None, reference:int=0, histtype:str="step",
+    list_of_count_errors:list=None, lw:Union[float, list]=None,
+    xlabel:str=None, colors:list=None, legend_fontsize:float=15,
+    xlabel_fontsize:float=20, xtick_labelsize:float=20, ytick_labelsize:float=20,
+    reference_color:str='black', include_errors:bool=True, normTo:Union[float, list]=None,
+    stack=False, do_not_stack_at:list=None, zorder:list=None, draw_as_line:list=None
     ):
-    
-    # plt.style.use(hep.style.CMS)
-    # mpl.rcParams['axes.labelsize'] = 40
-    # mpl.rcParams['xaxis.labellocation'] = 'center'
-    # mpl.rcParams['xtick.labelsize'] = 20
-    # mpl.rcParams['ytick.labelsize'] = 20
-    # mpl.rcParams['mathtext.fontset'] = 'stix'
-    
+
+    prop_cycle = [
+        "#3f90da",
+        "#ffa90e",
+        "#bd1f01",
+        "#94a4a2",
+        "#832db6",
+        "#a96b59",
+        "#e76300",
+        "#b9ac70",
+        "#717581",
+        "#92dadd",
+    ]
     if colors is None:
-        colors = prop_cycle.by_key()['color']
-    elif len(colors) != len(list_of_counts):
-        raise ValueError("If providing colors, colors and data should be the same length!")
-    
+        colors = prop_cycle
+    elif len(colors) != len(list_of_counts) - 1:
+        raise ValueError("If providing colors, len(colors)=len(data) - 1 (minus 1 for the reference)!")
+
+    colors.insert(reference, reference_color)
+
     if names is not None and len(names) != len(list_of_counts):
         raise ValueError("Names and data should be the same length!")
     elif names is None:
         names = [i for i in range(len(list_of_counts))]
 
-    reference_arr = list_of_counts[reference].copy()
+    if isinstance(normTo, float) or isinstance(normTo, int):
+        normTo = np.full(len(names), normTo, dtype=np.float64)
+
+    if zorder is None:
+        zorder = list(range(len(names)))
+
+    if draw_as_line is None:
+        draw_as_line = [reference]
+
+    reference_arr = np.copy(list_of_counts[reference])
+    reference_arr = reference_arr.astype(float)
+    reference_err = np.sqrt(reference_arr)
+    if normTo is not None:
+        reference_fac = normTo[reference]/reference_arr.sum()
+        reference_arr *= reference_fac
+        reference_err *= reference_fac
 
     if list_of_count_errors is not None:
         if len(list_of_count_errors) != len(list_of_counts):
@@ -46,66 +65,95 @@ def ratioPlot(
             raise ValueError("Errors and data should be of the same length!")
         else:
             reference_err = list_of_count_errors[reference]
+
+    if do_not_stack_at is None:
+        do_not_stack_at = {reference}
     else:
-        reference_err = np.sqrt(reference_arr)
-        
-    fig, axs = plt.subplots(2,1, figsize=(15,10), facecolor='white', gridspec_kw={'height_ratios': [3, 1], "hspace":0.01}, sharex=True, dpi=200)
+        do_not_stack_at = set(do_not_stack_at)
+
+    fig, axs = plt.subplots(2,1, figsize=(15,10), facecolor='white', gridspec_kw={'height_ratios': [3, 1], "hspace":0.05}, sharex=True, dpi=200)
 
     axs[0].set_xlim(bins[0], bins[-1])
-        
 
-    color_num = 0
+
+    stack_list = []
     for n, (data, name) in enumerate(zip(list_of_counts, names)):
-        if n != reference:
-            color = colors[color_num]
-            color_num += 1
-        else:
-            color = reference_color
+        data = data.astype(float)
+        color = colors[n]
 
-        hep.histplot(data, bins, label=name, ax=axs[0], histtype=histtype, color=color)
+        if normTo is not None:
+            factor = normTo[n]/data.sum()
+            data = data*factor
+        else:
+            factor = 1
+
+        if stack and n not in do_not_stack_at:
+            stack_list.append((data, name, color, zorder[n]))
+        elif stack:
+            hep.histplot(data, bins, label=name, ax=axs[0], histtype="step", color=color, lw=lw+1, zorder=zorder[n])
+        else:
+            hep.histplot(data, bins, label=name, ax=axs[0], histtype=histtype, color=color, lw=lw, zorder=zorder[n])
+
         if list_of_count_errors is None:
-            data_err = np.sqrt(data)
+            data_err = np.sqrt(data/factor)*factor
         else:
             data_err = list_of_count_errors[n]
 
-        ratio = data.copy()/reference_arr
+        ratio = np.copy(data)/reference_arr
         ratio_error = np.sqrt( (data_err/data)**2 + (data*reference_err/(reference_arr**2))**2)
 
-        if n != reference:
-            rat_plot = hep.histplot(ratio, bins, color=color, xerr=True, yerr=ratio_error, ax=axs[1], histtype='errorbar')
-            plotline, capline, barline = rat_plot[0][0]
-            for line in capline:
-                line.zorder = plotline.zorder
-            for line in barline:
-                line.zorder = plotline.zorder
+
+        if n not in draw_as_line:
+            if include_errors:
+                rat_plot = hep.histplot(ratio, bins, color=color, xerr=True, yerr=ratio_error, ax=axs[1], histtype='errorbar')
+                plotline, capline, barline = rat_plot[0][0]
+                for line in capline:
+                    line.zorder = plotline.zorder
+                for line in barline:
+                    line.zorder = plotline.zorder
+            else:
+                hep.histplot(ratio, bins, color=color, xerr=False, yerr=False, ax=axs[1], histtype='errorbar')
 
         else:
             centers = (bins[1:] + bins[:-1])/2
             xvals = np.linspace(bins[0], bins[-1], len(bins)*100)
-            yvals_lower = np.interp(xvals, centers[np.isfinite(ratio_error)], 1 - ratio_error[np.isfinite(ratio_error)])
-            yvals_upper = np.interp(xvals, centers[np.isfinite(ratio_error)], 1 + ratio_error[np.isfinite(ratio_error)])
+            yvals_lower = np.interp(xvals, centers[np.isfinite(ratio_error)], ratio[np.isfinite(ratio_error)] - ratio_error[np.isfinite(ratio_error)])
+            yvals_upper = np.interp(xvals, centers[np.isfinite(ratio_error)], ratio[np.isfinite(ratio_error)] + ratio_error[np.isfinite(ratio_error)])
 
-            axs[1].fill_between(x=xvals, y1=yvals_lower, y2=yvals_upper, color='k', alpha=0.25, zorder=-np.inf)
-            axs[1].plot(xvals, yvals_lower, color='k', zorder=-np.inf)
-            axs[1].plot(xvals, yvals_upper, color='k', zorder=-np.inf)
-            axs[1].set_ylabel(f"sig/({names[reference]})", fontsize=10)
+            axs[1].fill_between(x=xvals, y1=yvals_lower, y2=yvals_upper, color=color, alpha=0.25, zorder=zorder[n])
+            axs[1].plot(xvals, yvals_lower, color=color, zorder=zorder[n])
+            axs[1].plot(xvals, yvals_upper, color=color, zorder=zorder[n])
+
+    axs[1].set_ylabel(f"SAMPLE/({names[reference]})", fontsize=10)
+
+    if stack:
+        data, name, color, zorder = list(zip(*stack_list))
+        ordering = np.argsort(zorder)
+        data = [data[i] for i in ordering]
+        name = [name[i] for i in ordering]
+        color = [color[i] for i in ordering]
+
+        print("total stacked sum:", np.sum([i.sum() for i in data]))
+
+        hep.histplot(data, bins, label=name, ax=axs[0], color=color, histtype=histtype, lw=lw, stack=True)
 
     if xlabel is not None:
-        axs[1].set_xlabel(xlabel)
-    axs[0].legend()
+        axs[1].set_xlabel(xlabel, fontsize=xlabel_fontsize)
+    axs[0].legend(fontsize=legend_fontsize)
     fig.tight_layout()
     return fig, axs
 
 def plotScan(
     files:Union[str,list], variable:str, variable2:str='deltaNLL',
     label:str=None, x_var_name:str=None, y_var_name:str=None, unit:str=None,
-    use_tex_x_axis:bool=True, use_tex_y_axis:bool=True, axis_label_fontsize:int=60,
+    use_tex_x_axis:bool=False, use_tex_y_axis:bool=False, axis_label_fontsize:int=40,
     min_yval:float=None, max_yval:float=None, min_xval:float=None, max_xval:float=None,
     kill_index:Union[int, list]=None, x_transform=None, y_transform=None, ax:mpl.axes._axes.Axes=None, linestyle= "solid",
     last_step:bool=False, color:str=None, linewidth:float=3, markerstyle:str=" ",
     margin_mult_x:float=0.95, margin_add_y:float=0.3, legend_loc:str="best", killpoints:bool=False,
-    bound_in_name:bool=False, decimal_places:int=1, cmstext:str="Preliminary", labelspacing:float=0.5,
-    zorder:int=None, get_confidence_interval:bool=False, output_bounds_as_tex:bool=False
+    bound_in_name:bool=False, decimal_places:int=1, cmstext:str="Preliminary", labelspacing:float=2,
+    zorder:int=None, get_confidence_interval:bool=False, output_bounds_as_tex:bool=False,
+    include_obs_exp_labels:bool=False, legend_bbox_to_anchor:tuple=(0,0,1,0.95)
     ):
     """Plots a scan for you. Run as follows:
     fig = plt.figure()
@@ -228,6 +276,9 @@ def plotScan(
     else:
         y_data = data[variable2][indices]
 
+    minimized_value = np.argmin(y_data)
+    convergence_point = x_data[minimized_value]
+
     if kill_index is not None:
         if isinstance(kill_index, int):
             kill_index = [kill_index]
@@ -235,17 +286,30 @@ def plotScan(
         x_data = np.delete(x_data, kill_index)
         y_data = np.delete(y_data, kill_index)
             # print(f"killing index {index}")
-    if killpoints:
+    if killpoints == 1:
         i = 1
         while i < len(x_data) - 1:
-            if y_data[i - 1] < y_data[i] and y_data[i + 1] < y_data[i]:
+            if (
+                (y_data[i - 1] < y_data[i] and y_data[i + 1] < y_data[i])
+                and
+                (i != minimized_value)
+            ):
                 y_data = np.delete(y_data, i)
                 x_data = np.delete(x_data, i)
                 i = 1
             i += 1
-
-    minimized_value = np.argmin(y_data)
-    convergence_point = x_data[minimized_value]
+    elif killpoints == 2:
+        i = 1
+        while i < len(x_data) - 1:
+            if (
+                (y_data[i - 1] > y_data[i] and y_data[i + 1] > y_data[i])
+                and
+                (i != minimized_value)
+            ):
+                y_data = np.delete(y_data, i)
+                x_data = np.delete(x_data, i)
+                i = 1
+            i += 1
 
     if variable2 == 'deltaNLL' or get_confidence_interval:
         max_point_on_line = max(y_data)
@@ -331,17 +395,17 @@ def plotScan(
         hep.cms.lumitext(r"138 $fb^{-1}$ (13 TeV)")
 
         if variable2 == 'deltaNLL':
-            ax.set_ylabel(r"\textbf{$-2\Delta\ln\mathrm{L}$}", loc='center', fontsize=50, usetex=use_tex_y_axis, font="Helvetica")
+            ax.set_ylabel(r"$-2\Delta\ln L$", loc='center', fontsize=axis_label_fontsize, usetex=use_tex_y_axis)
         elif y_var_name is not None:
-            ylabel = r'\textbf{$' + y_var_name.replace('$', '') + r"$}"
-            ax.set_ylabel(ylabel, fontsize=axis_label_fontsize, loc='center', usetex=use_tex_y_axis, font="Helvetica")
+            ylabel = r'$' + y_var_name.replace('$', '') + r"$"
+            ax.set_ylabel(ylabel, fontsize=axis_label_fontsize, loc='center', usetex=use_tex_y_axis)
 
         if x_var_name is not None:
-            xlabel = r'\textbf{$' + x_var_name.replace('$', '')
+            xlabel = r'$' + x_var_name.replace('$', '')
             if unit is not None:
                 xlabel +="  \mathrm{(" + unit + ")}"
-            xlabel += r"$}"
-            ax.set_xlabel(xlabel, fontsize=axis_label_fontsize, loc='center', usetex=use_tex_x_axis, font="Helvetica")
+            xlabel += r"$"
+            ax.set_xlabel(xlabel, fontsize=axis_label_fontsize, loc='center', usetex=use_tex_x_axis)
 
         if 1 < max_yval and variable2 == 'deltaNLL': #1 sigma
             ax.axhline(1, ls='dashed', color='black', lw=2, dashes=(8, 5))
@@ -349,7 +413,12 @@ def plotScan(
             if 3.84 < max_yval: #2 sigma
                 ax.axhline(3.84, ls='dashed', color='black', lw=2, dashes=(8, 5))
                 ax.text(max_xval*margin_mult_x, 3.84+margin_add_y, "95% CL", horizontalalignment="right")
-        ax.legend(loc=legend_loc, labelspacing=labelspacing)
+
+        if include_obs_exp_labels:
+            ax.plot(np.nan, np.nan, linestyle='solid', color='gray', label='Observed')
+            ax.plot(np.nan, np.nan, linestyle='dashed', color='gray', label='Expected')
+
+        ax.legend(loc=legend_loc, labelspacing=labelspacing, bbox_to_anchor=legend_bbox_to_anchor)
 
         plt.style.use(hep.style.CMS)
         ax.tick_params(axis='both', which='both', labelsize=20, reset=True)
@@ -361,7 +430,7 @@ def plotScan(
             tex_str = f"{convergence_point}^{{+{np.abs(uncertainty2)}}}_{{-{np.abs(uncertainty1)}}}"
             tex_str += f"[{conf1} < {variable} < {conf2}]"
             return ax, tex_str
-            
+
         return ax, (convergence_point, np.abs(convergence_point - uncertainty1), np.abs(convergence_point + uncertainty2), np.abs(convergence_point - conf1), np.abs(convergence_point + conf2))
     else:
         return ax
