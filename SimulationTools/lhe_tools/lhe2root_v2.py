@@ -2,6 +2,7 @@
 import abc
 import re
 import argparse, os
+import warnings
 import numpy as np
 import tqdm
 
@@ -10,8 +11,11 @@ import uproot
 import vector
 
 import Mela
+import multiprocessing
 
 def check_enum(entry):
+    if entry.lower() == "noprod":
+        return entry
     found = False
     i = 0
     possible_value = tuple(Mela.Production.__dict__['__entries'].keys())
@@ -229,7 +233,7 @@ class LHEEvent_VHHiggsdecay(LHEEvent):
         
                 if mother1 is None or ids is None or mother1s[mother1] is None :
                     continue
-          
+
                 if mother1 == mother2 and abs(ids[mother1]) in (23,24) and  not ids[mother1s[mother1]] == 25 :
                     associated.append(line)
             
@@ -283,7 +287,8 @@ def main(raw_args=None):
     PRODUCTION_OPTIONS = [
         "JJVBF", "ZZGG",
         "Had_ZH", "Lep_ZH",
-        "Had_WH", "Lep_WH"
+        "Had_WH", "Lep_WH",
+        "noprod"
     ]
     parser = argparse.ArgumentParser()
     parser.add_argument("outputfile")
@@ -297,10 +302,16 @@ def main(raw_args=None):
     parser.add_argument('-n', '--n_events', type=int, default=-1)
     parser.add_argument("-t", "--tree_name", type=str, default="tree")
     parser.add_argument("-ow", "--overwrite", action="store_true")
+    parser.add_argument("-nAssoc", "--numAssociated", type=int, default=2, help="Allocates N associated particles. Default is 2.")
+    parser.add_argument("-nDaughters", "--numDaughters", type=int, default=4, help="Allocates N final-state leptons. Default is 4.")
+    parser.add_argument("-nMothers", "--numMothers", type=int, default=2, help="Allocates N mother particles. Default is 2.")
     args = parser.parse_args(raw_args) #This allows the parser to take in command line arguments if raw_args=None
 
     mode = args.mode
-    production = eval(f"Mela.Production.{args.production}")
+    if args.production != "noprod":
+        production = eval(f"Mela.Production.{args.production}")
+    else:
+        production = None #Just as a placeholder
 
     if os.path.exists(args.outputfile) and not args.overwrite:
         raise IOError(args.outputfile+" already exists")
@@ -312,7 +323,16 @@ def main(raw_args=None):
     t = {}
     c = {}
 
-    branchnames_scalar = ("costheta1", "costheta2", "Phi1", "costhetastar", "Phi", "M4L","MZ1","MZ2","costheta1d","costheta2d","Phid","costhetastard","Phi1d")
+    branchnames_scalar = ("M4L","MTotal")
+    if production is not None:
+        branchnames_scalar += (
+            "costheta1", "costheta2", "Phi1", "costhetastar", "Phi"
+            ,"MZ1","MZ2","costheta1d","costheta2d","Phid","costhetastard","Phi1d"
+        )
+    else:
+        branchnames_scalar += (
+            "MZ1","MZ2"
+        )
 
     if production in (Mela.Production.Had_ZH, Mela.Production.Lep_ZH, Mela.Production.Had_WH, Mela.Production.Lep_WH):
         branchnames_scalar += ("mV", "mVstar", "pxj1", "pyj1", "pzj1", "Ej1", "pxj2", "pyj2", "pzj2", "Ej2", "ptV", "rapHJJ")
@@ -331,11 +351,29 @@ def main(raw_args=None):
         "weight",
     )
     
-    branchnames_vector = tuple()
+    branchnames_vector = dict()
     if not args.no_mothers:
-        branchnames_vector += ("LHEDaughterId","LHEDaughterPt","LHEDaughterEta","LHEDaughterPhi","LHEDaughterMass")
-        branchnames_vector += ("LHEAssociatedParticleId","LHEAssociatedParticlePt","LHEAssociatedParticleEta","LHEAssociatedParticlePhi","LHEAssociatedParticleMass")
-        branchnames_vector += ("LHEMotherId","LHEMotherPx","LHEMotherPy", "LHEMotherPz", "LHEMotherE")
+        branchnames_vector.update({
+            "LHEDaughterId" : args.numDaughters,
+            "LHEDaughterPt" : args.numDaughters,
+            "LHEDaughterEta" : args.numDaughters,
+            "LHEDaughterPhi" : args.numDaughters,
+            "LHEDaughterMass" : args.numDaughters
+        })
+        branchnames_vector.update({
+            "LHEAssociatedParticleId" : args.numAssociated,
+            "LHEAssociatedParticlePt" : args.numAssociated,
+            "LHEAssociatedParticleEta" : args.numAssociated,
+            "LHEAssociatedParticlePhi" : args.numAssociated,
+            "LHEAssociatedParticleMass" : args.numAssociated
+        })
+        branchnames_vector.update({
+            "LHEMotherId" : args.numMothers,
+            "LHEMotherPx" : args.numMothers,
+            "LHEMotherPy" : args.numMothers,
+            "LHEMotherPz" : args.numMothers,
+            "LHEMotherE" : args.numMothers
+        })
 
     all_events = []
     for inputfile in args.inputfile:
@@ -343,7 +381,7 @@ def main(raw_args=None):
         try:
             c[inputfile] = reader.cross_section
         except:
-            print(inputfile, " has a corrupted header and xsec cannot be read!")
+            warnings.warn(inputfile, " has a corrupted header and xsec cannot be read!")
             del reader, inputfile
             continue
         all_events += reader.all_events
@@ -358,8 +396,9 @@ def main(raw_args=None):
 
     for branch in branchnames_scalar:
         t[branch] = np.zeros(len(all_events), dtype=np.single)
-    for branch in branchnames_vector:
-        t[branch] = np.zeros( (len(all_events), 4), dtype=np.single )
+    for branch, vector_length in branchnames_vector.items():
+        t[branch] = np.zeros( (len(all_events), vector_length), dtype=np.single )
+    del branch, vector_length
 
     if mode in ("ggh4l", "vbf_withdecay"):
         inputfclass = LHEEvent_Hwithdecay
@@ -377,35 +416,49 @@ def main(raw_args=None):
     if args.n_events > 0:
         all_events = all_events[:min(len(all_events), args.n_events)]
     all_events = tuple(all_events)
-    m = Mela.Mela()
+    if production is not None:
+        m = Mela.Mela()
+    else:
+        m = None
 
-    # if mode in ("zh", "zh_withdecay"):
-    #     production = Mela.Production.Had_ZH
-    # elif mode in ("wh", "wh_withdecay"):
-    #     production = Mela.Production.Had_WH
-    # elif mode in ("vbf", "vbf_withdecay"):
-    #     production = Mela.Production.JJVBF
-    # elif mode in ("zh_lep", "zh_lep_hawk"):
-    #     production = Mela.Production.Lep_ZH
-    # elif mode in ("wh_lep", ):
-    #     production = Mela.Production.Lep_WH
-    # elif mode in ggH4l or args.ggH4l_MG:
-    #     production = Mela.Production.ZZGG
-    
-    
+    # events = [inputfclass(event, True) for event in all_events]
+    # associated_particles = [tuple(map(MELA_simpleParticle_toVector, i.associated.toList())) for i in events]
+    # daugher_particles = [tuple(map(MELA_simpleParticle_toVector, i.daughters.toList())) for i in events]
+    # mother_particles = [tuple(map(MELA_simpleParticle_toVector, i.mothers.toList())) for i in events]
+
+
     for i, event in tqdm.tqdm(enumerate(all_events), total=len(all_events), desc="Converting..."):
-        
-        
-        m.setProcess(Mela.Process.SelfDefine_spin0, Mela.MatrixElement.JHUGen, production)
         the_event = inputfclass(event, True)
-        m.setInputEvent(the_event.daughters, the_event.associated, the_event.mothers, True)
-        
+
+        if m is not None:
+            m.setProcess(Mela.Process.SelfDefine_spin0, Mela.MatrixElement.JHUGen, production)
+            m.setInputEvent(the_event.daughters, the_event.associated, the_event.mothers, True)
+
         associated_list = tuple([MELA_simpleParticle_toVector(particle) for particle in the_event.associated.toList()])
         daughter_list   = tuple([MELA_simpleParticle_toVector(particle) for particle in the_event.daughters.toList()])
-        mothers_list    = tuple([MELA_simpleParticle_toVector(particle) for particle in the_event.mothers.toList()] if not args.remove_flavor else [])
-        
-        
-        if production == Mela.Production.ZZGG:
+        mothers_list    = tuple([MELA_simpleParticle_toVector(particle) for particle in the_event.mothers.toList()]) if not args.remove_flavor else []
+
+        t['MTotal'][i] = sum( [p[1] for p in daughter_list] + [p[1] for p in associated_list], vector.obj(px=0, py=0, pz=0, E=0)).M
+
+        if production is None:
+            t['M4L'][i] = sum( [p[1] for p in daughter_list], vector.obj(px=0, py=0, pz=0, E=0)).M
+            
+            highest_pair = (None, None, 0) #the higher Z Mass is MZ1
+            for n, p in enumerate(daughter_list):
+                for nn, pp in enumerate(daughter_list[n+1:]):
+                    if p[0]*pp[0] > 0:
+                        continue
+                    mass = (p[1] + pp[1]).M
+                    if mass > highest_pair[2]:
+                        highest_pair = (n, nn+n+1, mass)
+            del n, p, nn, pp, mass
+
+            highest_pair = np.array(highest_pair[:2]) #remove the mass part
+            t['MZ1'][i] = sum([p[1] for n, p in enumerate(daughter_list) if n in highest_pair], vector.obj(px=0, py=0, pz=0, E=0)).M
+            t['MZ2'][i] = sum([p[1] for n, p in enumerate(daughter_list) if n not in highest_pair], vector.obj(px=0, py=0, pz=0, E=0)).M
+            del highest_pair
+
+        elif production == Mela.Production.ZZGG:
             t['M4L'][i], t['MZ2'][i], t['MZ1'][i], t['costheta1d'][i], t['costheta2d'][i], t['Phid'][i], t['costhetastard'][i], t['Phi1d'][i] = m.computeDecayAngles()
             
         elif production in (Mela.Production.Had_ZH, Mela.Production.Lep_ZH, Mela.Production.Had_WH, Mela.Production.Lep_WH):
