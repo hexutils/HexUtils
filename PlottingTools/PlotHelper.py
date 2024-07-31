@@ -124,7 +124,7 @@ def ratioPlot(
             axs[1].plot(xvals, yvals_lower, color=color, zorder=zorder[n])
             axs[1].plot(xvals, yvals_upper, color=color, zorder=zorder[n])
 
-    axs[1].set_ylabel(f"SAMPLE/({names[reference]})", fontsize=10)
+    axs[1].set_ylabel(f"Ratio to {names[reference]}", fontsize=20)
 
     if stack:
         data, name, color, zorder = list(zip(*stack_list))
@@ -149,9 +149,9 @@ def plotScan(
     use_tex_x_axis:bool=False, use_tex_y_axis:bool=False, axis_label_fontsize:int=40,
     min_yval:float=None, max_yval:float=None, min_xval:float=None, max_xval:float=None,
     kill_index:Union[int, list]=None, x_transform=None, y_transform=None, ax:mpl.axes._axes.Axes=None, linestyle= "solid",
-    last_step:bool=False, color:str=None, linewidth:float=3, markerstyle:str=" ",
+    last_step:bool=False, color:str=None, linewidth:float=3, markerstyle:str="",
     margin_mult_x:float=0.95, margin_add_y:float=0.3, legend_loc:str="best", killpoints:bool=False,
-    bound_in_name:bool=False, decimal_places:int=1, cmstext:str="Preliminary", labelspacing:float=2,
+    bound_in_name:bool=False, decimal_places:int=1, cmstext:str="Preliminary", lumitext:str=r"138 $fb^{-1}$ (13 TeV)", labelspacing:float=2,
     zorder:int=None, get_confidence_interval:bool=False, output_bounds_as_tex:bool=False,
     include_obs_exp_labels:bool=False, legend_bbox_to_anchor:tuple=(0,0,1,0.95)
     ):
@@ -392,7 +392,7 @@ def plotScan(
         ax.set_ylim(min_yval, max_yval)
 
         hep.cms.text(cmstext, ax=ax)
-        hep.cms.lumitext(r"138 $fb^{-1}$ (13 TeV)")
+        hep.cms.lumitext(lumitext, ax=ax)
 
         if variable2 == 'deltaNLL':
             ax.set_ylabel(r"$-2\Delta\ln L$", loc='center', fontsize=axis_label_fontsize, usetex=use_tex_y_axis)

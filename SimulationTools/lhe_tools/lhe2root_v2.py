@@ -78,13 +78,13 @@ class LHEEvent(object, metaclass=abc.ABCMeta):
             raise ValueError(f"Wrong number of particles! Should be {nparticles}, have {len(lines)-1}")
 
         daughters_lhe, associated_lhe, mothers_lhe = self.extracteventparticles()
-
+            
         self.daughters =  Mela.SimpleParticleCollection_t([LHE_line_to_simpleParticle_t(line) for line in daughters_lhe])
         self.associated = Mela.SimpleParticleCollection_t([LHE_line_to_simpleParticle_t(line) for line in associated_lhe])
         self.mothers =    Mela.SimpleParticleCollection_t([LHE_line_to_simpleParticle_t(line) for line in mothers_lhe])
 
     @abc.abstractmethod
-    def extracteventparticles(self, lines, isgen): "has to be a classmethod that returns daughters, associated, mothers"
+    def extracteventparticles(self): "has to be a classmethod that returns daughters, associated, mothers"
 
 class LHEEvent_Hwithdecay(LHEEvent):
     def __init__(self, event, isgen):
@@ -116,6 +116,47 @@ class LHEEvent_Hwithdecay(LHEEvent):
                     mother1 = mother1s[mother1]
 
         if not self.isgen: mothers = None
+        return daughters, associated, mothers
+
+class NLO_qqH_DecayOnly(LHEEvent):
+    def __init__(self, event, isgen, ignore_quark_gluon_events=False):
+        self.ignore_quark_gluon_events = ignore_quark_gluon_events
+        super().__init__(event, isgen)
+        if not self.ignore_quark_gluon_events:
+            for n, mother_particle in enumerate(self.mothers): #reset the id value
+                if mother_particle.id == 21:
+                    if n == 0:
+                        replace = 1
+                    else:
+                        replace = 0
+                    mother_particle.id = -self.mothers.toList()[replace].id
+
+    def extracteventparticles(self):
+        daughters, mothers, associated = [], [], []
+        ids = [None]
+        mother1s = [None]
+        mother2s = [None]
+        for line in self.lines:
+            try:
+                id, status, mother1, mother2 = (int(_) for _ in line.split()[0:4])
+            except:
+                continue
+
+            ids.append(id)
+            if (1 <= abs(id) <= 6 or abs(id) == 21) and not self.isgen:
+                line = line.replace(str(id), "0", 1)  #replace the first instance of the jet id with 0, which means unknown jet
+            mother1s.append(mother1)
+            mother2s.append(mother2)
+            if status == -1:
+                if self.ignore_quark_gluon_events and id == 21:
+                    return [], [], []
+                mothers.append(line)
+            elif (11 <= abs(id) <= 16) and status == 1:
+                daughters.append(line)
+            elif status == 1:
+                associated.append(line)
+
+        if not self.isgen: mothers = []
         return daughters, associated, mothers
 
 class LHEEvent_DecayOnly(LHEEvent):
@@ -282,12 +323,14 @@ def main(raw_args=None):
         "zh", "zh_withdecay", "zh_lep", "zh_lep_hawk",
         "wh_withdecay", "wh_lep", "wh",
         "ggh4l", "ggh4lmg",
+        "qqH_ignore", "qqH",
         "decayonly_default"
         ]
     PRODUCTION_OPTIONS = [
         "JJVBF", "ZZGG",
         "Had_ZH", "Lep_ZH",
         "Had_WH", "Lep_WH",
+        "ZZQQB",
         "noprod"
     ]
     parser = argparse.ArgumentParser()
@@ -302,11 +345,13 @@ def main(raw_args=None):
     parser.add_argument('-n', '--n_events', type=int, default=-1)
     parser.add_argument("-t", "--tree_name", type=str, default="tree")
     parser.add_argument("-ow", "--overwrite", action="store_true")
+    parser.add_argument("-d", "--drop_nonzero", action="store_true")
     parser.add_argument("-nAssoc", "--numAssociated", type=int, default=2, help="Allocates N associated particles. Default is 2.")
     parser.add_argument("-nDaughters", "--numDaughters", type=int, default=4, help="Allocates N final-state leptons. Default is 4.")
     parser.add_argument("-nMothers", "--numMothers", type=int, default=2, help="Allocates N mother particles. Default is 2.")
     args = parser.parse_args(raw_args) #This allows the parser to take in command line arguments if raw_args=None
 
+    drop_nonzero = args.drop_nonzero
     mode = args.mode
     if args.production != "noprod":
         production = eval(f"Mela.Production.{args.production}")
@@ -410,6 +455,8 @@ def main(raw_args=None):
         inputfclass = LHEEvent_VHHiggsdecay
     elif mode in ("zh_lep_hawk", ):
         inputfclass = LHEEvent_StableHiggsZHHAWK
+    elif mode in ("qqH_ignore", "qqH"):
+        inputfclass = NLO_qqH_DecayOnly
     else:
         inputfclass = LHEEvent_DecayOnly
 
@@ -426,17 +473,23 @@ def main(raw_args=None):
     # daugher_particles = [tuple(map(MELA_simpleParticle_toVector, i.daughters.toList())) for i in events]
     # mother_particles = [tuple(map(MELA_simpleParticle_toVector, i.mothers.toList())) for i in events]
 
-
+    zero_events = []
     for i, event in tqdm.tqdm(enumerate(all_events), total=len(all_events), desc="Converting..."):
-        the_event = inputfclass(event, True)
-
-        if m is not None:
-            m.setProcess(Mela.Process.SelfDefine_spin0, Mela.MatrixElement.JHUGen, production)
-            m.setInputEvent(the_event.daughters, the_event.associated, the_event.mothers, True)
+        if mode == "qqH_ignore":
+            the_event = inputfclass(event, True, True)
+        else:
+            the_event = inputfclass(event, True)
 
         associated_list = tuple([MELA_simpleParticle_toVector(particle) for particle in the_event.associated.toList()])
         daughter_list   = tuple([MELA_simpleParticle_toVector(particle) for particle in the_event.daughters.toList()])
         mothers_list    = tuple([MELA_simpleParticle_toVector(particle) for particle in the_event.mothers.toList()]) if not args.remove_flavor else []
+        if len(daughter_list) == 0:
+            zero_events.append(i)
+            continue
+
+        if m is not None:
+            m.setProcess(Mela.Process.SelfDefine_spin0, Mela.MatrixElement.JHUGen, production)
+            m.setInputEvent(the_event.daughters, the_event.associated, the_event.mothers, True)
 
         t['MTotal'][i] = sum( [p[1] for p in daughter_list] + [p[1] for p in associated_list], vector.obj(px=0, py=0, pz=0, E=0)).M
 
@@ -458,7 +511,7 @@ def main(raw_args=None):
             t['MZ2'][i] = sum([p[1] for n, p in enumerate(daughter_list) if n not in highest_pair], vector.obj(px=0, py=0, pz=0, E=0)).M
             del highest_pair
 
-        elif production == Mela.Production.ZZGG:
+        elif production in (Mela.Production.ZZGG, Mela.Production.ZZQQB):
             t['M4L'][i], t['MZ2'][i], t['MZ1'][i], t['costheta1d'][i], t['costheta2d'][i], t['Phid'][i], t['costhetastard'][i], t['Phi1d'][i] = m.computeDecayAngles()
             
         elif production in (Mela.Production.Had_ZH, Mela.Production.Lep_ZH, Mela.Production.Had_WH, Mela.Production.Lep_WH):
@@ -540,7 +593,10 @@ def main(raw_args=None):
                 t["LHEMotherPz"][i][p] = vec.pz
                 t["LHEMotherE"][i][p] =  vec.E
             
-    
+    zero_events = np.array(zero_events, dtype=int)
+    if drop_nonzero:
+        for branch, item in t.items():
+            t[branch] = np.delete(item, zero_events, axis=0)
     with uproot.recreate(args.outputfile) as newf:
         newf[args.tree_name] = t
         for filename, (cross_section, err) in c.items():
