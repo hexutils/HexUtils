@@ -21,7 +21,7 @@ conf_bounds_2d = {
 
 class Scan(abc.ABC):
     def __init__(
-        self, 
+        self,
         x_transform:Callable=None,
         y_transform:Callable=None,
         axis=None
@@ -62,13 +62,13 @@ class Scan(abc.ABC):
             "#717581",
             "#92dadd",
         ]
-        
+
         self.n_lines = 0
         self.scans = {}
         self.x_transform = x_transform
         self.y_transform = y_transform
         self.likelihood_plot = False #if deltaNLL is the second variable
-    
+
         if self.x_transform is None:
             pass
         elif not callable(self.x_transform):
@@ -82,13 +82,13 @@ class Scan(abc.ABC):
             raise TypeError(f"y_transform must be a function with 1 input!")
         elif len(inspect.signature(self.y_transform).parameters) != 1:
             raise TypeError(f"y_transform must be a function with 1 input!")
-    
+
     def plot(self):
         return NotImplemented
 
     def save(
-        self, 
-        fpath:str, 
+        self,
+        fpath:str,
         tight_layout:bool=True,
         ):
         fig = self.ax.get_figure()
@@ -98,12 +98,12 @@ class Scan(abc.ABC):
         fig.savefig(f"{fpath}.pdf")
         fig.savefig(f"{fpath}.svg")
         print(f"Saved file at {fpath}.{{png,pdf,svg}}")
-        
-        
+
+
 
 class Scan1D(Scan):
     def __init__(
-        self, 
+        self,
         x_transform:Callable=None,
         y_transform:Callable=None,
         axis=None,
@@ -131,15 +131,15 @@ class Scan1D(Scan):
                 )
                 raise KeyError(f"line_style {line_style} not found!")
             line_style = self.linestyles[line_style]
-    
+
         if y == "deltaNLL":
             self.likelihood_plot = True
-    
+
         data = {}
         if isinstance(files, str):
-            files = (files, ) 
+            files = (files, )
             #turn into tuple to make life easier
-        
+
         for file in files:
             data_temp = uproot.open(file)[branch_name].arrays(
                 [x, y], library='np'
@@ -151,7 +151,7 @@ class Scan1D(Scan):
                 data[x] = data_temp[x]
                 data[y] = data_temp[y]
         del data_temp
-        
+
         indices = np.argsort(data[x])
         if self.x_transform is not None:
             x_data = np.array(
@@ -171,7 +171,7 @@ class Scan1D(Scan):
 
         minimized_value = np.argmin(y_data)
         convergence_point = x_data[minimized_value]
-        
+
         if kill_index is not None:
             if isinstance(kill_index, int):
                 kill_index = [kill_index]
@@ -249,10 +249,10 @@ class Scan1D(Scan):
         self.n_lines += 1
         self.scans[label] = (
             (
-                convergence_point, 
-                np.abs(convergence_point - uncertainty1), 
-                np.abs(convergence_point + uncertainty2), 
-                np.abs(convergence_point - conf1), 
+                convergence_point,
+                np.abs(convergence_point - uncertainty1),
+                np.abs(convergence_point + uncertainty2),
+                np.abs(convergence_point - conf1),
                 np.abs(convergence_point + conf2)
             ),
             data
@@ -266,7 +266,7 @@ class Scan1D(Scan):
         axis_label_fontsize:float=40,
         min_yval:float=None, max_yval:float=None,
         min_xval:float=None, max_xval:float=None,
-        margin_mult_x:float=0.95, margin_add_y:float=0.3, 
+        margin_mult_x:float=0.95, margin_add_y:float=0.3,
         margin_add_y_65:float=None, margin_add_y_95:float=None,
         legend_loc:str="best", legend_fontsize:float=12,
         labelspacing:float=2, legend_bbox_to_anchor:tuple=(0,0,1,0.95),
@@ -278,7 +278,7 @@ class Scan1D(Scan):
             margin_add_y_65 = margin_add_y
         if margin_add_y_95 is None:
             margin_add_y_95 = margin_add_y
-        
+
         self.ax.margins(0, 0)
         if max_xval is None:
             max_xval = max([max(line.get_xdata()) for line in self.ax.lines if not np.isnan(line.get_xdata()).all()])
@@ -348,37 +348,37 @@ class Scan1D(Scan):
         return returnable
 
 class Scan2D(Scan):
-    
+
     def __init__(
-        self, 
+        self,
         files:Union[str, list],
         x:str, y:str, z:str="deltaNLL",
         branch_name:str="limit",
-        x_transform: Callable = None, 
-        y_transform: Callable = None, 
+        x_transform: Callable = None,
+        y_transform: Callable = None,
         z_transform: Callable = None,
         kill_index:Union[int, list]=None,
         axis=None
     ):
         super().__init__(x_transform, y_transform, axis)
-        
+
         self.z_transform = z_transform
-        
+
         if self.z_transform is None:
             pass
         elif not callable(self.z_transform):
             raise TypeError(f"y_transform must be a function with 1 input!")
         elif len(inspect.signature(self.z_transform).parameters) != 1:
             raise TypeError(f"y_transform must be a function with 1 input!")
-        
+
         if z == "deltaNLL":
             self.likelihood_plot = True
-    
+
         data = {}
         if isinstance(files, str):
-            files = (files, ) 
+            files = (files, )
             #turn into tuple to make life easier
-        
+
         for file in files:
             data_temp = uproot.open(file)[branch_name].arrays(
                 [x, y, z], library='np'
@@ -392,7 +392,7 @@ class Scan2D(Scan):
                 data[y] = data_temp[y]
                 data[z] = data_temp[z]
         del data_temp
-        
+
         if self.x_transform is not None:
             x_data = np.array(
                 [self.x_transform(i) for i in data[x]]
@@ -419,7 +419,7 @@ class Scan2D(Scan):
 
         minimized_value = np.argmin(z_data)
         convergence_point = (x_data[minimized_value], y_data[minimized_value])
-        
+
         if kill_index is not None:
             if isinstance(kill_index, int):
                 kill_index = [kill_index]
@@ -427,21 +427,21 @@ class Scan2D(Scan):
             x_data = np.delete(x_data, kill_index)
             y_data = np.delete(y_data, kill_index)
             z_data = np.delete(z_data, kill_index)
-    
+
         data[x] = x_data
         data[y] = y_data
         data[z] = z_data
-    
+
         self.x = x
         self.y = y
         self.z = z
-    
+
         self.scans = (
-            convergence_point, 
+            convergence_point,
             data
         )
-    
-    
+
+
     def add_contour(
         self,
         level,
@@ -450,7 +450,7 @@ class Scan2D(Scan):
         line_color:str="k",
         line_width:float=3,
     ):
-        
+
         if isinstance(line_style, str):
             if line_style not in self.linestyles.keys():
                 print(
@@ -470,7 +470,7 @@ class Scan2D(Scan):
         #for the legend
         plt.plot([], linestyle=line_style, color=line_color, label=label)
 
-    
+
     def add_point(
         self,
         x_value,
@@ -487,7 +487,7 @@ class Scan2D(Scan):
             label=name,
             s=size
         )
-    
+
     def add_best_fit(
         self,
         marker:str="P",
@@ -496,13 +496,13 @@ class Scan2D(Scan):
         name:str="Best Fit"
     ):
         self.add_point(
-            *self.scans[0], 
+            *self.scans[0],
             name,
             marker,
             color,
             size
             )
-    
+
     def plot(
         self,
         cmap:mpl.colors.Colormap=None,
@@ -513,7 +513,7 @@ class Scan2D(Scan):
         colorbar_pad:float=0.025,
         colorbar_labelPad:float=10,
         colorbar_integer:bool=True,
-        
+
         x_axis_title:str=None,
         y_axis_title:str=None,
         z_axis_title:str=None,
@@ -530,19 +530,19 @@ class Scan2D(Scan):
             lvTmp = np.linspace(0.25,1.0,1000)
             cmTmp = mpl.cm.viridis(lvTmp)
             cmap = mpl.colors.ListedColormap(cmTmp)
-        
+
         if cmap_min is None:
             cmap_min = np.min(self.scans[1][self.z])
         if cmap_max is None:
             cmap_max = np.max(self.scans[1][self.z])
-        
+
         if x_axis_title is None:
             x_axis_title = self.x
         if y_axis_title is None:
             y_axis_title = self.y
         if z_axis_title is None:
             z_axis_title = self.z
-        
+
         tpc = self.ax.tripcolor(
             self.scans[1][self.x], self.scans[1][self.y],
             self.scans[1][self.z],
@@ -553,7 +553,7 @@ class Scan2D(Scan):
             norm=norm,
             zorder=-np.inf
         )
-        
+
         cbar = plt.colorbar(tpc, pad=colorbar_pad, extendrect=True)
         cbar.ax.get_yaxis().labelpad = colorbar_labelPad
 
@@ -561,9 +561,9 @@ class Scan2D(Scan):
             cbar.ax.set_ylabel(r'$-2$ $\Delta\ln L$', rotation=90, loc="center", fontsize=axis_label_fontsize)
         else:
             cbar.ax.set_ylabel(z_axis_title, rotation=90, loc="center", fontsize=axis_label_fontsize)
-            
+
         cbar.locator = MaxNLocator(integer=colorbar_integer)
-        
+
         self.ax.margins(0, 0)
         if max_xval is None:
             max_xval = np.max(self.scans[1][self.x])
