@@ -108,9 +108,9 @@ class Scan1D(Scan):
         y_transform:Callable=None,
         axis=None,
     ):
-        super().__init__(axis, x_transform, y_transform)
+        super().__init__(x_transform, y_transform, axis)
 
-    def addScan(
+    def add_scan(
         self,
         files:Union[str, list],
         label:str,
@@ -232,7 +232,7 @@ class Scan1D(Scan):
                         )
 
         if zorder is None:
-            zorder = max([child.zorder for child in ax.get_children()]) + 1
+            zorder = max([child.zorder for child in self.ax.get_children()]) + 1
         if color is None:
             color = self.prop_cycle[self.n_lines]
         self.ax.plot(
@@ -247,6 +247,13 @@ class Scan1D(Scan):
         )
 
         self.n_lines += 1
+
+        og_label = label
+        i = 1
+        while label in self.scans.keys():
+            i += 1
+            label = f"{og_label}_{i}"
+
         self.scans[label] = (
             (
                 convergence_point,
@@ -326,12 +333,14 @@ class Scan1D(Scan):
         # plt.style.use(hep.style.CMS)
         self.ax.tick_params(axis='both', which='both', labelsize=tick_size, pad=tick_pad, reset=True)
 
-    def GetBounds(self, variable_name, as_tex=False, decimals:int=3):
+    def GetBounds(self, variable_name:str=None, as_tex=False, decimals:int=3):
         if as_tex:
+            if variable_name is None:
+                raise ValueError("Must specify a variable name if outputting as LaTeX!")
             returnable = []
             for name, ((central, lower, upper, lower_conf, upper_conf), _) in self.scans.items():
-                tex_str = f"{central}^{{+{np.abs(upper)}}}_{{-{np.abs(lower)}}}"
-                tex_str += f"[{lower_conf} < {variable_name} < {upper_conf}]"
+                tex_str = f"{central:.{decimals}f}^{{+{np.abs(upper):.{decimals}f}}}_{{-{np.abs(lower):.{decimals}f}}}"
+                tex_str += f"[{lower_conf:.{decimals}f} < {variable_name} < {upper_conf:.{decimals}f}]"
                 returnable.append(tex_str)
             returnable = "\n".join(returnable)
         else:
