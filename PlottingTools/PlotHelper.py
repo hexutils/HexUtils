@@ -148,12 +148,14 @@ def plotScan(
     label:str=None, x_var_name:str=None, y_var_name:str=None, unit:str=None,
     use_tex_x_axis:bool=False, use_tex_y_axis:bool=False, axis_label_fontsize:int=40,
     min_yval:float=None, max_yval:float=None, min_xval:float=None, max_xval:float=None,
-    kill_index:Union[int, list]=None, x_transform=None, y_transform=None, ax:mpl.axes._axes.Axes=None, linestyle= "solid",
-    last_step:bool=False, color:str=None, linewidth:float=3, markerstyle:str="",
-    margin_mult_x:float=0.95, margin_add_y:float=0.3, legend_loc:str="best", killpoints:bool=False,
-    bound_in_name:bool=False, decimal_places:int=1, cmstext:str="Preliminary", lumitext:str=r"138 $fb^{-1}$ (13 TeV)", labelspacing:float=2,
+    kill_index:Union[int, list]=None, x_transform=None, y_transform=None, ax:mpl.axes._axes.Axes=None, 
+    linestyle= "solid",last_step:bool=False, color:str=None, linewidth:float=3, markerstyle:str="",
+    margin_mult_x:float=0.95, margin_add_y:float=0.3, margin_add_y_65:float=None, margin_add_y_95:float=None, 
+    legend_loc:str="best", legend_fontsize:float=12, killpoints:bool=False, bound_in_name:bool=False, decimal_places:int=1, 
+    cmstext:str="Preliminary", lumitext:str=r"138 $fb^{-1}$ (13 TeV)", labelspacing:float=2,
     zorder:int=None, get_confidence_interval:bool=False, output_bounds_as_tex:bool=False,
-    include_obs_exp_labels:bool=False, legend_bbox_to_anchor:tuple=(0,0,1,0.95)
+    include_obs_exp_labels:bool=False, legend_bbox_to_anchor:tuple=(0,0,1,0.95),
+    cmstext_size:float=None, lumitext_size:float=None, branch_name:str="limit"
     ):
     """Plots a scan for you. Run as follows:
     fig = plt.figure()
@@ -254,7 +256,7 @@ def plotScan(
     if isinstance(files, str):
         files = [files]
     for file in files:
-        data_temp = uproot.open(file)['limit'].arrays([variable, variable2], library='np')
+        data_temp = uproot.open(file)[branch_name].arrays([variable, variable2], library='np')
         if variable in data.keys():
             data[variable] = np.concatenate( (data[variable], data_temp[variable]) )
             data[variable2] = np.concatenate( (data[variable2], data_temp[variable2]) )
@@ -351,7 +353,7 @@ def plotScan(
             x_var_name = ""
         label = f"${x_var_name.replace('$', '')}={convergence_point:.{decimal_places}f}^{{+{uncertainty2:.{decimal_places}f}}}_{{-{uncertainty1:.{decimal_places}f}}}$"
     elif bound_in_name:
-        label += f"(${label.replace('$', '')}={convergence_point:.{decimal_places}f}^{{+{uncertainty2:.{decimal_places}f}}}_{{-{uncertainty1:.{decimal_places}f}}}$)"
+        label = f"{label.replace('$', '')} ($={convergence_point:.{decimal_places}f}^{{+{uncertainty2:.{decimal_places}f}}}_{{-{uncertainty1:.{decimal_places}f}}}$)"
 
     if zorder is None:
         zorder = max([child.zorder for child in ax.get_children()]) + 1
@@ -378,6 +380,11 @@ def plotScan(
         )
 
     if last_step:
+        if margin_add_y_65 is None:
+            margin_add_y_65 = margin_add_y
+        if margin_add_y_95 is None:
+            margin_add_y_95 = margin_add_y
+        
         ax.margins(0, 0)
         if max_xval is None:
             max_xval = max([max(line.get_xdata()) for line in ax.lines if not np.isnan(line.get_xdata()).all()])
@@ -391,34 +398,41 @@ def plotScan(
             min_yval = min([min(line.get_ydata()) for line in ax.lines if not np.isnan(line.get_ydata()).all()])
         ax.set_ylim(min_yval, max_yval)
 
-        hep.cms.text(cmstext, ax=ax)
-        hep.cms.lumitext(lumitext, ax=ax)
+        if cmstext_size is None:
+            hep.cms.text(cmstext, ax=ax)
+        else:
+            hep.cms.text(cmstext, ax=ax, fontsize=cmstext_size)
+
+        if lumitext_size is None:
+            hep.cms.lumitext(lumitext, ax=ax)
+        else:
+            hep.cms.lumitext(lumitext, ax=ax, fontsize=lumitext_size)
 
         if variable2 == 'deltaNLL':
-            ax.set_ylabel(r"$-2\Delta\ln L$", loc='center', fontsize=axis_label_fontsize, usetex=use_tex_y_axis)
+            ax.set_ylabel(r"$-2$ $\Delta\ln L$", loc='center', fontsize=axis_label_fontsize, usetex=use_tex_y_axis)
         elif y_var_name is not None:
             ylabel = r'$' + y_var_name.replace('$', '') + r"$"
             ax.set_ylabel(ylabel, fontsize=axis_label_fontsize, loc='center', usetex=use_tex_y_axis)
 
         if x_var_name is not None:
             xlabel = r'$' + x_var_name.replace('$', '')
-            if unit is not None:
-                xlabel +="  \mathrm{(" + unit + ")}"
             xlabel += r"$"
+            if unit is not None:
+                xlabel +="  (" + unit + ")"
             ax.set_xlabel(xlabel, fontsize=axis_label_fontsize, loc='center', usetex=use_tex_x_axis)
 
         if 1 < max_yval and variable2 == 'deltaNLL': #1 sigma
-            ax.axhline(1, ls='dashed', color='black', lw=2, dashes=(8, 5))
-            ax.text(max_xval*margin_mult_x, 1+margin_add_y, "68% CL", horizontalalignment="right")
+            ax.axhline(1, ls="dashed", color='black', lw=1, dashes=(16, 10))
+            ax.text(max_xval*margin_mult_x, 1+margin_add_y_65, "68% CL", horizontalalignment="right")
             if 3.84 < max_yval: #2 sigma
-                ax.axhline(3.84, ls='dashed', color='black', lw=2, dashes=(8, 5))
-                ax.text(max_xval*margin_mult_x, 3.84+margin_add_y, "95% CL", horizontalalignment="right")
+                ax.axhline(3.84, ls="dashed", color='black', lw=1, dashes=(16, 10))
+                ax.text(max_xval*margin_mult_x, 3.84+margin_add_y_95, "95% CL", horizontalalignment="right")
 
         if include_obs_exp_labels:
             ax.plot(np.nan, np.nan, linestyle='solid', color='gray', label='Observed')
             ax.plot(np.nan, np.nan, linestyle='dashed', color='gray', label='Expected')
 
-        ax.legend(loc=legend_loc, labelspacing=labelspacing, bbox_to_anchor=legend_bbox_to_anchor)
+        ax.legend(loc=legend_loc, labelspacing=labelspacing, bbox_to_anchor=legend_bbox_to_anchor, fontsize=legend_fontsize)
 
         plt.style.use(hep.style.CMS)
         ax.tick_params(axis='both', which='both', labelsize=20, reset=True)
@@ -435,3 +449,18 @@ def plotScan(
     else:
         return ax
 
+# def plotScan_2d(
+#     files:Union[str,list], x:str, y:str, z:str='deltaNLL', branch_name:str="limit",
+#     label:str=None, x_var_name:str=None, y_var_name:str=None, unit:str=None,
+#     use_tex_x_axis:bool=False, use_tex_y_axis:bool=False, axis_label_fontsize:int=40,
+#     min_yval:float=None, max_yval:float=None, min_xval:float=None, max_xval:float=None,
+#     kill_index:Union[int, list]=None, x_transform=None, y_transform=None, 
+#     ax:mpl.axes._axes.Axes=None, 
+#     linestyle= "solid", color:str=None, linewidth:float=3, markerstyle:str="",
+#     legend_loc:str="best", legend_fontsize:float=12, bound_in_contour:bool=False, 
+#     decimal_places:int=1, cmstext:str="Preliminary", lumitext:str=r"138 $fb^{-1}$ (13 TeV)", 
+#     labelspacing:float=2, legend_bbox_to_anchor:tuple=(0,0,1,0.95),
+#     cmstext_size:float=None, lumitext_size:float=None
+#     ):
+    
+    
