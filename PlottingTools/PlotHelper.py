@@ -409,7 +409,7 @@ def plotScan(
             hep.cms.lumitext(lumitext, ax=ax, fontsize=lumitext_size)
 
         if variable2 == 'deltaNLL':
-            ax.set_ylabel(r"-2 $\Delta\ln L$", loc='center', fontsize=axis_label_fontsize, usetex=use_tex_y_axis)
+            ax.set_ylabel(r"$-2$ $\Delta\ln L$", loc='center', fontsize=axis_label_fontsize, usetex=use_tex_y_axis)
         elif y_var_name is not None:
             ylabel = r'$' + y_var_name.replace('$', '') + r"$"
             ax.set_ylabel(ylabel, fontsize=axis_label_fontsize, loc='center', usetex=use_tex_y_axis)
@@ -449,3 +449,18 @@ def plotScan(
     else:
         return ax
 
+# def plotScan_2d(
+#     files:Union[str,list], x:str, y:str, z:str='deltaNLL', branch_name:str="limit",
+#     label:str=None, x_var_name:str=None, y_var_name:str=None, unit:str=None,
+#     use_tex_x_axis:bool=False, use_tex_y_axis:bool=False, axis_label_fontsize:int=40,
+#     min_yval:float=None, max_yval:float=None, min_xval:float=None, max_xval:float=None,
+#     kill_index:Union[int, list]=None, x_transform=None, y_transform=None, 
+#     ax:mpl.axes._axes.Axes=None, 
+#     linestyle= "solid", color:str=None, linewidth:float=3, markerstyle:str="",
+#     legend_loc:str="best", legend_fontsize:float=12, bound_in_contour:bool=False, 
+#     decimal_places:int=1, cmstext:str="Preliminary", lumitext:str=r"138 $fb^{-1}$ (13 TeV)", 
+#     labelspacing:float=2, legend_bbox_to_anchor:tuple=(0,0,1,0.95),
+#     cmstext_size:float=None, lumitext_size:float=None
+#     ):
+    
+    

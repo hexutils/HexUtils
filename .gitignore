@@ -12,3 +12,4 @@ AnalysisTools/TemplateMaker/condor_QCDmuRV/
 **/*.sm*
 **/*Pdfdata*
 **/*.lhe
+.vscode/
