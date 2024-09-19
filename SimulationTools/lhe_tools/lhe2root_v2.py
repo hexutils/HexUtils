@@ -81,7 +81,10 @@ class LHEEvent(object, metaclass=abc.ABCMeta):
             
         self.daughters =  Mela.SimpleParticleCollection_t([LHE_line_to_simpleParticle_t(line) for line in daughters_lhe])
         self.associated = Mela.SimpleParticleCollection_t([LHE_line_to_simpleParticle_t(line) for line in associated_lhe])
-        self.mothers =    Mela.SimpleParticleCollection_t([LHE_line_to_simpleParticle_t(line) for line in mothers_lhe])
+        if not isgen:
+            self.mothers = None
+        else:
+            self.mothers =    Mela.SimpleParticleCollection_t([LHE_line_to_simpleParticle_t(line) for line in mothers_lhe])
 
     @abc.abstractmethod
     def extracteventparticles(self): "has to be a classmethod that returns daughters, associated, mothers"
@@ -96,7 +99,10 @@ class LHEEvent_Hwithdecay(LHEEvent):
         mother1s = [None]
         mother2s = [None]
         for line in self.lines:
-            id, status, mother1, mother2 = (int(_) for _ in line.split()[0:4])
+            try:
+                id, status, mother1, mother2 = (int(_) for _ in line.split()[0:4])
+            except:
+                continue
             ids.append(id)
             if (1 <= abs(id) <= 6 or abs(id) == 21) and not self.isgen:
                 line = line.replace(str(id), "0", 1)  #replace the first instance of the jet id with 0, which means unknown jet
@@ -371,9 +377,12 @@ def main(raw_args=None):
     branchnames_scalar = ("M4L","MTotal")
     if production is not None:
         branchnames_scalar += (
-            "costheta1", "costheta2", "Phi1", "costhetastar", "Phi"
-            ,"MZ1","MZ2","costheta1d","costheta2d","Phid","costhetastard","Phi1d"
+            "MZ1","MZ2","costheta1d","costheta2d","Phid","costhetastard","Phi1d"
         )
+        if production == Mela.Production.JJVBF:
+            branchnames_scalar += (
+                "costheta1", "costheta2", "Phi1", "costhetastar", "Phi"
+            )
     else:
         branchnames_scalar += (
             "MZ1","MZ2"
@@ -382,7 +391,7 @@ def main(raw_args=None):
     if production in (Mela.Production.Had_ZH, Mela.Production.Lep_ZH, Mela.Production.Had_WH, Mela.Production.Lep_WH):
         branchnames_scalar += ("mV", "mVstar", "pxj1", "pyj1", "pzj1", "Ej1", "pxj2", "pyj2", "pzj2", "Ej2", "ptV", "rapHJJ")
     elif production in (Mela.Production.JJVBF, ):
-        branchnames_scalar += ("q2V1", "q2V2","Dphijj", "rapHJJ", "HJJpz", "mJJ")
+        branchnames_scalar += ("q2V1", "q2V2","Dphijj", "rapHJJ", "HJJpz", "mJJ", "DRjj", "ptj1", "ptj2")
     
     branchnames_scalar += (
         "ptdau1","pxdau1","pydau1","pzdau1","Edau1","flavdau1", 
@@ -443,7 +452,7 @@ def main(raw_args=None):
         t[branch] = np.zeros(len(all_events), dtype=np.single)
     for branch, vector_length in branchnames_vector.items():
         t[branch] = np.zeros( (len(all_events), vector_length), dtype=np.single )
-    del branch, vector_length
+    del branch
 
     if mode in ("ggh4l", "vbf_withdecay"):
         inputfclass = LHEEvent_Hwithdecay
@@ -470,19 +479,24 @@ def main(raw_args=None):
 
     # events = [inputfclass(event, True) for event in all_events]
     # associated_particles = [tuple(map(MELA_simpleParticle_toVector, i.associated.toList())) for i in events]
-    # daugher_particles = [tuple(map(MELA_simpleParticle_toVector, i.daughters.toList())) for i in events]
+    # daughter_particles = [tuple(map(MELA_simpleParticle_toVector, i.daughters.toList())) for i in events]
     # mother_particles = [tuple(map(MELA_simpleParticle_toVector, i.mothers.toList())) for i in events]
+
 
     zero_events = []
     for i, event in tqdm.tqdm(enumerate(all_events), total=len(all_events), desc="Converting..."):
         if mode == "qqH_ignore":
-            the_event = inputfclass(event, True, True)
+            the_event = inputfclass(event, not args.no_mothers, True)
         else:
-            the_event = inputfclass(event, True)
+            the_event = inputfclass(event, not args.no_mothers)
 
         associated_list = tuple([MELA_simpleParticle_toVector(particle) for particle in the_event.associated.toList()])
         daughter_list   = tuple([MELA_simpleParticle_toVector(particle) for particle in the_event.daughters.toList()])
-        mothers_list    = tuple([MELA_simpleParticle_toVector(particle) for particle in the_event.mothers.toList()]) if not args.remove_flavor else []
+        if not args.no_mothers:
+            mothers_list    = tuple([MELA_simpleParticle_toVector(particle) for particle in the_event.mothers.toList()]) if not args.remove_flavor else []
+        else:
+            mothers_list = None
+
         if len(daughter_list) == 0:
             zero_events.append(i)
             continue
@@ -525,8 +539,14 @@ def main(raw_args=None):
 
             if associated_list[0][1].pt > associated_list[1][1].pt:
                 t["Dphijj"][i] = associated_list[0][1].deltaphi(associated_list[1][1])
+                t["DRjj"][i] = associated_list[0][1].deltaR(associated_list[1][1])
             else:
                 t["Dphijj"][i] = associated_list[1][1].deltaphi(associated_list[0][1])
+                t["DRjj"][i] = associated_list[1][1].deltaR(associated_list[0][1])
+
+            t["ptj1"][i] = associated_list[0][1].pt
+            t["ptj2"][i] = associated_list[1][1].pt 
+
             
             if mode in ("vbf_withdecay", "decayonly_default"):
                 t['M4L'][i], t['MZ2'][i], t['MZ1'][i], t['costheta1d'][i], t['costheta2d'][i], t['Phid'][i], t['costhetastard'][i], t['Phi1d'][i] = m.computeDecayAngles()    

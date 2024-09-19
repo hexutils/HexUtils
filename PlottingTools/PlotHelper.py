@@ -34,7 +34,8 @@ def ratioPlot(
     elif len(colors) != len(list_of_counts) - 1:
         raise ValueError("If providing colors, len(colors)=len(data) - 1 (minus 1 for the reference)!")
 
-    colors.insert(reference, reference_color)
+    if reference_color is not None:
+        colors.insert(reference, reference_color)
 
     if names is not None and len(names) != len(list_of_counts):
         raise ValueError("Names and data should be the same length!")
