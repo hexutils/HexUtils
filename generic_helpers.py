@@ -223,3 +223,168 @@ def unroll_ND_histogram(N_dimension_counts, isbkg=False):
     bins = np.arange(len(unrolled_arr) + 1)
 
     return (pos_arr, neg_arr), bins
+
+def binary_search_on_array(
+    array,
+    upper_index,
+    lower_index,
+    target,
+    search_function=None):
+    """This is a simple function that conducts a binary search on an array
+    You can give it a custom search function if you'd like
+
+    Parameters
+    ----------
+    array : numpy.ndarray
+        This is the array you are searching on. It should be sorted in descending order
+    upper_index : int
+        The upper index you are starting from
+    lower_index : int
+        The lower index you are starting from
+    target : any
+        This is what you are looking for
+        NOTE: Some binary searches don't utilize targets (if you are looking for c constants for discriminants, for instance)
+    search_function : function, optional
+        This is a custom search function. If not provided, use the default, by default None
+
+    Returns
+    -------
+    int
+        The index that is found
+
+    Raises
+    ------
+    ValueError
+        The search function must return -1, 0, or 1
+    """
+    
+    index = (upper_index + lower_index)//2
+    if search_function == None:
+        
+        def search(index, array, target): #generate a default search function that works for arrays
+            val = array[index]
+            if val == target:
+                return 0
+            elif val < target:
+                return 1
+            elif val > target:
+                return -1
+            
+        search_function = search
+    
+    was_it_found = search_function(index, array, target)
+    
+    if upper_index == lower_index or was_it_found== 0 or upper_index == lower_index + 1:
+        return index
+    
+    if was_it_found == -1: #This should mean that the target is somewhere below the current index
+        upper_index = index
+    elif was_it_found == 1: #This should mean that the target is somewhere above the current index
+        lower_index = index
+    else:
+        errortext = print_msg_box("Search function should return 0, 1, or -1!", title="ERROR")
+        raise ValueError("\n"+errortext)
+    
+    return binary_search_on_array(
+        array,
+        upper_index,
+        lower_index,
+        target,
+        search_function)
+
+def find_discr_c_constant(
+    w1_1,
+    w1_2,
+    w2_1,
+    w2_2,
+    guess=None,
+    statistics_limit=0,
+    debug=False):
+    """This function looks for a calibrated c constant for a given discriminant
+
+    Parameters
+    ----------
+    w1_1 : numpy.ndarray
+        The probabilities for hypothesis 1 from a sample generated with hypothesis 1
+    w1_2 : numpy.ndarray
+        The probabilities for hypothesis 2 from a sample generated with hypothesis 1
+    w2_1 : numpy.ndarray
+        The probabilities for hypothesis 1 from a sample generated with hypothesis 2
+    w2_2 : numpy.ndarray
+        The probabilities for hypothesis 2 from a sample generated with hypothesis 2
+    guess : float, optional
+        This is a guess for an initial c constant to make sure there is some crossing point. 
+        If None, one will be made for you, by default None
+    statistics_limit : int, optional
+        This is a limiter for the minimum number of events you want in a calculation, by default 0
+    """
+    def search_function(index, array, target):
+        fraction1 = np.sum(array[0][:index])/np.sum(array[0])
+        fraction2 = np.sum(array[1][index:])/np.sum(array[1])
+        
+        fraction1 = np.round(fraction1, 3)
+        fraction2 = np.round(fraction2, 3)
+        
+        if debug:
+            print(fraction1, fraction2)
+        
+        if fraction1 == fraction2:
+            if debug:
+                print("found!")
+                print()
+            return 0
+        elif fraction1 < fraction2:
+            if debug:
+                print("moving up!")
+                print()
+            return 1
+        elif fraction1 > fraction2:
+            if debug:
+                print("moving down!")
+                print()
+            return -1
+        else:
+            print(fraction1, array[0])
+            print(fraction2, array[1])
+            raise ValueError("What the hell is going on!?")
+    
+    w1_1 = np.array(w1_1, float)
+    w1_2 = np.array(w1_2, float)
+    
+    w2_1 = np.array(w2_1, float)
+    w2_2 = np.array(w2_2, float)
+    
+    if (not np.any(w1_1)) or (not np.any(w2_1)): #If all the elements are 0 then the fit has failed
+        return "FAILED"
+    
+    if not guess:
+        guess = np.mean(w1_1)/np.mean(w1_2)
+    
+    _, bins = np.histogram([], bins=100000, range=[0,1])
+    
+    values_1, _ = np.histogram(1/(1 + guess*(w1_2/w1_1)), bins=bins)
+    values_2, _ = np.histogram(1/(1 + guess*(w2_2/w2_1)), bins=bins)
+    
+    if (np.sum(values_1) <= statistics_limit) or (np.sum(values_2) <= statistics_limit):
+        return "FAILED"
+    
+    values_1 = scale(1, values_1)
+    values_2 = scale(1, values_2)
+    
+    searchable = np.vstack((values_1, values_2))
+    
+    crossing = binary_search_on_array(
+        searchable,
+        len(bins) - 1,
+        0,
+        0.5,
+        search_function
+    )
+    
+    centers = (bins[1:] + bins[:-1])/2
+    
+    R = centers[crossing]
+    
+    c_constant = guess/( (1/R) - 1)
+    
+    return c_constant
