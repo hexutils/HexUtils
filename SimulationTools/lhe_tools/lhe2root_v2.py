@@ -269,8 +269,11 @@ class LHEEvent_VHHiggsdecay(LHEEvent):
         mother1s = [None]
         mother2s = [None]
         for line in self.lines:
-            id, status, mother1, mother2 = (int(_) for _ in line.split()[0:4])
-            ids.append(id)
+            try: 
+                id, status, mother1, mother2 = (int(_) for _ in line.split()[0:4])
+                ids.append(id)
+            except:
+                continue
 
             mother1s.append(mother1)
             mother2s.append(mother2)
@@ -389,7 +392,7 @@ def main(raw_args=None):
         )
 
     if production in (Mela.Production.Had_ZH, Mela.Production.Lep_ZH, Mela.Production.Had_WH, Mela.Production.Lep_WH):
-        branchnames_scalar += ("mV", "mVstar", "pxj1", "pyj1", "pzj1", "Ej1", "pxj2", "pyj2", "pzj2", "Ej2", "ptV", "rapHJJ")
+        branchnames_scalar += ("mV", "mVstar", "pxj1", "pyj1", "pzj1", "Ej1", "pxj2", "pyj2", "pzj2", "Ej2", "ptV", "rapHJJ", "costheta1", "costheta2", "Phi", "costhetastar", "Phi1")
     elif production in (Mela.Production.JJVBF, ):
         branchnames_scalar += ("q2V1", "q2V2","Dphijj", "rapHJJ", "HJJpz", "mJJ", "DRjj", "ptj1", "ptj2")
     

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # USER INPUTS
-CMSSW_release=CMSSW_14_0_0
+CMSSW_release=CMSSW_14_0_5
 CMSSW_release_name=HexUtils    #Leave this blank if you don't know what it is.  It's just a marker in case you have multiple identical directories. No need for the underscore.
 SCRAM_ARCH_name="amd64_gcc12" # Leave slc6/7 out
 SCRAM_ARCH_name="el9_${SCRAM_ARCH_name}"
