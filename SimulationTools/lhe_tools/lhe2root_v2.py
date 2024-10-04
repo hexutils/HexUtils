@@ -16,6 +16,8 @@ import multiprocessing
 def check_enum(entry):
     if entry.lower() == "noprod":
         return entry
+    if entry == "VH":
+        return entry
     found = False
     i = 0
     possible_value = tuple(Mela.Production.__dict__['__entries'].keys())
