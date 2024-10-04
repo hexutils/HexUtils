@@ -16,7 +16,7 @@ import multiprocessing
 def check_enum(entry):
     if entry.lower() == "noprod":
         return entry
-    if entry == "VH":
+    if entry.lower() == "vh":
         return entry
     found = False
     i = 0
