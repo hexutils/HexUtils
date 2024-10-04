@@ -269,8 +269,11 @@ class LHEEvent_VHHiggsdecay(LHEEvent):
         mother1s = [None]
         mother2s = [None]
         for line in self.lines:
-            id, status, mother1, mother2 = (int(_) for _ in line.split()[0:4])
-            ids.append(id)
+            try: 
+                id, status, mother1, mother2 = (int(_) for _ in line.split()[0:4])
+                ids.append(id)
+            except:
+                continue
 
             mother1s.append(mother1)
             mother2s.append(mother2)
@@ -288,6 +291,7 @@ class LHEEvent_VHHiggsdecay(LHEEvent):
                     daughters.append(line)
             
         if not self.isgen: mothers = []
+        # print(associated)
         return daughters, associated, mothers
 
 
@@ -337,7 +341,8 @@ def main(raw_args=None):
         "Had_ZH", "Lep_ZH",
         "Had_WH", "Lep_WH",
         "ZZQQB",
-        "noprod"
+        "noprod", 
+        "VH"
     ]
     parser = argparse.ArgumentParser()
     parser.add_argument("outputfile")
@@ -359,8 +364,12 @@ def main(raw_args=None):
 
     drop_nonzero = args.drop_nonzero
     mode = args.mode
-    if args.production != "noprod":
+
+
+    if args.production not in ["noprod", "VH"]:
         production = eval(f"Mela.Production.{args.production}")
+    elif args.production == "VH":
+        production = "VH"
     else:
         production = None #Just as a placeholder
 
@@ -388,8 +397,8 @@ def main(raw_args=None):
             "MZ1","MZ2"
         )
 
-    if production in (Mela.Production.Had_ZH, Mela.Production.Lep_ZH, Mela.Production.Had_WH, Mela.Production.Lep_WH):
-        branchnames_scalar += ("mV", "mVstar", "pxj1", "pyj1", "pzj1", "Ej1", "pxj2", "pyj2", "pzj2", "Ej2", "ptV", "rapHJJ")
+    if production in (Mela.Production.Had_ZH, Mela.Production.Lep_ZH, Mela.Production.Had_WH, Mela.Production.Lep_WH, "VH"):
+        branchnames_scalar += ("mV", "mVstar", "pxj1", "pyj1", "pzj1", "Ej1", "pxj2", "pyj2", "pzj2", "Ej2", "ptV", "rapHJJ", "costheta1", "costheta2", "Phi", "costhetastar", "Phi1")
     elif production in (Mela.Production.JJVBF, ):
         branchnames_scalar += ("q2V1", "q2V2","Dphijj", "rapHJJ", "HJJpz", "mJJ", "DRjj", "ptj1", "ptj2")
     
@@ -473,6 +482,7 @@ def main(raw_args=None):
         all_events = all_events[:min(len(all_events), args.n_events)]
     all_events = tuple(all_events)
     if production is not None:
+        # m = Mela.Mela(13, 125, Mela.VerbosityLevel.DEBUG_MECHECK)
         m = Mela.Mela()
     else:
         m = None
@@ -491,17 +501,21 @@ def main(raw_args=None):
             the_event = inputfclass(event, not args.no_mothers)
 
         associated_list = tuple([MELA_simpleParticle_toVector(particle) for particle in the_event.associated.toList()])
+       # print("this is assoclist: ", associated_list)
         daughter_list   = tuple([MELA_simpleParticle_toVector(particle) for particle in the_event.daughters.toList()])
+       # print("this is daughters' list: ", daughter_list)
         if not args.no_mothers:
             mothers_list    = tuple([MELA_simpleParticle_toVector(particle) for particle in the_event.mothers.toList()]) if not args.remove_flavor else []
+        #    print("this is mothers list: ", mothers_list)
         else:
             mothers_list = None
+        #    print("No mothers")
 
         if len(daughter_list) == 0:
             zero_events.append(i)
             continue
 
-        if m is not None:
+        if m is not None and production != "VH":
             m.setProcess(Mela.Process.SelfDefine_spin0, Mela.MatrixElement.JHUGen, production)
             m.setInputEvent(the_event.daughters, the_event.associated, the_event.mothers, True)
 
@@ -531,6 +545,31 @@ def main(raw_args=None):
         elif production in (Mela.Production.Had_ZH, Mela.Production.Lep_ZH, Mela.Production.Had_WH, Mela.Production.Lep_WH):
             t["mV"][i], t["mVstar"][i], t["costheta1"][i], t["costheta2"][i], t["Phi"][i], t["costhetastar"][i], t["Phi1"][i]= m.computeVHAngles(production)
             t['M4L'][i], t['MZ2'][i], t['MZ1'][i], t['costheta1d'][i], t['costheta2d'][i], t['Phid'][i], t['costhetastard'][i], t['Phi1d'][i] = m.computeDecayAngles()
+        
+        elif production == "VH":
+            if associated_list[0][0] in  [11, -11, 12, -12, 13, -13, 14, -14, 15, -15, 16, -16] and (associated_list[0][0] + associated_list[1][0]) == 0:
+                m.setProcess(Mela.Process.SelfDefine_spin0, Mela.MatrixElement.JHUGen, Mela.Production.Lep_ZH)
+                m.setInputEvent(the_event.daughters, the_event.associated, the_event.mothers, True)
+                t["mV"][i], t["mVstar"][i], t["costheta1"][i], t["costheta2"][i], t["Phi"][i], t["costhetastar"][i], t["Phi1"][i]= m.computeVHAngles(Mela.Production.Lep_ZH)
+                t['M4L'][i], t['MZ2'][i], t['MZ1'][i], t['costheta1d'][i], t['costheta2d'][i], t['Phid'][i], t['costhetastard'][i], t['Phi1d'][i] = m.computeDecayAngles()
+
+            elif associated_list[0][0] in  [11, -11, 12, -12, 13, -13, 14, -14, 15, -15, 16, -16] and (associated_list[0][0] + associated_list[1][0]) != 0:
+                m.setProcess(Mela.Process.SelfDefine_spin0, Mela.MatrixElement.JHUGen, Mela.Production.Lep_WH)
+                m.setInputEvent(the_event.daughters, the_event.associated, the_event.mothers, True)
+                t["mV"][i], t["mVstar"][i], t["costheta1"][i], t["costheta2"][i], t["Phi"][i], t["costhetastar"][i], t["Phi1"][i]= m.computeVHAngles(Mela.Production.Lep_WH)
+                t['M4L'][i], t['MZ2'][i], t['MZ1'][i], t['costheta1d'][i], t['costheta2d'][i], t['Phid'][i], t['costhetastard'][i], t['Phi1d'][i] = m.computeDecayAngles()
+        
+            elif associated_list[0][0] in [1, -1, 2, -2, 3, -3, 4, -4, 5, -5, 6, -6] and  (associated_list[0][0] + associated_list[1][0]) == 0 :
+                m.setProcess(Mela.Process.SelfDefine_spin0, Mela.MatrixElement.JHUGen, Mela.Production.Had_ZH)
+                m.setInputEvent(the_event.daughters, the_event.associated, the_event.mothers, True)
+                t["mV"][i], t["mVstar"][i], t["costheta1"][i], t["costheta2"][i], t["Phi"][i], t["costhetastar"][i], t["Phi1"][i]= m.computeVHAngles(Mela.Production.Had_ZH)
+                t['M4L'][i], t['MZ2'][i], t['MZ1'][i], t['costheta1d'][i], t['costheta2d'][i], t['Phid'][i], t['costhetastard'][i], t['Phi1d'][i] = m.computeDecayAngles()
+
+            elif associated_list[0][0] in [1, -1, 2, -2, 3, -3, 4, -4, 5, -5, 6, -6] and  (associated_list[0][0] + associated_list[1][0]) != 0 :
+                m.setProcess(Mela.Process.SelfDefine_spin0, Mela.MatrixElement.JHUGen, Mela.Production.Had_WH)
+                m.setInputEvent(the_event.daughters, the_event.associated, the_event.mothers, True)
+                t["mV"][i], t["mVstar"][i], t["costheta1"][i], t["costheta2"][i], t["Phi"][i], t["costhetastar"][i], t["Phi1"][i]= m.computeVHAngles(Mela.Production.Had_WH)
+                t['M4L'][i], t['MZ2'][i], t['MZ1'][i], t['costheta1d'][i], t['costheta2d'][i], t['Phid'][i], t['costhetastard'][i], t['Phi1d'][i] = m.computeDecayAngles()
 
         elif production == Mela.Production.JJVBF:
             t["HJJpz"][i] = sum( [p[1] for p in daughter_list] + [p[1] for p in associated_list], vector.obj(px=0, py=0, pz=0, E=0)).pz
@@ -577,7 +616,7 @@ def main(raw_args=None):
         t["EH"][i] =   higgs.E
         t["rapH"][i] = higgs.rapidity
         
-        if production in (Mela.Production.JJVBF, Mela.Production.Lep_ZH, Mela.Production.Had_ZH, Mela.Production.Had_WH, Mela.Production.Lep_WH):
+        if production in (Mela.Production.JJVBF, Mela.Production.Lep_ZH, Mela.Production.Had_ZH, Mela.Production.Had_WH, Mela.Production.Lep_WH, "VH"):
             t["rapHJJ"][i] = sum( [p[1] for p in daughter_list] + [p[1] for p in associated_list], vector.obj(px=0, py=0, pz=0, E=0)).rapidity
             
         for p, id_and_vec in enumerate(associated_list):
