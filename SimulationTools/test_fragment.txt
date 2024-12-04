@@ -1,4 +1,0 @@
-Name:ghz1 Process:SelfDefine_spin0 Production:ZZGG MatrixElement:JHUGen Couplings:ghg2=1,0;ghz1=1,0;ghz4=0,0;reZ=1,0;leZ=1,0; Prod:0 Dec:1 ZMass:3.09689 ZWidth:0.0009 Options:DivideP=ghz1
-
-Name:ghz4 Process:SelfDefine_spin0 Production:ZZGG MatrixElement:JHUGen Couplings:ghg2=1,0;ghz1=0,0;ghz4=1,0;reZ=1,0;leZ=1,0; Prod:0 Dec:1 ZMass:3.09689 ZWidth:0.0009 Options:DivideP=ghz1
-
